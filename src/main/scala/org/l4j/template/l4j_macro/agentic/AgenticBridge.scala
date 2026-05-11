@@ -1,4 +1,4 @@
-package org.llm4s.template.l4j_macro.agentic
+package org.l4j.template.l4j_macro.agentic
 
 import dev.langchain4j.agentic.internal.{ AgentExecutor, AgentUtil }
 

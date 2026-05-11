@@ -1,8 +1,8 @@
-package org.llm4s.template.l4j_macro.demo.agentic
+package org.l4j.template.l4j_macro.demo.agentic
 
 import dev.langchain4j.agentic.Agent
 import dev.langchain4j.service.V
-import org.llm4s.template.l4j_macro.{ system, user }
+import org.l4j.template.l4j_macro.{ system, user }
 import upickle.default.ReadWriter
 
 /*

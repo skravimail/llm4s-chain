@@ -1,9 +1,9 @@
-package org.llm4s.template.l4j_macro.demo.agentic
+package org.l4j.template.l4j_macro.demo.agentic
 
 import dev.langchain4j.agentic.{ AgenticServices, UntypedAgent }
 import dev.langchain4j.model.openai.OpenAiChatModel
-import org.llm4s.template.l4j_macro.AiService
-import org.llm4s.template.l4j_macro.agentic.AgenticBridge
+import org.l4j.template.l4j_macro.AiService
+import org.l4j.template.l4j_macro.agentic.AgenticBridge
 
 import scala.annotation.experimental
 import scala.jdk.CollectionConverters.*
@@ -19,7 +19,7 @@ import scala.jdk.CollectionConverters.*
  * orchestrator can see the trait's `@Agent` / `@V` metadata.
  *
  * Run with:
- *   sbt "runMain org.llm4s.template.l4j_macro.demo.agentic.SequentialDemoMain"
+ *   sbt "runMain org.l4j.template.l4j_macro.demo.agentic.SequentialDemoMain"
  */
 @experimental
 object SequentialDemoMain:

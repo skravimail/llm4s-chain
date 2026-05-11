@@ -1,4 +1,4 @@
-package org.llm4s.template.l4j_macro
+package org.l4j.template.l4j_macro
 
 import dev.langchain4j.agent.tool.ToolSpecification
 import dev.langchain4j.model.chat.request.json.JsonObjectSchema

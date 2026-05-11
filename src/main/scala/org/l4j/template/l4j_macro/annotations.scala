@@ -1,4 +1,4 @@
-package org.llm4s.template.l4j_macro
+package org.l4j.template.l4j_macro
 
 import scala.annotation.StaticAnnotation
 

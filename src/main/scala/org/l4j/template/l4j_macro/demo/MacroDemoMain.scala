@@ -1,7 +1,7 @@
-package org.llm4s.template.l4j_macro.demo
+package org.l4j.template.l4j_macro.demo
 
 import dev.langchain4j.model.openai.OpenAiChatModel
-import org.llm4s.template.l4j_macro.{ AiService, Tools }
+import org.l4j.template.l4j_macro.{ AiService, Tools }
 
 import scala.annotation.experimental
 
@@ -17,7 +17,7 @@ import scala.annotation.experimental
  * `@experimental` in Scala 3.3 LTS.
  *
  * Run with:
- *   sbt "runMain org.llm4s.template.l4j_macro.demo.MacroDemoMain"
+ *   sbt "runMain org.l4j.template.l4j_macro.demo.MacroDemoMain"
  *
  * Override the model with env vars `LANGCHAIN4J_BASE_URL` / `LANGCHAIN4J_API_KEY`
  * / `LANGCHAIN4J_MODEL`.

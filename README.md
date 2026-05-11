@@ -1,78 +1,82 @@
-llm4s-template
+l4j-template
 =================
 
 Quickstart
 ----------
-This is a production-ready scala project pre-configured to use the [llm4s SDK](https://github.com/llm4s/llm4s).
+Scala 3 project demonstrating a compile-time, macro-generated AiService layer
+on top of [langchain4j](https://github.com/langchain4j/langchain4j). The macro
+emits a concrete `new T { ... }` for trait-shaped AI services — no
+`java.lang.reflect.Proxy`, no runtime annotation scanning.
+
+See [Readme_macro.md](./Readme_macro.md) for a walkthrough of the macro and the
+`AgenticBridge` that plugs the generated impls into `langchain4j-agentic`'s
+orchestrator.
 
 Features
 --------
-- ✅ Preconfigured with `llm4s` for building AI-powered applications
-- ✅ Production-ready directory layout, CI hooks, formatting, and more
-- ✅ Supports `sbt test` & `sbt run` for quick CLI interaction
-- ✅ Supports & suites directly from the comfort of your IDE, whether it's IntelliJ, VS Code, or any other
-- ✅ Includes `Main.scala` + `PromptExecutor` for quick onboarding & getting started with [llm4s]
+- Scala 3 macro replaces langchain4j's reflective `AiServices` Proxy with
+  compile-time class synthesis
+- `{{var}}` placeholders in `@user` templates are validated against parameter
+  names at compile time
+- Typed return values decoded via uPickle (no Jackson POJOs)
+- `@tool` methods on Scala classes are turned into langchain4j
+  `ToolSpecification`s + direct dispatchers, also at compile time
+- `AgenticBridge.asAgent[T](impl)` wraps a macro impl as an `AgentExecutor`
+  suitable for `AgenticServices.{sequence,parallel,…}Builder().subAgents(...)`
 
-Pre-configured prerequisites
------------
+Prerequisites
+-------------
 - JDK 21+
 - SBT
-- OpenAI API key
-- [Scala 3][Scala 3] or [Scala 2][Scala 2]
-- [MUnit] for unit testing
-- [LLM4S SDK][llm4s]
-- Logging library [logback][logback], [scala-logging][scala-logging]
+- An OpenAI-compatible chat endpoint (real OpenAI, a local OMLX server, etc.)
 
-Run the app
------------
-1. Export your OpenAI API key:
-   ```bash
-   export OPENAI_API_KEY=sk-xxxxxx
-   ```
-   You can also set this in your IDE's run configuration or use a `.env.llm4s-template` file (Optional to use library like `dotenv-scala`.)
-   ```bash
-   export $(cat ".env.llm4s-template" | xargs)
-   ```
+Configure the model
+-------------------
+Every demo reads three env vars (with fall-throughs to a local OMLX server):
 
-2. Run with default or custom prompt:
-   ```bash
-   sbt run
-   sbt run "Explain what a Monad is in Scala"
-   ```
+```bash
+export LANGCHAIN4J_BASE_URL=http://localhost:8000/v1      # OpenAI-compat endpoint
+export LANGCHAIN4J_API_KEY=sk-...                         # or any non-empty placeholder for local OMLX
+export LANGCHAIN4J_MODEL=gemma-4-e4b-it-4bit              # model name on that endpoint
+```
 
-3. Format & compile (after making any changes):
-   ```bash
-   sbt scalafmtAll
-   sbt compile
-   ```
-4. Running Tests: This template comes with [MUnit](https://scalameta.org/munit/) preconfigured for testing.
+Run the demos
+-------------
+Three runnable mains live under `org.l4j.template.l4j_macro.demo.*`:
 
-- Included in this setup:
-  - `munit` version `1.1.1` is added as a test dependency in `build.sbt`. 
-  - Sample test is located in: `src/test/scala/MainSpec.scala` that tests the `PromptExecutor` functionality.
+```bash
+# 1. Macro AiService end-to-end: plain chat, typed CvReview return, tool-using tutor.
+sbt "runMain org.l4j.template.l4j_macro.demo.MacroDemoMain"
 
-- To run tests:
-  - Use SBT:
-  - ```bash 
-    sbt test
-    ```
-1. Development:
-    - Add your own prompts in `Main.scala`
-    - Implement additional functionality in `PromptExecutor.scala`
-    - Write more tests in `MainSpec.scala`
+# 2. Sequential agentic pipeline (CreativeWriter → AudienceEditor → StyleEditor).
+sbt "runMain org.l4j.template.l4j_macro.demo.agentic.SequentialDemoMain"
 
-2. CI
-    - The template includes a GitHub Actions workflow for CI.
-    - It runs tests and checks formatting on every push and pull request.
+# 3. Parallel agentic workflow (ManagerReviewer || TechnicalReviewer).
+sbt "runMain org.l4j.template.l4j_macro.demo.agentic.ParallelDemoMain"
+```
 
+`sbt run` (no main class) launches `MacroDemoMain` by default.
+
+Format & compile
 ----------------
-Written in July 2025 by [Vitthal Mirji]
+```bash
+sbt scalafmtAll
+sbt compile
+```
 
-[g8]: http://www.foundweekends.org/giter8/
-[llm4s]: https://github.com/llm4s/llm4s
-[Scala 3]: https://www.scala-lang.org/
-[Scala 2]: https://www.scala-lang.org/
-[logback]: https://logback.qos.ch/
-[scala-logging]: https://github.com/lightbend-labs/scala-logging
-[MUnit]: https://scalameta.org/munit/
-[Vitthal Mirji]: https://github.com/vim89
+Layout
+------
+```
+src/main/scala/org/l4j/template/l4j_macro/
+  AiService.scala         — `materialize[T](model)` macro entry point
+  Tools.scala / ToolKit   — `@tool` method harness builder
+  Runtime.scala           — chat loop called from generated impls
+  annotations.scala       — @system / @user / @tool / @param markers
+  agentic/AgenticBridge   — adapter to langchain4j-agentic's orchestrator
+  demo/                   — runnable examples
+```
+
+CI
+--
+Includes a GitHub Actions workflow that runs `sbt compile` and the formatter on
+every push / PR.

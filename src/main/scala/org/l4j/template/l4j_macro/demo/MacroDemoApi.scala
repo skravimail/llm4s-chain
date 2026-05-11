@@ -1,6 +1,6 @@
-package org.llm4s.template.l4j_macro.demo
+package org.l4j.template.l4j_macro.demo
 
-import org.llm4s.template.l4j_macro.{ param, system, tool, user }
+import org.l4j.template.l4j_macro.{ param, system, tool, user }
 import upickle.default.ReadWriter
 
 // ──────────────────────────────────────────────────────────────────────────────

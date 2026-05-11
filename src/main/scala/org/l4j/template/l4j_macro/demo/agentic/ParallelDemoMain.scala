@@ -1,9 +1,9 @@
-package org.llm4s.template.l4j_macro.demo.agentic
+package org.l4j.template.l4j_macro.demo.agentic
 
 import dev.langchain4j.agentic.{ AgenticServices, UntypedAgent }
 import dev.langchain4j.model.openai.OpenAiChatModel
-import org.llm4s.template.l4j_macro.AiService
-import org.llm4s.template.l4j_macro.agentic.AgenticBridge
+import org.l4j.template.l4j_macro.AiService
+import org.l4j.template.l4j_macro.agentic.AgenticBridge
 
 import scala.annotation.experimental
 import scala.jdk.CollectionConverters.*
@@ -19,14 +19,14 @@ import scala.jdk.CollectionConverters.*
  * orchestration is langchain4j-agentic's standard `parallelBuilder()`.
  *
  * Run with:
- *   sbt "runMain org.llm4s.template.l4j_macro.demo.agentic.ParallelDemoMain"
+ *   sbt "runMain org.l4j.template.l4j_macro.demo.agentic.ParallelDemoMain"
  */
 @experimental
 object ParallelDemoMain:
 
   def main(args: Array[String]): Unit =
     val baseUrl   = sys.env.getOrElse("LANGCHAIN4J_BASE_URL", "http://localhost:8000/v1")
-    val apiKey    = sys.env.getOrElse("LANGCHAIN4J_API_KEY", sys.env.getOrElse("OMLX_API_KEY", "dummy"))
+    val apiKey    = sys.env.getOrElse("LANGCHAIN4J_API_KEY", sys.env.getOrElse("OMLX_API_KEY", "4850"))
     val modelName = sys.env.getOrElse("LANGCHAIN4J_MODEL", "gemma-4-e4b-it-4bit")
 
     val model = OpenAiChatModel.builder()
