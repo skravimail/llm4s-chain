@@ -2,10 +2,25 @@
 # Secrets are NOT stored here — set the API key via the environment variable
 # named by `apiKeyEnv` (default: OPENAI_API_KEY).
 
+#llm:
+#  provider: openai
+#  model: gpt-3.5-turbo
+#  baseUrl: https://api.openai.com/v1
+#  apiKeyEnv: OPENAI_API_KEY
+#  # Optional: override baseUrl via this env var if set at runtime
+#  baseUrlEnv: OPENAI_BASE_URL
+
+# --- Alternative configs (uncomment one and comment out the block above) ---
+
+# Local OMLX server (OpenAI-compatible endpoint)
+#llm:
+#  provider: openai
+#  model: gemma-4-e4b-it-4bit
+#  baseUrl: http://localhost:8000/v1
+#  apiKeyEnv: OMLX_API_KEY
+
+# Google Gemini
 llm:
-  provider: openai
-  model: gpt-3.5-turbo
-  baseUrl: https://api.openai.com/v1
-  apiKeyEnv: OPENAI_API_KEY
-  # Optional: override baseUrl via this env var if set at runtime
-  baseUrlEnv: OPENAI_BASE_URL
+  provider: gemini
+  model: gemini-2.5-flash
+  apiKeyEnv: GOOGLE_API_KEY

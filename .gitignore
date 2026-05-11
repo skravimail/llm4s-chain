@@ -4,6 +4,8 @@
 /.metals
 /.vscode
 /.claude
+/.env
+/.env.local
 /project/target
 /project/project
 /.idea

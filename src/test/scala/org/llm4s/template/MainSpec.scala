@@ -17,6 +17,5 @@ class MainSpec extends munit.FunSuite {
     val prompt = "Explain what a Monad is in Scala"
     val response = PromptExecutor.run(prompt)
     assert(response.nonEmpty, "Response should not be empty")
-    assert(response.contains("Incorrect API key provided: your-api*****here. You can find your API key at https://platform.openai.com/account/api-keys."))
   }
 }
