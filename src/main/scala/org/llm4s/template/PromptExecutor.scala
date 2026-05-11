@@ -23,14 +23,19 @@ object PromptExecutor extends LazyLogging {
   // API key is resolved from the env var named in the YAML (default: OPENAI_API_KEY).
   private val llmConfig: LLMConfig = LLMConfig.load()
 
-  private val config: OpenAIConfig = OpenAIConfig(
-    apiKey = llmConfig.apiKey,
-    model = llmConfig.model,
-    baseUrl = llmConfig.baseUrl,
-  )
-
-  // Default client using OpenAI; Build the client via LLM factory using provider enum
-  private val defaultClient: LLMClient = LLM.client(LLMProvider.OpenAI, config)
+  // Dispatch on `provider`. OMLX (and other local OpenAI-compat servers) uses a
+  // plain-HTTP client; the Azure-SDK-backed llm4s OpenAIClient refuses plaintext HTTP.
+  private val defaultClient: LLMClient = llmConfig.provider.toLowerCase match {
+    case "omlx" =>
+      new OmlxClient(llmConfig)
+    case _ =>
+      val openaiConfig = OpenAIConfig(
+        apiKey = llmConfig.apiKey,
+        model = llmConfig.model,
+        baseUrl = llmConfig.baseUrl,
+      )
+      LLM.client(LLMProvider.OpenAI, openaiConfig)
+  }
 
   def run(prompt: String, clientOpt: Option[LLMClient] = None): String = {
     val client = clientOpt.getOrElse(defaultClient)

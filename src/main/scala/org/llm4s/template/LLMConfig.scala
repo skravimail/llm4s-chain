@@ -27,7 +27,7 @@ object LLMConfig {
   // at this path so the existing OpenAI client routing keeps working.
   private val DefaultBaseUrls: Map[String, String] = Map(
     "openai" -> "https://api.openai.com/v1",
-    "gemini" -> "https://generativelanguage.googleapis.com/v1beta/openai/",
+    "gemini" -> "https://generativelanguage.googleapis.com/v1beta/openai",
   )
 
   def load(resource: String = DefaultResource): LLMConfig = {

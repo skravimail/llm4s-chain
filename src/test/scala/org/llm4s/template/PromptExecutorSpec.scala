@@ -11,11 +11,15 @@ import org.llm4s.llmconnect.model.{ AssistantMessage, Completion, CompletionOpti
  */
 class PromptExecutorSpec extends FunSuite {
 
+  // Live-call tests hit a real LLM; local OMLX inference can take ~1 min.
+  override val munitTimeout: scala.concurrent.duration.Duration =
+    scala.concurrent.duration.Duration(2, scala.concurrent.duration.MINUTES)
+
   test("basic assertion") {
     assertEquals(1 + 1, 2)
   }
 
-  test("PromptExecutor returns a non-empty error message if API key not set") {
+  test("PromptExecutor returns a non-empty response from the configured provider") {
     val prompt   = "Explain what a Monad is in Scala"
     val response = PromptExecutor.run(prompt)
     assert(response.nonEmpty)

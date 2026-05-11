@@ -9,6 +9,11 @@ package org.llm4s.template
  * It checks basic assertions and the response from the LLM when a prompt is executed.
  */
 class MainSpec extends munit.FunSuite {
+
+  // Live-call tests hit a real LLM; local OMLX inference can take ~1 min.
+  override val munitTimeout: scala.concurrent.duration.Duration =
+    scala.concurrent.duration.Duration(2, scala.concurrent.duration.MINUTES)
+
   test("basic assertion") {
     assert(1 + 1 == 2)
   }
