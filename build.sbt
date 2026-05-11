@@ -3,11 +3,7 @@
 // =========== Project metadata & versions ===========
 ThisBuild / organization := "org.llm4s.template"
 ThisBuild / version := "0.1.0-SNAPSHOT"
-ThisBuild / scalaVersion := "2.13.16"
-
-// Enable SemanticDB for Scalafix semantic rules
-ThisBuild / semanticdbEnabled  := true
-ThisBuild / semanticdbVersion  := scalafixSemanticdb.revision
+ThisBuild / scalaVersion := "3.3.4" // Scala 3 LTS
 
 // =========== Dependencies ===========
 libraryDependencies ++= Seq(
@@ -15,8 +11,8 @@ libraryDependencies ++= Seq(
   "org.scalameta" %% "munit" % "1.1.1" % Test,
 
   // Logger dependencies
-  "ch.qos.logback" % "logback-classic" % "1.4.14", // Logback backend
-  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5", // scala-logging wrapper
+  "ch.qos.logback" % "logback-classic" % "1.4.14",
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5",
 
   // YAML configuration parsing
   "org.yaml" % "snakeyaml" % "2.2",
@@ -24,53 +20,30 @@ libraryDependencies ++= Seq(
   // HTTP client for OMLX / OpenAI-compat local servers (bypasses Azure SDK's HTTPS-only check)
   "com.lihaoyi" %% "requests" % "0.9.0",
 
-  // langchain4j (parallel-workflow demo under org.llm4s.template.parallel_workflow)
-  "dev.langchain4j" % "langchain4j"          % "1.14.1",
-  "dev.langchain4j" % "langchain4j-open-ai"  % "1.14.1",
-  "dev.langchain4j" % "langchain4j-agentic"  % "1.14.1-beta24",
+  // Scala-native JSON for the macro layer's typed return-value decoder
+  "com.lihaoyi" %% "upickle" % "4.1.0",
 
-  // Local ONNX embedding model (no network required) for the l4j_scala RAG demo
-  "dev.langchain4j" % "langchain4j-embeddings-all-minilm-l6-v2" % "1.14.1-beta24"
-  // integrating scala-logging into LLM (Large Language Model) scala applications is a recommended practice,
-  // especially when using SLF4J and Logback.
-  // This combination is widely adopted in the Scala ecosystem for its simplicity, performance, and compatibility with structured logging
-
-
-  // Other Logger dependencies: For FP + LLM pipelines - LogStage is a top-tier choice—structured, efficient, observable
-  // "io.7mind.izumi" %% "logstage-core" % "1.2.19", // core
-  // "io.7mind.izumi" %% "logstage-rendering-circe" % "1.2.19", // JSON output
-  // "io.7mind.izumi" %% "logstage-adapter-slf4j" % "1.2.19"    // optional SLF4J integration
-  // LogStage, Woof are community‑endorsed for modern stacks but, not officially approved by scala core.
+  // langchain4j (used only as the underlying ChatModel transport; no AiServices/agentic)
+  "dev.langchain4j" % "langchain4j"         % "1.14.1",
+  "dev.langchain4j" % "langchain4j-open-ai" % "1.14.1",
 )
-
-// Scalafix dependencies (needed for custom rules or built-ins)
-ThisBuild / scalafixDependencies += "ch.epfl.scala" %% "scalafix-rules" % "0.14.3" // adjust version as needed
 
 // =========== Compiler options ===========
 ThisBuild / scalacOptions ++= Seq(
-  "-deprecation",         // Warn about use of deprecated APIs
-  "-feature",             // Warn about misused features
-  "-unchecked",           // Additional warnings for unhandled cases
-  "-Xlint",               // Recommended additional warnings
-  "-Wdead-code",          // Warn when dead code is identified (was -Ywarn-dead-code)
-  "-Wunused:locals",      // Warn when local defs are unused (was -Ywarn-unused)
-  "-encoding", "UTF-8",   // Specify character encoding
-  {
-    if (scalaVersion.value.startsWith("2.12"))
-      "-Ywarn-unused-import" // 2.12 specific
-    else
-      "-Wunused:imports"     // Scala 2.13+ and Scala 3
-  }
+  "-deprecation",
+  "-feature",
+  "-unchecked",
+  "-encoding", "UTF-8",
+  "-Wunused:imports",
 )
 
 // =========== Project definition ===========
 lazy val root = (project in file("."))
   .settings(
     name := "llm4s-template",
-    Compile / mainClass := Some("org.llm4s.template.Main"), // optional
-    Compile / scalafmtOnCompile := false // turn off automatic formatting on compile
+    Compile / mainClass := Some("org.llm4s.template.Main"),
+    Compile / scalafmtOnCompile := false,
   )
-  .enablePlugins() // Add plugins as needed
 
 // =========== Best Practices ===========
 compileOrder := CompileOrder.Mixed
