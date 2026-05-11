@@ -23,9 +23,12 @@ libraryDependencies ++= Seq(
   // Scala-native JSON for the macro layer's typed return-value decoder
   "com.lihaoyi" %% "upickle" % "4.1.0",
 
-  // langchain4j (used only as the underlying ChatModel transport; no AiServices/agentic)
+  // langchain4j: ChatModel transport for the macro layer's Runtime, plus the
+  // agentic orchestrator (sequenceBuilder/parallelBuilder/...) which the
+  // AgenticBridge plugs macro impls into via java.lang.reflect.Proxy.
   "dev.langchain4j" % "langchain4j"         % "1.14.1",
   "dev.langchain4j" % "langchain4j-open-ai" % "1.14.1",
+  "dev.langchain4j" % "langchain4j-agentic" % "1.14.1-beta24",
 )
 
 // =========== Compiler options ===========
