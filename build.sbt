@@ -16,7 +16,10 @@ libraryDependencies ++= Seq(
 
   // Logger dependencies
   "ch.qos.logback" % "logback-classic" % "1.4.14", // Logback backend
-  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5" // scala-logging wrapper
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5", // scala-logging wrapper
+
+  // YAML configuration parsing
+  "org.yaml" % "snakeyaml" % "2.2"
   // integrating scala-logging into LLM (Large Language Model) scala applications is a recommended practice,
   // especially when using SLF4J and Logback.
   // This combination is widely adopted in the Scala ecosystem for its simplicity, performance, and compatibility with structured logging

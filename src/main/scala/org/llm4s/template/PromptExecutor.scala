@@ -19,11 +19,14 @@ import org.llm4s.llmconnect.provider.LLMProvider
  */
 
 object PromptExecutor extends LazyLogging {
-  // Create the provider config
+  // Load provider config from src/main/resources/llm-config.yaml.
+  // API key is resolved from the env var named in the YAML (default: OPENAI_API_KEY).
+  private val llmConfig: LLMConfig = LLMConfig.load()
+
   private val config: OpenAIConfig = OpenAIConfig(
-    apiKey = sys.env.getOrElse("OPENAI_API_KEY", "your-api-key-here"),
-    model = "gpt-3.5-turbo",
-    baseUrl = sys.env.getOrElse("OPENAI_BASE_URL", "https://api.openai.com/v1"),
+    apiKey = llmConfig.apiKey,
+    model = llmConfig.model,
+    baseUrl = llmConfig.baseUrl,
   )
 
   // Default client using OpenAI; Build the client via LLM factory using provider enum

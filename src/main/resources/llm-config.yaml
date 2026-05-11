@@ -1,0 +1,11 @@
+# LLM configuration for llm4s-template.
+# Secrets are NOT stored here — set the API key via the environment variable
+# named by `apiKeyEnv` (default: OPENAI_API_KEY).
+
+llm:
+  provider: openai
+  model: gpt-3.5-turbo
+  baseUrl: https://api.openai.com/v1
+  apiKeyEnv: OPENAI_API_KEY
+  # Optional: override baseUrl via this env var if set at runtime
+  baseUrlEnv: OPENAI_BASE_URL
