@@ -22,7 +22,12 @@ libraryDependencies ++= Seq(
   "org.yaml" % "snakeyaml" % "2.2",
 
   // HTTP client for OMLX / OpenAI-compat local servers (bypasses Azure SDK's HTTPS-only check)
-  "com.lihaoyi" %% "requests" % "0.9.0"
+  "com.lihaoyi" %% "requests" % "0.9.0",
+
+  // langchain4j (parallel-workflow demo under org.llm4s.template.parallel_workflow)
+  "dev.langchain4j" % "langchain4j"          % "1.14.1",
+  "dev.langchain4j" % "langchain4j-open-ai"  % "1.14.1",
+  "dev.langchain4j" % "langchain4j-agentic"  % "1.14.1-beta24"
   // integrating scala-logging into LLM (Large Language Model) scala applications is a recommended practice,
   // especially when using SLF4J and Logback.
   // This combination is widely adopted in the Scala ecosystem for its simplicity, performance, and compatibility with structured logging
