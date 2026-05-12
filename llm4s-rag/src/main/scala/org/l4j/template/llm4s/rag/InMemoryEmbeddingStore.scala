@@ -9,20 +9,22 @@ final class InMemoryEmbeddingStore[F[_]: Sync] private (
 ) extends EmbeddingStore[F]:
 
   override def add(records: List[EmbeddingRecord]): F[Unit] =
-    state.update(existing => existing ++ records.map(record => record.id -> record).toMap)
+    val normalized = records.map(record => record.copy(embedding = record.embedding.normalize))
+    state.update(existing => existing ++ normalized.map(record => record.id -> record).toMap)
 
   override def search(
       query: EmbeddingVector,
       maxResults: Int,
       minScore: Option[Double] = None,
   ): F[List[RetrievedSource]] =
+    val normalizedQuery = query.normalize
     state.get.map { records =>
       records.values.toList
         .map { record =>
           RetrievedSource(
             id = record.id,
             text = record.text,
-            score = record.embedding.cosineSimilarity(query),
+            score = record.embedding.cosineSimilarity(normalizedQuery),
             metadata = record.metadata,
           )
         }

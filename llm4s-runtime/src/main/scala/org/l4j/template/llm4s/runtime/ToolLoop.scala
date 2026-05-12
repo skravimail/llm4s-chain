@@ -24,7 +24,7 @@ object ToolLoop:
         case None =>
           MonadThrow[F].pure(
             ToolResult.StructuredJson(
-              s"""{"error":"no such tool: ${escape(toolCall.name)}"}""",
+              ujson.write(ujson.Obj("error" -> s"no such tool: ${toolCall.name}")),
               isError = true,
             )
           )
@@ -41,10 +41,7 @@ object ToolLoop:
   private def errorResult[F[_]: MonadThrow](t: Throwable): F[ToolResult] =
     MonadThrow[F].pure(
       ToolResult.StructuredJson(
-        s"""{"error":"${escape(Option(t.getMessage).getOrElse(t.getClass.getSimpleName))}"}""",
+        ujson.write(ujson.Obj("error" -> Option(t.getMessage).getOrElse(t.getClass.getSimpleName))),
         isError = true,
       )
     )
-
-  private def escape(value: String): String =
-    value.replace("\\", "\\\\").replace("\"", "\\\"")

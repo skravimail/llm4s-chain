@@ -57,6 +57,10 @@ final case class ChatRequest(
     temperature: Option[Double] = None,
     metadata: Map[String, String] = Map.empty,
 ):
+  temperature.foreach { value =>
+    require(value >= 0.0 && value <= 2.0, s"ChatRequest.temperature must be in [0.0, 2.0], got $value")
+  }
+
   def withTool(tool: ToolSchema): ChatRequest =
     copy(tools = tools :+ tool)
 

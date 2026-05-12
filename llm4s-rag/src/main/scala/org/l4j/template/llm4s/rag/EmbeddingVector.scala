@@ -15,6 +15,11 @@ final case class EmbeddingVector(values: Vector[Double]):
     if leftMagnitude == 0.0 || rightMagnitude == 0.0 then 0.0
     else dot / (leftMagnitude * rightMagnitude)
 
+  def normalize: EmbeddingVector =
+    val magnitude = math.sqrt(values.map(value => value * value).sum)
+    if magnitude == 0.0 then this
+    else EmbeddingVector(values.map(_ / magnitude))
+
   def toPgVectorLiteral: String =
     values.mkString("[", ",", "]")
 

@@ -17,8 +17,11 @@ object OpenAiStreamDecoder:
       Nil
 
   private def decodeJson(json: ujson.Value): List[StreamEvent] =
-    val choice = json("choices")(0)
-    val delta = choice("delta")
+    val choices = json.obj.get("choices").flatMap(_.arrOpt).map(_.toList).getOrElse(Nil)
+    choices.headOption.toList.flatMap(decodeChoice)
+
+  private def decodeChoice(choice: ujson.Value): List[StreamEvent] =
+    val delta = choice.obj.get("delta").flatMap(_.objOpt)
     val finishReason = choice.obj.get("finish_reason").flatMap {
       case ujson.Str("stop")           => Some(FinishReason.Stop)
       case ujson.Str("length")         => Some(FinishReason.Length)
@@ -27,20 +30,23 @@ object OpenAiStreamDecoder:
       case _                           => None
     }
 
-    val deltas =
-      delta.obj.get("content").collect { case ujson.Str(value) => StreamEvent.TextDelta(value) }.toList :::
-        delta.obj.get("reasoning").collect { case ujson.Str(value) => StreamEvent.ThinkingDelta(value) }.toList :::
-        delta.obj.get("tool_calls").toList.flatMap {
-          case ujson.Arr(values) =>
-            values.toList.flatMap { entry =>
-              val function = entry.obj.get("function")
-              val name = function.flatMap(_.obj.get("name")).collect { case ujson.Str(value) => value }
-              val args = function.flatMap(_.obj.get("arguments")).collect { case ujson.Str(value) => value }.getOrElse("")
+    val deltas = delta.toList.flatMap { fields =>
+      val values = fields.value
+      values.get("content").collect { case ujson.Str(value) => StreamEvent.TextDelta(value) }.toList :::
+        values.get("reasoning").collect { case ujson.Str(value) => StreamEvent.ThinkingDelta(value) }.toList :::
+        values.get("tool_calls").toList.flatMap {
+          case ujson.Arr(entries) =>
+            entries.toList.flatMap { entry =>
+              val function = entry.obj.get("function").flatMap(_.objOpt)
+              val name = function.flatMap(_.value.get("name")).collect { case ujson.Str(value) => value }
+              val args = function.flatMap(_.value.get("arguments")).collect { case ujson.Str(value) => value }
               val id = entry.obj.get("id").collect { case ujson.Str(value) => value }
-              List(StreamEvent.ToolCallDelta(id, name, args))
+              if id.isEmpty && name.isEmpty && args.isEmpty then Nil
+              else List(StreamEvent.ToolCallDelta(id, name, args.getOrElse("")))
             }
           case _ => Nil
         }
+    }
 
     val completed =
       finishReason.toList.map { reason =>

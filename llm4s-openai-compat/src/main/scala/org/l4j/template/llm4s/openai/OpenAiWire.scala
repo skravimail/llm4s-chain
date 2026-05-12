@@ -48,22 +48,28 @@ object OpenAiWire:
     ujson.Obj.from(fields)
 
   def decodeChatResponse(json: ujson.Value): ChatResponse =
-    val choice = json("choices")(0)
-    val messageJson = choice("message")
+    val choices = json.obj.get("choices").flatMap(_.arrOpt).map(_.toList).getOrElse(Nil)
+    val choice = choices.headOption.getOrElse(
+      throw RuntimeException("OpenAI-compatible response did not include any choices")
+    )
+    val messageJson = choice.obj.get("message").getOrElse(ujson.Obj())
     val toolCalls = messageJson.obj.get("tool_calls")
-      .map(_.arr.toList.map(decodeToolCall))
+      .flatMap(_.arrOpt)
+      .map(_.toList.flatMap(decodeToolCall))
       .getOrElse(Nil)
+
+    val finishReason = choice.obj.get("finish_reason").flatMap(decodeFinishReason)
 
     val message = ChatMessage.AiMessage(
       contents = decodeContents(messageJson.obj.get("content")),
       toolCalls = toolCalls,
-      finishReason = choice.obj.get("finish_reason").flatMap(decodeFinishReason),
+      finishReason = finishReason,
     )
 
     ChatResponse(
       message = message,
       usage = decodeUsage(json.obj.get("usage")),
-      finishReason = choice.obj.get("finish_reason").flatMap(decodeFinishReason),
+      finishReason = finishReason,
       responseId = json.obj.get("id").collect { case ujson.Str(value) => value },
     )
 
@@ -187,11 +193,14 @@ object OpenAiWire:
         description.foreach(value => fields += "description" -> ujson.Str(value))
         ujson.Obj.from(fields)
 
-  private def decodeToolCall(json: ujson.Value): ToolCall =
-    val function = json("function")
-    ToolCall(
-      name = function("name").str,
-      argumentsJson = function("arguments").str,
+  private def decodeToolCall(json: ujson.Value): Option[ToolCall] =
+    for
+      function <- json.obj.get("function").flatMap(_.objOpt)
+      name     <- function.value.get("name").flatMap(_.strOpt)
+      args     <- function.value.get("arguments").flatMap(_.strOpt)
+    yield ToolCall(
+      name = name,
+      argumentsJson = args,
       callId = json.obj.get("id").collect { case ujson.Str(value) => value },
     )
 

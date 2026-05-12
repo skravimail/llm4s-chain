@@ -17,7 +17,14 @@ final class StdioMcpTransport[F[_]: Sync] private (
       payload = McpProtocol.requestPayload(id, method, params)
       _ <- writeLine(write(payload))
       response <- readLine
-      result <- Sync[F].fromEither(McpProtocol.decodeResult(response))
+      decoded <- Sync[F].fromEither(McpProtocol.decodeResponse(response))
+      (responseId, result) = decoded
+      _ <- Sync[F].raiseWhen(responseId.exists(_ != id))(
+        McpProtocolError(
+          -32603,
+          s"MCP response id ${responseId.getOrElse(-1L)} did not match request id $id for method '$method'",
+        )
+      )
     yield result
 
 object StdioMcpTransport:

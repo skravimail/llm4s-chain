@@ -58,6 +58,12 @@ object McpProtocol:
     decodeResult(read[ujson.Value](payload))
 
   def decodeResult(payload: ujson.Value): Either[McpProtocolError, ujson.Value] =
+    decodeResponse(payload).map(_._2)
+
+  def decodeResponse(payload: String): Either[McpProtocolError, (Option[Long], ujson.Value)] =
+    decodeResponse(read[ujson.Value](payload))
+
+  def decodeResponse(payload: ujson.Value): Either[McpProtocolError, (Option[Long], ujson.Value)] =
     payload.objOpt match
       case None =>
         Left(McpProtocolError(-32603, "MCP response was not a JSON object"))
@@ -71,4 +77,8 @@ object McpProtocol:
           )
         )
       case Some(obj) =>
-        obj.value.get("result").toRight(McpProtocolError(-32603, "MCP response did not include result"))
+        val id = obj.value.get("id").flatMap(_.numOpt).map(_.toLong)
+        obj.value
+          .get("result")
+          .toRight(McpProtocolError(-32603, "MCP response did not include result"))
+          .map(result => (id, result))

@@ -23,23 +23,26 @@ final class McpClient[F[_]: MonadThrow](
     loop(None, Nil)
 
   def callTool(name: String, argumentsJson: String): F[McpToolCallResult] =
-    val arguments =
-      Either.catchNonFatal(read[ujson.Value](argumentsJson)).toOption match
-        case Some(value: ujson.Obj) => value
-        case Some(value)            => ujson.Obj("value" -> value)
-        case None                   => ujson.Obj()
-
-    transport
-      .request(
-        "tools/call",
-        Some(
-          ujson.Obj(
-            "name" -> name,
-            "arguments" -> arguments,
+    Either.catchNonFatal(read[ujson.Value](argumentsJson)) match
+      case Left(error) =>
+        MonadThrow[F].raiseError(
+          McpProtocolError(-32602, s"MCP tool '$name' arguments are not valid JSON: ${error.getMessage}")
+        )
+      case Right(value) =>
+        val arguments = value match
+          case obj: ujson.Obj => obj
+          case other          => ujson.Obj("value" -> other)
+        transport
+          .request(
+            "tools/call",
+            Some(
+              ujson.Obj(
+                "name" -> name,
+                "arguments" -> arguments,
+              )
+            ),
           )
-        ),
-      )
-      .flatMap(parseToolCallResult)
+          .flatMap(parseToolCallResult)
 
   private def parseToolList(value: ujson.Value): F[McpToolList] =
     MonadThrow[F].fromEither {

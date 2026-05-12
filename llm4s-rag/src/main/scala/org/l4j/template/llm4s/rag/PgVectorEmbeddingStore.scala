@@ -28,13 +28,10 @@ object PgVectorConfig:
       case Nil   => false
       case parts => parts.forall(part => Identifier.matches(part))
 
-final class PgVectorEmbeddingStore[F[_]: Sync](
+final class PgVectorEmbeddingStore[F[_]: Sync] private (
     dataSource: DataSource,
-    config: PgVectorConfig,
+    safeConfig: PgVectorConfig,
 ) extends EmbeddingStore[F]:
-
-  private val safeConfig =
-    config.validated.fold(error => throw IllegalArgumentException(error), identity)
 
   override def add(records: List[EmbeddingRecord]): F[Unit] =
     Sync[F].blocking {
@@ -151,4 +148,11 @@ final class PgVectorEmbeddingStore[F[_]: Sync](
     Option(raw).flatMap { value =>
       Either.catchNonFatal(read[Map[String, String]](value)).toOption
     }.getOrElse(Map.empty)
+
+object PgVectorEmbeddingStore:
+  def create[F[_]: Sync](
+      dataSource: DataSource,
+      config: PgVectorConfig,
+  ): F[Either[String, PgVectorEmbeddingStore[F]]] =
+    Sync[F].pure(config.validated.map(new PgVectorEmbeddingStore[F](dataSource, _)))
 
