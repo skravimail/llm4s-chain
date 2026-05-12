@@ -653,6 +653,185 @@ Recommended example docs:
 - guardrails
 - multimodal request
 
+## Module Review Findings
+
+A full read-through of every module on the `claude_review` branch produced the
+matrix below. Findings are ordered from the lowest-level dependency upward, so
+each tier can be addressed without rework from the tier above.
+
+Severity legend: **B**ug / **R**isk / **I**mprovement / **P**olish.
+
+### Tier 0 — Foundation
+
+#### `llm4s-core` (8 files)
+
+| # | Sev | Location | Issue | Fix |
+|---|-----|----------|-------|-----|
+| 1 | B | `JsonSchema.scala:7-14` | `ObjectSchema.required` not validated against `properties` keys | Smart constructor enforcing `required ⊆ properties` |
+| 2 | R | `ChatProtocol.scala:48-51` | `ToolResult.StructuredJson → AiContent` flattens to text, loses JSON structure | Add `AiContent.Json` variant or carry raw JSON field |
+| 3 | R | `ChatProtocol.scala:58` | `metadata: Map[String,String]` is lossy for structured values | Typed `AiMetadata` ADT |
+| 4 | R | `ChatProtocol.scala:57` | `temperature` accepts any Double, no range check | Validate or document caller responsibility |
+| 5 | I | `Tools.scala:15-38` | `ToolResult` exposes `isError` but no error factories | Add `ToolResult.error(...)` helpers |
+| 6 | I | `ModelMetadata.scala:3-12` | `Thinking` capability has no response-format support | Add `ThinkingOutput` capability + `ResponseFormat` block |
+| 7 | I | `test/.../CoreTypesSpec.scala` | No negative tests for invalid temp / empty messages / circular schema | Property-based / boundary tests |
+
+#### `llm4s-memory` (5 files)
+
+| # | Sev | Location | Issue | Fix |
+|---|-----|----------|-------|-----|
+| 1 | B | `ChatMemory.scala:11-12` | Default `append` is non-atomic read-then-write (TOCTOU) | Override in `InMemoryChatMemory` with `Ref.updateAndGet` |
+| 2 | I | `MessageWindowMemory.scala:13-20` | Window trims on every op against full history (O(n)) | Trim only on read |
+| 3 | I | `ChatMemory.scala:7-9` | No `clear(id)` operation in trait | Add `def clear(id: Id): F[Unit]` |
+| 4 | R | `test/.../ChatMemorySpec.scala` | Tests are sync; race in default `append` is invisible | Add `parSequenceN` concurrent tests |
+| 5 | P | `MemoryId.scala:3` | Wraps raw String, no validation surface | Document trust assumption |
+
+### Tier 1 — Single-dep modules
+
+#### `llm4s-rag` (14 files)
+
+| # | Sev | Location | Issue | Fix |
+|---|-----|----------|-------|-----|
+| 1 | B | `EmbeddingVector.scala:6-16` | `cosineSimilarity` body ends on `require(...)` (Unit) — won't compile or returns wrong value | Move `require` outside computation; return dot/magnitude |
+| 2 | B | `ContentAggregator.scala:13-14` | Dedup `maxBy(_.score)` drops metadata from losing duplicates | Merge metadata maps before selecting |
+| 3 | R | `InMemoryEmbeddingStore.scala:14-32` | Assumes unit-normalized vectors; no enforcement | Add `.normalize()` and apply in `add` |
+| 4 | R | `PgVectorEmbeddingStore.scala:36-37` | `IllegalArgumentException` thrown in constructor (not in `F`) | Move validation into factory returning `F[Either[...]]` |
+| 5 | R | `AdvancedContentRetriever.scala:6-11 vs 28-33` | Constructor vs `apply` param order disagree | Align signatures |
+| 6 | I | `RetrievalAugmentor.scala:33-35` | `DefaultRetrievalAugmentor` replaces user message wholesale — loses images/files | Preserve original contents, append context as additional `AiContent.Text` |
+| 7 | I | `AdvancedContentRetriever.scala:14-20` | No `minScore` cutoff before rerank | Add optional `minScore` filter |
+
+#### `llm4s-agentic` (11 files)
+
+| # | Sev | Location | Issue | Fix |
+|---|-----|----------|-------|-----|
+| 1 | B | `AgentScope.scala:15-18,23-33` | `value.asInstanceOf[A]` is unchecked; primitive class lookup can corrupt on mismatch | Return `F[Option[A]]` after `ClassTag` check |
+| 2 | B | `SupervisorAgent.scala:34-36` | Default outputKey collides across nested supervisors | Require explicit key or namespace with step index/UUID |
+| 3 | R | `ParallelWorkflow.scala:12-13` | Both branches write to shared `AgentScope` without namespacing | Namespace keys (`left.*` / `right.*`) or document hazard |
+| 4 | R | `SupervisorAgent.scala:22-24` | Single sub-agent failure aborts whole supervision | Per-step `Either` + aggregator decides fail-fast vs tolerate |
+| 5 | R | `ConditionalWorkflow.scala:12-16` | Predicate side effects persist regardless of branch | Document mutation contract or evaluate lazily |
+| 6 | I | `LoopWorkflow.scala:18-21` | `maxIterations` error doesn't cancel in-flight body | Fiber cancellation token |
+| 7 | I | `test/.../AgenticWorkflowSpec.scala` | No parallel-scope-contention tests | Concurrent-write test cases |
+
+### Tier 2 — Chat execution stack
+
+#### `llm4s-runtime` (5 files)
+
+| # | Sev | Location | Issue | Fix |
+|---|-----|----------|-------|-----|
+| 1 | B | `AiRuntime.scala:92-98` | `finishReason` ignored when no tool calls — `ContentFilter`/`Error` silently look like success | Raise typed error / log on Error/ContentFilter |
+| 2 | R | `AiRuntime.scala:85` | Off-by-one between bound (`turn >= maxTurns`) and message ("exceeded") | Align boundary or message |
+| 3 | R | `ToolLoop.scala:49-50` | `escape` only handles `\` and `"`; newline/control-char in tool error breaks JSON | Use `ujson.Str(...)` for serialization |
+| 4 | I | `AiRuntime.scala:85-88` | Generic `RuntimeException` for loop limit | Typed `ChatLoopError` ADT |
+| 5 | I | `AiRuntime.scala:104-106` | `InvocationContext.request` semantics unclear (pre-tool-call snapshot) | Document or pass updated messages |
+
+#### `llm4s-streaming` (6 files)
+
+| # | Sev | Location | Issue | Fix |
+|---|-----|----------|-------|-----|
+| 1 | R | `OpenAiStreamDecoder.scala:20` | `json("choices")(0)` crashes on empty array | `.arrOpt.flatMap(_.headOption)` |
+| 2 | R | `OpenAiStreamDecoder.scala:33-43` | Tool-call argument fragments emitted individually — no accumulation across frames | Accumulator state in decoder, or emit on completion |
+| 3 | R | `OpenAiStreamDecoder.scala:39` | Missing `arguments` silently becomes `""` | Drop event or set `isPartial` flag |
+| 4 | R | `OpenAiStreamDecoder.scala:19-43` | `Completed` event has empty `AiMessage` — final text/tool-calls lost to late subscribers | Include accumulated text + tool calls in `Completed` |
+| 5 | I | `StreamingAiRuntime.scala` | No streaming tool-loop variant | Add `StreamingToolLoopRuntime` or document |
+| 6 | P | `TokenStream.scala:12-13` | Upstream stream errors aren't documented as observable via `collectText` | Document error propagation |
+
+#### `llm4s-openai-compat` (10 files)
+
+| # | Sev | Location | Issue | Fix |
+|---|-----|----------|-------|-----|
+| 1 | B | `OpenAiWire.scala:53-56` | Redundant re-fetch of `"message"` from `choice` after `messageJson` already assigned | Read `tool_calls` from `messageJson` |
+| 2 | R | `OpenAiWire.scala:191-197` | `.str` access on `name`/`arguments` without guard — NPE on missing | `obj.get(...).collect { case ujson.Str(v) => v }` |
+| 3 | R | `SttpOpenAiTransport.scala:27-32` | All HTTP errors → `RuntimeException`; no retryable/auth/4xx distinction | Typed `HttpError` ADT (Retryable / Auth / Client / Server) |
+| 4 | R | `OpenAiStreamDecoder.scala:12` | Assumes one complete SSE event per `decodeLine` call — split frames break | Line-buffering transport wrapper |
+| 5 | R | `OpenAiWire.scala:50-69` | No schema validation; missing `choices` crashes | Validate response shape up front |
+| 6 | I | `OpenAiCompatBackend.scala:14-25` | Doesn't validate `request.requiredCapabilities` against configured model | Capability config + early reject |
+| 7 | P | `SttpOpenAiTransport.scala:28` | `ujson.read` errors are opaque | Wrap with context including (truncated) body |
+
+### Tier 3 — Capabilities
+
+#### `llm4s-tools` (4 files)
+
+| # | Sev | Location | Issue | Fix |
+|---|-----|----------|-------|-----|
+| 1 | R | `ValueDecoder.scala:103,105` | Unchecked `asInstanceOf[ValueDecoder[Any]]` in derivation fold | Preserve type info or assert |
+| 2 | R | `ValueDecoder.scala:88-89` | Enum decode uses `indexOf` then casts without checking for `-1` | Map lookup with explicit error |
+| 3 | I | `ValueDecoder.scala:49-56` | Nested-array errors lose parent JSON path | Thread path context through recursion |
+| 4 | I | `SchemaEncoder.scala:33-36` | Non-object products silently wrapped in `{"value": ...}` | Document or test the wrapping rule |
+| 5 | P | `ToolDefinition.scala:57-58` | Error-JSON `escape` misses `\n\t\r`/control chars | Use `ujson.Str(...)` |
+
+#### `llm4s-mcp` (8 files)
+
+| # | Sev | Location | Issue | Fix |
+|---|-----|----------|-------|-----|
+| 1 | R | `StdioMcpTransport.scala:14-21` | Assumes strict request→response ordering — interleaved server responses break correlation | Correlate by `response.id`; queue out-of-order frames |
+| 2 | R | `McpClient.scala:27-30` | Malformed `argumentsJson` silently becomes `{}` | `raiseError` on parse failure |
+| 3 | R | `McpClient.scala:44-78` | Cascading `objOpt`/`arrOpt`/`strOpt` silently defaults missing fields | Validate mandatory fields explicitly |
+| 4 | I | `McpSchemaConverter.scala:40-45` | Unknown MCP type → `StringSchema()` fallback | Return `Left(McpProtocolError)` |
+| 5 | I | `HttpMcpTransport.scala:34` | Over-strong `Sync[F]` constraint | Downgrade to `MonadThrow[F]` |
+
+#### `llm4s-guardrails` (8 files)
+
+| # | Sev | Location | Issue | Fix |
+|---|-----|----------|-------|-----|
+| 1 | R | `GuardedToolKit.scala:30` | `recover` only catches `GuardrailBlockedException` — other errors bypass error wrapping | `handleErrorWith` and map non-guardrail errors uniformly |
+| 2 | I | `RetryPolicy.scala:12-19` | Immediate retry, no backoff/jitter | `withBackoff(initial, factor, jitter)` builder |
+| 3 | I | `GuardrailChain.scala:15-28` | Execution order is implicit (chain order) | Document or add priority field |
+| 4 | P | `GuardedChatBackend.scala:12` | `retryPolicy` has default; usage doc shows explicit config — users may skip silently | Make required or add no-retry sentinel |
+
+### Tier 4 — Composition
+
+#### `llm4s-structured` (3 files)
+
+| # | Sev | Location | Issue | Fix |
+|---|-----|----------|-------|-----|
+| 1 | R | `StructuredCodec.scala:26-27` | Catch-all `error.getMessage` may be null; loses context | Preserve cause + path; typed `StructuredDecodeError` |
+| 2 | I | `StructuredOutputRuntime.scala:39-43, 72-76` | Refusal and malformed-JSON both → `RuntimeException` | Distinct `ModelRefusalError` vs `DecodeError` |
+| 3 | I | `StructuredOutputRuntime.scala:22, 52` | No check that `toolKit` and structured response format are compatible | Validate or document interaction |
+| 4 | P | `StructuredCodec.scala:10-27` | `schemaName` derived from class name — rename = silent schema break | Optional `schemaVersion`; doc compatibility rule |
+
+#### `llm4s-macros` (3 files)
+
+| # | Sev | Location | Issue | Fix |
+|---|-----|----------|-------|-----|
+| 1 | R | `AiService.scala:204` | Generated synchronous methods call `.unsafeRunSync()` — deadlock risk on calling thread | Generate `F[A]` returns by default; opt-in sync wrapper |
+| 2 | R | `AiService.scala:193` | Parameter substitution uses `.toString` — `List(...)` etc. yield garbage prompts | `@paramFormat` annotation or JSON serialization default |
+| 3 | I | `AiService.scala:212-250` | Missing `StructuredCodec`/`Reader` summon error doesn't guide user | Improve error message with derivation hint |
+| 4 | I | `AiService.scala:158` | Structured return types not verified at expansion time | Use `Expr.summon` to fail early |
+| 5 | I | `AiService.scala:144-151` | Placeholder name validation OK, but no warning when interpolating non-stringy types | Compile-time advisory or formatter typeclass |
+| 6 | P | `AiService.scala:70` | Overloads (with/without memory, with/without guardrails) lack disambiguation guidance | Inline scaladoc / `@deprecated` redirect |
+
+### Cross-Cutting Themes
+
+1. **Unsafe JSON parsing path.** `OpenAiWire`, `OpenAiStreamDecoder`, and
+   `McpClient` all use direct `apply`/`.str` access; one missing field crashes
+   the chat path. A small typed-extraction helper would close this everywhere.
+2. **Error type erasure.** Backend transport, structured decoding, runtime
+   loop limits, guardrails, and macros all collapse to `RuntimeException`. A
+   small hierarchy of typed errors per module would improve operability.
+3. **Concurrency invariants undocumented.** `ChatMemory.append`, `AgentScope`,
+   `ParallelWorkflow`, and `StdioMcpTransport` all have race conditions that
+   pass tests today because the tests are sequential.
+4. **SSE / streaming completeness gaps.** Split frames, tool-call argument
+   accumulation, and `Completed` event payload are all incomplete; a streaming
+   consumer cannot reliably reconstruct the final message.
+5. **Capability validation never runs.** `ModelCapabilities` exists in core
+   but `OpenAiCompatBackend` does not consult it; vision/file/streaming/tool
+   requests hit unsupported models silently.
+
+### Suggested Fix Order (Highest Leverage First)
+
+1. `EmbeddingVector.cosineSimilarity` bug — core RAG primitive is broken.
+2. `OpenAiWire.scala:53` redundant lookup + `OpenAiWire:191-197` unsafe `.str`
+   — production chat path.
+3. `AiRuntime.scala:92-98` finish-reason handling — silently swallows
+   content-filter / error completions.
+4. `AiService.scala:204` `unsafeRunSync` — deadlock surface in macro-generated
+   code.
+5. `ChatMemory.append` atomicity — multi-user correctness.
+6. SSE decoder fixes: split-frame buffering, tool-arg accumulation,
+   `Completed` payload.
+7. Typed `HttpError` ADT in `SttpOpenAiTransport` — unlocks real retry
+   policies.
+
 ## Current Status Summary
 
 Completed:
@@ -663,7 +842,9 @@ Completed:
 Remaining:
 
 - No PRs remain in the original framework-parity roadmap.
+- Hardening backlog tracked in `Module Review Findings` above.
 
 Immediate next step:
 
 - Optional post-roadmap cleanup: remove or isolate the legacy LangChain4j demo/dependency surface before publishing.
+- Address top items from `Suggested Fix Order` in `Module Review Findings`, starting with the broken `EmbeddingVector.cosineSimilarity`.
