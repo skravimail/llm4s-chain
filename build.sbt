@@ -50,8 +50,19 @@ lazy val llm4sOpenAiCompat = (project in file("llm4s-openai-compat"))
     ),
   )
 
+lazy val llm4sRuntime = (project in file("llm4s-runtime"))
+  .dependsOn(llm4sCore)
+  .settings(commonSettings)
+  .settings(
+    name := "llm4s-runtime",
+    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat,
+    libraryDependencies ++= testDeps ++ Seq(
+      "org.typelevel" %% "cats-effect" % catsEffectVersion,
+    ),
+  )
+
 lazy val root = (project in file("."))
-  .dependsOn(llm4sCore, llm4sOpenAiCompat)
+  .dependsOn(llm4sCore, llm4sOpenAiCompat, llm4sRuntime)
   .settings(commonSettings)
   .settings(
     name := "l4j-template",
