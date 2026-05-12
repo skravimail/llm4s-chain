@@ -5,11 +5,17 @@ import cats.syntax.all.*
 import org.l4j.template.llm4s.core.ChatBackend
 import org.l4j.template.llm4s.core.ChatMessage
 import org.l4j.template.llm4s.core.ChatRequest
+import org.l4j.template.llm4s.memory.ChatMemory
 
 final class AiRuntime[F[_]: MonadThrow](
     backend: ChatBackend[F],
     config: RuntimeConfig = RuntimeConfig(),
 ):
+
+  private final case class ChatRunResult(
+      text: String,
+      messages: List[ChatMessage],
+  )
 
   def chat(
       system: Option[String],
@@ -26,17 +32,56 @@ final class AiRuntime[F[_]: MonadThrow](
       toolKit,
     )
 
+  def chatWithMemory[Id](
+      memory: ChatMemory[F, Id],
+      memoryId: Id,
+      system: Option[String],
+      userText: String,
+      toolKit: ToolKit[F] = ToolKit.empty[F],
+  ): F[String] =
+    memory.messages(memoryId).flatMap { history =>
+      val initialMessages =
+        system.map(ChatMessage.SystemMessage.from).toList ++ history ++ List(ChatMessage.UserMessage.from(userText))
+
+      run(
+        ChatRequest(
+          messages = initialMessages,
+          tools = toolKit.schemas,
+        ),
+        toolKit,
+      ).flatMap { result =>
+        val persisted = dropLeadingSystem(result.messages)
+        memory.replace(memoryId, persisted).as(result.text)
+      }
+    }
+
   def chatRequest(
       request: ChatRequest,
       toolKit: ToolKit[F] = ToolKit.empty[F],
   ): F[String] =
+    run(request, toolKit).map(_.text)
+
+  def chatRequestWithMemory[Id](
+      memory: ChatMemory[F, Id],
+      memoryId: Id,
+      request: ChatRequest,
+      toolKit: ToolKit[F] = ToolKit.empty[F],
+  ): F[String] =
+    run(request, toolKit).flatMap { result =>
+      memory.replace(memoryId, dropLeadingSystem(result.messages)).as(result.text)
+    }
+
+  private def run(
+      request: ChatRequest,
+      toolKit: ToolKit[F],
+  ): F[ChatRunResult] =
     loop(turn = 0, request = request.copy(tools = toolKit.schemas), toolKit = toolKit)
 
   private def loop(
       turn: Int,
       request: ChatRequest,
       toolKit: ToolKit[F],
-  ): F[String] =
+  ): F[ChatRunResult] =
     if turn >= config.maxTurns then
       MonadThrow[F].raiseError(
         RuntimeException(s"AiRuntime chat exceeded ${config.maxTurns} tool-call turns")
@@ -45,7 +90,12 @@ final class AiRuntime[F[_]: MonadThrow](
       backend.chat(request).flatMap { response =>
         val aiMessage = response.message
         if !aiMessage.hasToolCalls then
-          MonadThrow[F].pure(response.text)
+          MonadThrow[F].pure(
+            ChatRunResult(
+              text = response.text,
+              messages = request.messages :+ aiMessage,
+            )
+          )
         else
           ToolLoop
             .executeAll(
@@ -62,3 +112,8 @@ final class AiRuntime[F[_]: MonadThrow](
               loop(turn + 1, nextRequest, toolKit)
             }
       }
+
+  private def dropLeadingSystem(messages: List[ChatMessage]): List[ChatMessage] =
+    messages match
+      case (_: ChatMessage.SystemMessage) :: tail => tail
+      case other                                  => other

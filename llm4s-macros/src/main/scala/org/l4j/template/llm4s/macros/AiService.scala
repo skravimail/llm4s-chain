@@ -2,6 +2,8 @@ package org.l4j.template.llm4s.macros
 
 import cats.effect.IO
 import org.l4j.template.llm4s.core.ChatBackend
+import org.l4j.template.llm4s.memory.ChatMemory
+import org.l4j.template.llm4s.memory.MemoryId
 import org.l4j.template.llm4s.runtime.AiRuntime
 import org.l4j.template.llm4s.runtime.RuntimeConfig
 import org.l4j.template.llm4s.runtime.ToolKit
@@ -15,14 +17,30 @@ object AiService:
 
   @experimental
   inline def materialize[T](inline backend: ChatBackend[IO]): T =
-    ${ AiServiceMacros.materializeImpl[T]('backend, '{ ToolKit.empty[IO] }, '{ RuntimeConfig() }) }
+    ${
+      AiServiceMacros.materializeImpl[T](
+        'backend,
+        '{ ToolKit.empty[IO] },
+        '{ RuntimeConfig() },
+        '{ None },
+        '{ None },
+      )
+    }
 
   @experimental
   inline def materialize[T](
       inline backend: ChatBackend[IO],
       inline toolKit: ToolKit[IO],
   ): T =
-    ${ AiServiceMacros.materializeImpl[T]('backend, 'toolKit, '{ RuntimeConfig() }) }
+    ${
+      AiServiceMacros.materializeImpl[T](
+        'backend,
+        'toolKit,
+        '{ RuntimeConfig() },
+        '{ None },
+        '{ None },
+      )
+    }
 
   @experimental
   inline def materialize[T](
@@ -30,7 +48,25 @@ object AiService:
       inline toolKit: ToolKit[IO],
       inline config: RuntimeConfig,
   ): T =
-    ${ AiServiceMacros.materializeImpl[T]('backend, 'toolKit, 'config) }
+    ${ AiServiceMacros.materializeImpl[T]('backend, 'toolKit, 'config, '{ None }, '{ None }) }
+
+  @experimental
+  inline def materialize[T](
+      inline backend: ChatBackend[IO],
+      inline toolKit: ToolKit[IO],
+      inline config: RuntimeConfig,
+      inline memory: ChatMemory[IO, MemoryId],
+      inline memoryId: MemoryId,
+  ): T =
+    ${
+      AiServiceMacros.materializeImpl[T](
+        'backend,
+        'toolKit,
+        'config,
+        '{ Some(memory) },
+        '{ Some(memoryId) },
+      )
+    }
 
 @experimental
 private object AiServiceMacros:
@@ -41,6 +77,8 @@ private object AiServiceMacros:
       backend: Expr[ChatBackend[IO]],
       toolKit: Expr[ToolKit[IO]],
       config: Expr[RuntimeConfig],
+      memory: Expr[Option[ChatMemory[IO, MemoryId]]],
+      memoryId: Expr[Option[MemoryId]],
   )(using Quotes): Expr[T] =
     import quotes.reflect.*
 
@@ -158,9 +196,12 @@ private object AiServiceMacros:
           val rawCall: Expr[String] =
             '{
               val runtime = AiRuntime[IO]($backend, $config)
-              runtime.chat($systemExpr, $userTextExpr, $toolKit).unsafeRunSync()(
-                using cats.effect.unsafe.IORuntime.global
-              )
+              val effect = ($memory, $memoryId) match
+                case (Some(mem), Some(id)) =>
+                  runtime.chatWithMemory(mem, id, $systemExpr, $userTextExpr, $toolKit)
+                case _ =>
+                  runtime.chat($systemExpr, $userTextExpr, $toolKit)
+              effect.unsafeRunSync()(using cats.effect.unsafe.IORuntime.global)
             }
 
           val decoded: Expr[Any] =
@@ -171,13 +212,26 @@ private object AiServiceMacros:
                   Expr.summon[StructuredCodec[t]] match
                     case Some(codec) =>
                       '{
-                        StructuredOutputRuntime.chat[IO, t](
-                          backend = $backend,
-                          config = $config,
-                          system = $systemExpr,
-                          userText = $userTextExpr,
-                          toolKit = $toolKit,
-                        )(using cats.effect.IO.asyncForIO, $codec)
+                        val effect = ($memory, $memoryId) match
+                          case (Some(mem), Some(id)) =>
+                            StructuredOutputRuntime.chatWithMemory[IO, t, MemoryId](
+                              backend = $backend,
+                              config = $config,
+                              memory = mem,
+                              memoryId = id,
+                              system = $systemExpr,
+                              userText = $userTextExpr,
+                              toolKit = $toolKit,
+                            )(using cats.effect.IO.asyncForIO, $codec)
+                          case _ =>
+                            StructuredOutputRuntime.chat[IO, t](
+                              backend = $backend,
+                              config = $config,
+                              system = $systemExpr,
+                              userText = $userTextExpr,
+                              toolKit = $toolKit,
+                            )(using cats.effect.IO.asyncForIO, $codec)
+                        effect
                           .unsafeRunSync()(using cats.effect.unsafe.IORuntime.global)
                       }
                     case None =>

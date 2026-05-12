@@ -1,6 +1,7 @@
 package org.l4j.template.llm4s.macros
 
 import cats.effect.IO
+import cats.effect.unsafe.implicits.global
 import munit.FunSuite
 import org.l4j.template.llm4s.core.AiContent
 import org.l4j.template.llm4s.core.ChatBackend
@@ -10,10 +11,12 @@ import org.l4j.template.llm4s.core.ChatResponse
 import org.l4j.template.llm4s.core.FinishReason
 import org.l4j.template.llm4s.core.ToolCall
 import org.l4j.template.llm4s.core.ToolResult
+import org.l4j.template.llm4s.memory.InMemoryChatMemory
+import org.l4j.template.llm4s.memory.MemoryId
 import org.l4j.template.llm4s.runtime.ToolKit
 import org.l4j.template.llm4s.structured.StructuredCodec
-import org.l4j.template.llm4s.tools.ToolDefinition
 import org.l4j.template.llm4s.tools.SchemaEncoder
+import org.l4j.template.llm4s.tools.ToolDefinition
 import org.l4j.template.llm4s.tools.ValueDecoder
 import scala.annotation.experimental
 
@@ -74,6 +77,42 @@ class AiServiceSpec extends FunSuite:
     assertEquals(backend.requests.size, 2)
     assertEquals(backend.requests.head.tools.map(_.name), List("define"))
     assertEquals(backend.requests(1).messages.last.text, "Scala:definition")
+  }
+
+  test("materialized service can use session memory across calls") {
+    val backend = RecordingBackend(
+      List(
+        ChatResponse(ChatMessage.AiMessage.from("Hello there")),
+        ChatResponse(ChatMessage.AiMessage.from("You previously greeted me")),
+      )
+    )
+
+    val program = for
+      memory <- InMemoryChatMemory.create[IO, MemoryId]
+      greeter = AiService.materialize[Greeter](
+        backend,
+        ToolKit.empty[IO],
+        org.l4j.template.llm4s.runtime.RuntimeConfig(),
+        memory,
+        MemoryId("greeter-session"),
+      )
+      first = greeter.greet("Ada")
+      second = greeter.greet("again")
+      stored <- memory.messages(MemoryId("greeter-session"))
+    yield (first, second, stored)
+
+    val (first, second, stored) = program.unsafeRunSync()
+
+    assertEquals(first, "Hello there")
+    assertEquals(second, "You previously greeted me")
+    assertEquals(
+      backend.requests(1).messages.map(_.text),
+      List("Be friendly.", "Say hello to Ada", "Hello there", "Say hello to again"),
+    )
+    assertEquals(
+      stored.map(_.text),
+      List("Say hello to Ada", "Hello there", "Say hello to again", "You previously greeted me"),
+    )
   }
 
   test("invalid prompt placeholders fail at compile time") {

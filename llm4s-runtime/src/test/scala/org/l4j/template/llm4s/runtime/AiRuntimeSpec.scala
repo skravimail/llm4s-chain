@@ -13,6 +13,8 @@ import org.l4j.template.llm4s.core.JsonSchema
 import org.l4j.template.llm4s.core.ToolCall
 import org.l4j.template.llm4s.core.ToolResult
 import org.l4j.template.llm4s.core.ToolSchema
+import org.l4j.template.llm4s.memory.InMemoryChatMemory
+import org.l4j.template.llm4s.memory.MemoryId
 
 class AiRuntimeSpec extends FunSuite:
 
@@ -105,6 +107,36 @@ class AiRuntimeSpec extends FunSuite:
     }
 
     assertEquals(error.getMessage, "AiRuntime chat exceeded 1 tool-call turns")
+  }
+
+  test("runtime persists conversational history through chat memory") {
+    val backend = RecordingBackend(
+      List(
+        ChatResponse(ChatMessage.AiMessage.from("Hello there")),
+        ChatResponse(ChatMessage.AiMessage.from("I remember you said hello")),
+      )
+    )
+
+    val result = for
+      memory <- InMemoryChatMemory.create[IO, MemoryId]
+      runtime = AiRuntime[IO](backend)
+      first <- runtime.chatWithMemory(memory, MemoryId("s-1"), Some("Be warm"), "hello")
+      second <- runtime.chatWithMemory(memory, MemoryId("s-1"), Some("Be warm"), "what do you remember?")
+      stored <- memory.messages(MemoryId("s-1"))
+    yield (first, second, stored)
+
+    val (first, second, stored) = result.unsafeRunSync()
+
+    assertEquals(first, "Hello there")
+    assertEquals(second, "I remember you said hello")
+    assertEquals(
+      backend.requests(1).messages.map(_.text),
+      List("Be warm", "hello", "Hello there", "what do you remember?"),
+    )
+    assertEquals(
+      stored.map(_.text),
+      List("hello", "Hello there", "what do you remember?", "I remember you said hello"),
+    )
   }
 
   private final case class RecordingBackend(
