@@ -632,15 +632,21 @@ Background:
 
 Design:
 
-- Add `llm4s-runtime/.../AiAgent.scala`: a small generic builder around the
-  existing `AiRuntime` and `StructuredOutputRuntime`.
+- Add `llm4s-structured/.../AiAgent.scala`: a small generic builder around
+  the existing `AiRuntime` and `StructuredOutputRuntime`. Placement is in
+  `llm4s-structured` (not `llm4s-runtime`) because the builder needs both
+  modules and `llm4s-runtime` does not depend on `llm4s-structured` —
+  `llm4s-structured` is the existing convergence point that already
+  depends on runtime + tools + memory.
   - `final class AiAgent[F[_]: MonadThrow](backend, tools, config)`
   - `def chat(system: String, user: String): F[String]`
-  - `def chat[A](system: String, user: String)(using StructuredCodec[A]): F[A]`
+  - `def chatAs[A](system, user)(using StructuredCodec[A]): F[A]`
+    — distinct method name to avoid overload-resolution ambiguity with the
+    plain `chat`.
+  - `def chatWithMemory[Id]` / `def chatAsWithMemory[A, Id]` for the
+    memory-aware variants.
   - `def withTools(tk: ToolKit[F]): AiAgent[F]`
   - `def withConfig(c: RuntimeConfig): AiAgent[F]`
-  - Memory-aware variants if/when needed (memory-shaped overloads mirror
-    the runtime's existing API).
 - Add `src/main/scala/org/l4j/template/demo/AgentDemoMain.scala`:
   an `IOApp.Simple` parallel to `MacroDemoMain` that delivers the same
   three demo flows (plain chat, typed `CvReview`, tool-using `define`) using
@@ -668,7 +674,7 @@ What's given up:
 
 Key scope:
 
-- `llm4s-runtime`
+- `llm4s-structured`
 - `AiAgent[F]`
 - `AgentDemoMain` (demo only — no module changes downstream).
 
@@ -677,13 +683,14 @@ Acceptance:
 - `AiAgent.chat(system, user)` returns `F[String]` and uses the existing
   `AiRuntime` loop (tool calls, max-turn limit, finish-reason handling all
   inherited).
-- `AiAgent.chat[A](system, user)` returns `F[A]` via existing
+- `AiAgent.chatAs[A](system, user)` returns `F[A]` via existing
   `StructuredOutputRuntime` semantics.
 - `AgentDemoMain` runs against an OpenAI-compatible local server and prints
   the same three sections (`[1/3] Plain chat`, `[2/3] Typed return`,
   `[3/3] Tool-using agent`) as `MacroDemoMain`.
-- `llm4sRuntime/test` continues to pass; new tests cover the builder
-  surface (`withTools`, structured-vs-plain dispatch).
+- `llm4sStructured/test` continues to pass; new tests cover the builder
+  surface (`chat` plain text, `chatAs` typed decode, `withTools` immutability,
+  `withConfig` immutability + max-turn enforcement).
 
 Related findings closed (for non-macro callers):
 
@@ -694,7 +701,7 @@ Related findings closed (for non-macro callers):
 
 Validation:
 
-- `llm4sRuntime/test`
+- `llm4sStructured/test`
 - explicit all-module sweep (same gate as PR-15).
 
 ## Post-Roadmap Cleanup
