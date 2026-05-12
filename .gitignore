@@ -10,6 +10,7 @@
 /.coursier
 /.ivy2
 /.sbt-boot
+/.sbt-global
 /project/target
 /project/project
 /.idea

@@ -4,13 +4,14 @@ ThisBuild / organization := "org.l4j.template"
 ThisBuild / version := "0.1.0-SNAPSHOT"
 ThisBuild / scalaVersion := "3.3.4"
 
-val munitVersion      = "1.1.1"
-val logbackVersion    = "1.4.14"
-val scalaLogging      = "3.9.5"
-val uPickleVersion    = "4.1.0"
-val catsEffectVersion = "3.5.4"
-val sttpVersion       = "3.10.3"
-val langChain4j       = "1.14.1"
+val munitVersion       = "1.1.1"
+val logbackVersion     = "1.4.14"
+val scalaLogging       = "3.9.5"
+val uPickleVersion     = "4.1.0"
+val catsEffectVersion  = "3.5.4"
+val fs2Version         = "3.10.2"
+val sttpVersion        = "3.10.3"
+val langChain4j        = "1.14.1"
 val langChain4jAgentic = "1.14.1-beta24"
 
 lazy val commonSettings = Seq(
@@ -36,20 +37,6 @@ lazy val llm4sCore = (project in file("llm4s-core"))
     libraryDependencies ++= testDeps,
   )
 
-lazy val llm4sOpenAiCompat = (project in file("llm4s-openai-compat"))
-  .dependsOn(llm4sCore)
-  .settings(commonSettings)
-  .settings(
-    name := "llm4s-openai-compat",
-    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat,
-    libraryDependencies ++= testDeps ++ Seq(
-      "org.typelevel" %% "cats-effect" % catsEffectVersion,
-      "com.lihaoyi" %% "upickle" % uPickleVersion,
-      "com.softwaremill.sttp.client3" %% "core" % sttpVersion,
-      "com.softwaremill.sttp.client3" %% "async-http-client-backend-cats" % sttpVersion,
-    ),
-  )
-
 lazy val llm4sRuntime = (project in file("llm4s-runtime"))
   .dependsOn(llm4sCore)
   .settings(commonSettings)
@@ -59,6 +46,34 @@ lazy val llm4sRuntime = (project in file("llm4s-runtime"))
     Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat,
     libraryDependencies ++= testDeps ++ Seq(
       "org.typelevel" %% "cats-effect" % catsEffectVersion,
+    ),
+  )
+
+lazy val llm4sStreaming = (project in file("llm4s-streaming"))
+  .dependsOn(llm4sCore, llm4sRuntime)
+  .settings(commonSettings)
+  .settings(
+    name := "llm4s-streaming",
+    exportJars := true,
+    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat,
+    libraryDependencies ++= testDeps ++ Seq(
+      "org.typelevel" %% "cats-effect" % catsEffectVersion,
+      "co.fs2" %% "fs2-core" % fs2Version,
+    ),
+  )
+
+lazy val llm4sOpenAiCompat = (project in file("llm4s-openai-compat"))
+  .dependsOn(llm4sCore, llm4sStreaming)
+  .settings(commonSettings)
+  .settings(
+    name := "llm4s-openai-compat",
+    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat,
+    libraryDependencies ++= testDeps ++ Seq(
+      "org.typelevel" %% "cats-effect" % catsEffectVersion,
+      "co.fs2" %% "fs2-core" % fs2Version,
+      "com.lihaoyi" %% "upickle" % uPickleVersion,
+      "com.softwaremill.sttp.client3" %% "core" % sttpVersion,
+      "com.softwaremill.sttp.client3" %% "async-http-client-backend-cats" % sttpVersion,
     ),
   )
 
@@ -101,7 +116,7 @@ lazy val llm4sMacros = (project in file("llm4s-macros"))
   )
 
 lazy val root = (project in file("."))
-  .dependsOn(llm4sCore, llm4sOpenAiCompat, llm4sRuntime, llm4sTools, llm4sStructured, llm4sMacros)
+  .dependsOn(llm4sCore, llm4sRuntime, llm4sStreaming, llm4sOpenAiCompat, llm4sTools, llm4sStructured, llm4sMacros)
   .settings(commonSettings)
   .settings(
     name := "l4j-template",
