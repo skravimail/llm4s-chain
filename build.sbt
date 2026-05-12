@@ -61,8 +61,20 @@ lazy val llm4sRuntime = (project in file("llm4s-runtime"))
     ),
   )
 
+lazy val llm4sTools = (project in file("llm4s-tools"))
+  .dependsOn(llm4sCore, llm4sRuntime)
+  .settings(commonSettings)
+  .settings(
+    name := "llm4s-tools",
+    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat,
+    libraryDependencies ++= testDeps ++ Seq(
+      "org.typelevel" %% "cats-effect" % catsEffectVersion,
+      "com.lihaoyi" %% "upickle" % uPickleVersion,
+    ),
+  )
+
 lazy val root = (project in file("."))
-  .dependsOn(llm4sCore, llm4sOpenAiCompat, llm4sRuntime)
+  .dependsOn(llm4sCore, llm4sOpenAiCompat, llm4sRuntime, llm4sTools)
   .settings(commonSettings)
   .settings(
     name := "l4j-template",
