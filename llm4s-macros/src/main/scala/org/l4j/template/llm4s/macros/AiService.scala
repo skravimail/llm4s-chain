@@ -5,6 +5,8 @@ import org.l4j.template.llm4s.core.ChatBackend
 import org.l4j.template.llm4s.runtime.AiRuntime
 import org.l4j.template.llm4s.runtime.RuntimeConfig
 import org.l4j.template.llm4s.runtime.ToolKit
+import org.l4j.template.llm4s.structured.StructuredCodec
+import org.l4j.template.llm4s.structured.StructuredOutputRuntime
 
 import scala.annotation.experimental
 import scala.quoted.*
@@ -166,19 +168,32 @@ private object AiServiceMacros:
             else
               plan.returnType.asType match
                 case '[t] =>
-                  Expr.summon[upickle.default.Reader[t]] match
-                    case Some(reader) =>
+                  Expr.summon[StructuredCodec[t]] match
+                    case Some(codec) =>
                       '{
-                        val raw: String              = $rawCall
-                        val readable: ujson.Readable = raw
-                        upickle.default.read[t](readable)(using $reader)
+                        StructuredOutputRuntime.chat[IO, t](
+                          backend = $backend,
+                          config = $config,
+                          system = $systemExpr,
+                          userText = $userTextExpr,
+                          toolKit = $toolKit,
+                        )(using cats.effect.IO.asyncForIO, $codec)
+                          .unsafeRunSync()(using cats.effect.unsafe.IORuntime.global)
                       }
                     case None =>
-                      report.errorAndAbort(
-                        s"AiService.materialize: cannot decode return type ${plan.returnType.show} — " +
-                          "derive a upickle.default.Reader or ReadWriter for that type",
-                        plan.sym.pos.getOrElse(Position.ofMacroExpansion),
-                      )
+                      Expr.summon[upickle.default.Reader[t]] match
+                        case Some(reader) =>
+                          '{
+                            val raw: String              = $rawCall
+                            val readable: ujson.Readable = raw
+                            upickle.default.read[t](readable)(using $reader)
+                          }
+                        case None =>
+                          report.errorAndAbort(
+                            s"AiService.materialize: cannot decode return type ${plan.returnType.show} — " +
+                              "derive a StructuredCodec or upickle Reader/ReadWriter for that type",
+                            plan.sym.pos.getOrElse(Position.ofMacroExpansion),
+                          )
 
           Some(decoded.asTerm.changeOwner(newSym))
       )

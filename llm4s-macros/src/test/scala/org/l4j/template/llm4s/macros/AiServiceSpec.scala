@@ -11,7 +11,10 @@ import org.l4j.template.llm4s.core.FinishReason
 import org.l4j.template.llm4s.core.ToolCall
 import org.l4j.template.llm4s.core.ToolResult
 import org.l4j.template.llm4s.runtime.ToolKit
+import org.l4j.template.llm4s.structured.StructuredCodec
 import org.l4j.template.llm4s.tools.ToolDefinition
+import org.l4j.template.llm4s.tools.SchemaEncoder
+import org.l4j.template.llm4s.tools.ValueDecoder
 import scala.annotation.experimental
 
 @experimental
@@ -40,6 +43,10 @@ class AiServiceSpec extends FunSuite:
     val reviewer = AiService.materialize[Reviewer](backend)
 
     assertEquals(reviewer.review("Scala engineer"), Review("Strong Scala fit", 9))
+    assertEquals(
+      backend.requests.head.responseFormat,
+      Some(org.l4j.template.llm4s.core.ResponseFormat.JsonSchema("Review", summon[StructuredCodec[Review]].schema, strict = true)),
+    )
   }
 
   test("materialized service continues through native tool calls") {
@@ -105,12 +112,16 @@ val backend = new org.l4j.template.llm4s.core.ChatBackend[cats.effect.IO]:
     @user("Explain {{term}}")
     def explain(term: String): String
 
-  final case class Review(summary: String, score: Int) derives upickle.default.ReadWriter
+  final case class Review(summary: String, score: Int)
+      derives StructuredCodec,
+        SchemaEncoder,
+        ValueDecoder,
+        upickle.default.ReadWriter
 
   final case class DefineArgs(term: String)
       derives upickle.default.ReadWriter,
-        org.l4j.template.llm4s.tools.SchemaEncoder,
-        org.l4j.template.llm4s.tools.ValueDecoder
+        SchemaEncoder,
+        ValueDecoder
 
   private final case class RecordingBackend(
       scriptedResponses: List[ChatResponse]

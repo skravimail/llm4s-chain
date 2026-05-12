@@ -75,8 +75,21 @@ lazy val llm4sTools = (project in file("llm4s-tools"))
     ),
   )
 
-lazy val llm4sMacros = (project in file("llm4s-macros"))
+lazy val llm4sStructured = (project in file("llm4s-structured"))
   .dependsOn(llm4sCore, llm4sRuntime, llm4sTools)
+  .settings(commonSettings)
+  .settings(
+    name := "llm4s-structured",
+    exportJars := true,
+    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat,
+    libraryDependencies ++= testDeps ++ Seq(
+      "org.typelevel" %% "cats-effect" % catsEffectVersion,
+      "com.lihaoyi" %% "upickle" % uPickleVersion,
+    ),
+  )
+
+lazy val llm4sMacros = (project in file("llm4s-macros"))
+  .dependsOn(llm4sCore, llm4sRuntime, llm4sTools, llm4sStructured)
   .settings(commonSettings)
   .settings(
     name := "llm4s-macros",
@@ -88,7 +101,7 @@ lazy val llm4sMacros = (project in file("llm4s-macros"))
   )
 
 lazy val root = (project in file("."))
-  .dependsOn(llm4sCore, llm4sOpenAiCompat, llm4sRuntime, llm4sTools, llm4sMacros)
+  .dependsOn(llm4sCore, llm4sOpenAiCompat, llm4sRuntime, llm4sTools, llm4sStructured, llm4sMacros)
   .settings(commonSettings)
   .settings(
     name := "l4j-template",

@@ -18,14 +18,19 @@ final class AiRuntime[F[_]: MonadThrow](
   ): F[String] =
     val initialMessages =
       system.map(ChatMessage.SystemMessage.from).toList :+ ChatMessage.UserMessage.from(userText)
-    loop(
-      turn = 0,
-      request = ChatRequest(
+    chatRequest(
+      ChatRequest(
         messages = initialMessages,
         tools = toolKit.schemas,
       ),
-      toolKit = toolKit,
+      toolKit,
     )
+
+  def chatRequest(
+      request: ChatRequest,
+      toolKit: ToolKit[F] = ToolKit.empty[F],
+  ): F[String] =
+    loop(turn = 0, request = request.copy(tools = toolKit.schemas), toolKit = toolKit)
 
   private def loop(
       turn: Int,
