@@ -1,46 +1,54 @@
-// build.sbt — at project root
+// build.sbt — project root
 
-// =========== Project metadata & versions ===========
 ThisBuild / organization := "org.l4j.template"
 ThisBuild / version := "0.1.0-SNAPSHOT"
-ThisBuild / scalaVersion := "3.3.4" // Scala 3 LTS
+ThisBuild / scalaVersion := "3.3.4"
 
-// =========== Dependencies ===========
-libraryDependencies ++= Seq(
-  "org.scalameta" %% "munit" % "1.1.1" % Test,
+val munitVersion      = "1.1.1"
+val logbackVersion    = "1.4.14"
+val scalaLogging      = "3.9.5"
+val uPickleVersion    = "4.1.0"
+val langChain4j       = "1.14.1"
+val langChain4jAgentic = "1.14.1-beta24"
 
-  // Logger dependencies
-  "ch.qos.logback" % "logback-classic" % "1.4.14",
-  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5",
-
-  // Scala-native JSON for the macro layer's typed return-value decoder
-  "com.lihaoyi" %% "upickle" % "4.1.0",
-
-  // langchain4j: ChatModel transport for the macro layer's Runtime, plus the
-  // agentic orchestrator (sequenceBuilder/parallelBuilder/...) which the
-  // AgenticBridge plugs macro impls into via java.lang.reflect.Proxy.
-  "dev.langchain4j" % "langchain4j"         % "1.14.1",
-  "dev.langchain4j" % "langchain4j-open-ai" % "1.14.1",
-  "dev.langchain4j" % "langchain4j-agentic" % "1.14.1-beta24",
+lazy val commonSettings = Seq(
+  scalacOptions ++= Seq(
+    "-deprecation",
+    "-feature",
+    "-unchecked",
+    "-encoding", "UTF-8",
+    "-Wunused:imports",
+  ),
+  Test / fork := false,
 )
 
-// =========== Compiler options ===========
-ThisBuild / scalacOptions ++= Seq(
-  "-deprecation",
-  "-feature",
-  "-unchecked",
-  "-encoding", "UTF-8",
-  "-Wunused:imports",
+lazy val testDeps = Seq(
+  "org.scalameta" %% "munit" % munitVersion % Test
 )
 
-// =========== Project definition ===========
+lazy val llm4sCore = (project in file("llm4s-core"))
+  .settings(commonSettings)
+  .settings(
+    name := "llm4s-core",
+    libraryDependencies ++= testDeps,
+  )
+
 lazy val root = (project in file("."))
+  .dependsOn(llm4sCore)
+  .settings(commonSettings)
   .settings(
     name := "l4j-template",
+    libraryDependencies ++= testDeps ++ Seq(
+      "ch.qos.logback" % "logback-classic" % logbackVersion,
+      "com.typesafe.scala-logging" %% "scala-logging" % scalaLogging,
+      "com.lihaoyi" %% "upickle" % uPickleVersion,
+      "dev.langchain4j" % "langchain4j" % langChain4j,
+      "dev.langchain4j" % "langchain4j-open-ai" % langChain4j,
+      "dev.langchain4j" % "langchain4j-agentic" % langChain4jAgentic,
+    ),
     Compile / mainClass := Some("org.l4j.template.l4j_macro.demo.MacroDemoMain"),
     Compile / scalafmtOnCompile := false,
   )
 
-// =========== Best Practices ===========
 compileOrder := CompileOrder.Mixed
 Global / onChangedBuildSource := ReloadOnSourceChanges
