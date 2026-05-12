@@ -128,6 +128,20 @@ lazy val llm4sAgentic = (project in file("llm4s-agentic"))
     ),
   )
 
+lazy val llm4sMcp = (project in file("llm4s-mcp"))
+  .dependsOn(llm4sCore, llm4sRuntime)
+  .settings(commonSettings)
+  .settings(
+    name := "llm4s-mcp",
+    exportJars := true,
+    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat,
+    libraryDependencies ++= testDeps ++ Seq(
+      "org.typelevel" %% "cats-effect" % catsEffectVersion,
+      "com.lihaoyi" %% "upickle" % uPickleVersion,
+      "com.softwaremill.sttp.client3" %% "core" % sttpVersion,
+    ),
+  )
+
 lazy val llm4sStructured = (project in file("llm4s-structured"))
   .dependsOn(llm4sCore, llm4sRuntime, llm4sTools, llm4sMemory)
   .settings(commonSettings)
@@ -154,7 +168,7 @@ lazy val llm4sMacros = (project in file("llm4s-macros"))
   )
 
 lazy val root = (project in file("."))
-  .dependsOn(llm4sCore, llm4sMemory, llm4sRag, llm4sAgentic, llm4sRuntime, llm4sStreaming, llm4sOpenAiCompat, llm4sTools, llm4sStructured, llm4sMacros)
+  .dependsOn(llm4sCore, llm4sMemory, llm4sRag, llm4sAgentic, llm4sMcp, llm4sRuntime, llm4sStreaming, llm4sOpenAiCompat, llm4sTools, llm4sStructured, llm4sMacros)
   .settings(commonSettings)
   .settings(
     name := "l4j-template",
