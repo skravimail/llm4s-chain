@@ -88,5 +88,16 @@ final class McpClient[F[_]: MonadThrow](
           data = fields.get("data").flatMap(_.strOpt).getOrElse(""),
           mimeType = fields.get("mimeType").flatMap(_.strOpt).getOrElse("application/octet-stream"),
         )
+      case Some("resource") =>
+        fields.get("resource").flatMap(_.objOpt) match
+          case Some(resource) =>
+            val resourceFields = resource.value
+            McpContent.File(
+              data = resourceFields.get("blob").flatMap(_.strOpt).getOrElse(""),
+              mimeType = resourceFields.get("mimeType").flatMap(_.strOpt).getOrElse("application/octet-stream"),
+              fileName = resourceFields.get("uri").flatMap(_.strOpt),
+            )
+          case None =>
+            McpContent.Unknown(value)
       case _ =>
         McpContent.Unknown(value)

@@ -98,6 +98,15 @@ object OpenAiWire:
             "type" -> "image_url",
             "image_url" -> imageUrl,
           )
+        case AiContent.File(base64Data, mimeType, fileName) =>
+          val file = ujson.Obj(
+            "file_data" -> s"data:$mimeType;base64,$base64Data"
+          )
+          fileName.foreach(file("filename") = _)
+          ujson.Obj(
+            "type" -> "file",
+            "file" -> file,
+          )
       })
 
   private def decodeContents(content: Option[ujson.Value]): List[AiContent] =

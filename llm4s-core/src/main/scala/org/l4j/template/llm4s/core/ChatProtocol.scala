@@ -60,6 +60,14 @@ final case class ChatRequest(
   def withTool(tool: ToolSchema): ChatRequest =
     copy(tools = tools :+ tool)
 
+  def requiredCapabilities: Set[ModelCapability] =
+    val contentCapabilities = messages.flatMap(_.contents.flatMap(_.requiredCapabilities)).toSet
+    val toolCapabilities = if tools.nonEmpty then Set(ModelCapability.ToolCalling) else Set.empty
+    val responseFormatCapabilities = responseFormat match
+      case Some(_: ResponseFormat.JsonSchema) => Set(ModelCapability.StructuredOutputJsonSchema)
+      case _                                  => Set.empty
+    contentCapabilities ++ toolCapabilities ++ responseFormatCapabilities
+
 final case class ChatResponse(
     message: ChatMessage.AiMessage,
     usage: Option[Usage] = None,

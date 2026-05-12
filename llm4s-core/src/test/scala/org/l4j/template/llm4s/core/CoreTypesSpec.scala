@@ -9,6 +9,7 @@ class CoreTypesSpec extends FunSuite:
       List(
         AiContent.Text("hello"),
         AiContent.Image("abc", "image/png"),
+        AiContent.File("def", "application/pdf", Some("brief.pdf")),
         AiContent.Text(" world"),
       )
     )
@@ -35,6 +36,44 @@ class CoreTypesSpec extends FunSuite:
     assert(caps.supports(ModelCapability.Streaming))
     assert(!caps.supports(ModelCapability.Moderation))
     assertEquals(usage.totalTokens, 19)
+  }
+
+  test("chat request reports required capabilities for tools structured output and multimodal content") {
+    val schema = JsonSchema.ObjectSchema(Map.empty)
+    val request = ChatRequest(
+      messages = List(
+        ChatMessage.UserMessage(
+          List(
+            AiContent.Text("analyze"),
+            AiContent.Image("abc", "image/png"),
+            AiContent.File("def", "application/pdf"),
+          )
+        )
+      ),
+      tools = List(ToolSchema("lookup", "Lookup", schema)),
+      responseFormat = Some(ResponseFormat.JsonSchema("Answer", schema)),
+    )
+
+    assertEquals(
+      request.requiredCapabilities,
+      Set(
+        ModelCapability.VisionInput,
+        ModelCapability.FileInput,
+        ModelCapability.ToolCalling,
+        ModelCapability.StructuredOutputJsonSchema,
+      ),
+    )
+  }
+
+  test("model capabilities validate request requirements") {
+    val request = ChatRequest(
+      messages = List(ChatMessage.UserMessage(List(AiContent.File("abc", "application/pdf"))))
+    )
+    val caps = ModelCapabilities(Set(ModelCapability.ToolCalling))
+
+    val result = caps.validate(request)
+
+    assert(result.left.exists(_.missing == Set(ModelCapability.FileInput)))
   }
 
   test("chat request appends tools and chat response reuses assistant text") {

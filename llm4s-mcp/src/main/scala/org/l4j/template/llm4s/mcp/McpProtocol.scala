@@ -27,6 +27,9 @@ object McpContent:
   final case class Image(data: String, mimeType: String) extends McpContent:
     override val toAiContent: Option[AiContent] = Some(AiContent.Image(data, mimeType))
 
+  final case class File(data: String, mimeType: String, fileName: Option[String]) extends McpContent:
+    override val toAiContent: Option[AiContent] = Some(AiContent.File(data, mimeType, fileName))
+
   final case class Unknown(value: ujson.Value) extends McpContent:
     override val toAiContent: Option[AiContent] = Some(AiContent.Text(write(value)))
 

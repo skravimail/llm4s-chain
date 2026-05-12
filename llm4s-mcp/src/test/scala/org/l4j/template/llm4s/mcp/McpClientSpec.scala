@@ -4,6 +4,7 @@ import cats.effect.IO
 import cats.effect.Ref
 import cats.effect.unsafe.implicits.global
 import munit.FunSuite
+import org.l4j.template.llm4s.core.AiContent
 import org.l4j.template.llm4s.core.ChatRequest
 import org.l4j.template.llm4s.core.JsonSchema
 import org.l4j.template.llm4s.core.ToolCall
@@ -76,6 +77,33 @@ class McpClientSpec extends FunSuite:
     ).toToolResult
 
     assertEquals(result, ToolResult.StructuredJson("""{"ok":true}"""))
+  }
+
+  test("tool call result converts MCP resource content into native file content") {
+    val program = for
+      transport <- RecordingTransport.create(
+        List(
+          ujson.Obj(
+            "content" -> ujson.Arr(
+              ujson.Obj(
+                "type" -> "resource",
+                "resource" -> ujson.Obj(
+                  "uri" -> "file:///brief.pdf",
+                  "mimeType" -> "application/pdf",
+                  "blob" -> "file-bytes",
+                ),
+              )
+            )
+          )
+        )
+      )
+      result <- McpClient[IO](transport).callTool("read_file", "{}")
+    yield result.toToolResult
+
+    assertEquals(
+      program.unsafeRunSync(),
+      ToolResult.Content(List(AiContent.File("file-bytes", "application/pdf", Some("file:///brief.pdf")))),
+    )
   }
 
   test("stdio transport writes JSON-RPC requests and decodes response results") {

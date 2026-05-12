@@ -3,6 +3,7 @@ package org.l4j.template.llm4s.openai
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 import munit.FunSuite
+import org.l4j.template.llm4s.core.AiContent
 import org.l4j.template.llm4s.core.ChatMessage
 import org.l4j.template.llm4s.core.ChatRequest
 import org.l4j.template.llm4s.core.FinishReason
@@ -38,6 +39,31 @@ class OpenAiCompatBackendSpec extends FunSuite:
     assertEquals(json("response_format")("json_schema")("strict").bool, true)
     assertEquals(json("temperature").num, 0.2)
     assertEquals(json("metadata")("tenant").str, "test")
+  }
+
+  test("wire encoder emits multimodal user content parts") {
+    val request = ChatRequest(
+      messages = List(
+        ChatMessage.UserMessage(
+          List(
+            AiContent.Text("Inspect this."),
+            AiContent.Image("image-bytes", "image/png", detail = Some("high")),
+            AiContent.File("file-bytes", "application/pdf", fileName = Some("brief.pdf")),
+          )
+        )
+      )
+    )
+
+    val json = OpenAiWire.encodeChatRequest("gpt-test", request)
+    val content = json("messages")(0)("content").arr
+
+    assertEquals(content(0)("type").str, "text")
+    assertEquals(content(1)("type").str, "image_url")
+    assertEquals(content(1)("image_url")("url").str, "data:image/png;base64,image-bytes")
+    assertEquals(content(1)("image_url")("detail").str, "high")
+    assertEquals(content(2)("type").str, "file")
+    assertEquals(content(2)("file")("file_data").str, "data:application/pdf;base64,file-bytes")
+    assertEquals(content(2)("file")("filename").str, "brief.pdf")
   }
 
   test("wire decoder maps assistant text tool calls usage and finish reason") {
