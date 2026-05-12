@@ -142,6 +142,18 @@ lazy val llm4sMcp = (project in file("llm4s-mcp"))
     ),
   )
 
+lazy val llm4sGuardrails = (project in file("llm4s-guardrails"))
+  .dependsOn(llm4sCore, llm4sRuntime)
+  .settings(commonSettings)
+  .settings(
+    name := "llm4s-guardrails",
+    exportJars := true,
+    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat,
+    libraryDependencies ++= testDeps ++ Seq(
+      "org.typelevel" %% "cats-effect" % catsEffectVersion,
+    ),
+  )
+
 lazy val llm4sStructured = (project in file("llm4s-structured"))
   .dependsOn(llm4sCore, llm4sRuntime, llm4sTools, llm4sMemory)
   .settings(commonSettings)
@@ -168,7 +180,7 @@ lazy val llm4sMacros = (project in file("llm4s-macros"))
   )
 
 lazy val root = (project in file("."))
-  .dependsOn(llm4sCore, llm4sMemory, llm4sRag, llm4sAgentic, llm4sMcp, llm4sRuntime, llm4sStreaming, llm4sOpenAiCompat, llm4sTools, llm4sStructured, llm4sMacros)
+  .dependsOn(llm4sCore, llm4sMemory, llm4sRag, llm4sAgentic, llm4sMcp, llm4sGuardrails, llm4sRuntime, llm4sStreaming, llm4sOpenAiCompat, llm4sTools, llm4sStructured, llm4sMacros)
   .settings(commonSettings)
   .settings(
     name := "l4j-template",
