@@ -100,3 +100,54 @@ class AgenticWorkflowSpec extends FunSuite:
     assertEquals(error.getMessage, "LoopWorkflow exceeded maxIterations=2")
   }
 
+  test("supervisor agent plans and invokes subagents dynamically") {
+    val summary = Agent.lift[IO, String, String]("summary")((input, _) => IO.pure(s"summary:$input"))
+    val critic = Agent.lift[IO, String, String]("critic")((input, _) => IO.pure(s"critic:$input"))
+    val registry = SubAgentRegistry.of(summary, critic)
+    val planner = SupervisorAgent.planner[IO, String, String] { (input, _, _) =>
+      IO.pure(
+        List(
+          PlanStep("summary", outputKey = Some("summaryOutput")),
+          PlanStep("critic", input = Some(s"review $input"), outputKey = Some("criticOutput")),
+        )
+      )
+    }
+    val supervisor = SupervisorAgent[IO, String, String](
+      name = "supervisor",
+      registry = registry,
+      planner = planner,
+      aggregate = (_, results, _) => IO.pure(results.map(_.output).mkString(" | ")),
+    )
+
+    val program = for
+      scope <- AgentScope.create[IO]
+      result <- supervisor.run("Scala", scope)
+      summaryOutput <- scope.get[String]("summaryOutput")
+      criticOutput <- scope.get[String]("criticOutput")
+    yield (result, summaryOutput, criticOutput)
+
+    val (result, summaryOutput, criticOutput) = program.unsafeRunSync()
+
+    assertEquals(result, "summary:Scala | critic:review Scala")
+    assertEquals(summaryOutput, Some("summary:Scala"))
+    assertEquals(criticOutput, Some("critic:review Scala"))
+  }
+
+  test("supervisor agent fails when a planned subagent is missing") {
+    val registry = SubAgentRegistry.of(Agent.lift[IO, String, String]("summary")((input, _) => IO.pure(input)))
+    val planner = SupervisorAgent.planner[IO, String, String] { (_, _, _) =>
+      IO.pure(List(PlanStep("missing")))
+    }
+    val supervisor = SupervisorAgent[IO, String, String](
+      name = "supervisor",
+      registry = registry,
+      planner = planner,
+      aggregate = (_, results, _) => IO.pure(results.map(_.output).mkString),
+    )
+
+    val error = intercept[RuntimeException] {
+      AgentScope.create[IO].flatMap(supervisor.run("Scala", _)).unsafeRunSync()
+    }
+
+    assertEquals(error.getMessage, "SupervisorAgent 'supervisor' could not find sub-agent 'missing'")
+  }
