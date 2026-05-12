@@ -50,8 +50,7 @@ object OpenAiWire:
   def decodeChatResponse(json: ujson.Value): ChatResponse =
     val choice = json("choices")(0)
     val messageJson = choice("message")
-    val toolCalls = choice.obj.get("message")
-      .flatMap(_.obj.get("tool_calls"))
+    val toolCalls = messageJson.obj.get("tool_calls")
       .map(_.arr.toList.map(decodeToolCall))
       .getOrElse(Nil)
 

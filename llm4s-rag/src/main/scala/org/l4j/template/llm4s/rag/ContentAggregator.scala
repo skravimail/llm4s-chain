@@ -10,7 +10,16 @@ object ContentAggregator:
         sources
           .groupBy(_.id)
           .values
-          .map(_.maxBy(_.score))
+          .map { group =>
+            val best = group.maxBy(_.score)
+            val mergedMetadata = group.foldLeft(Map.empty[String, String]) { (acc, source) =>
+              source.metadata.foldLeft(acc) {
+                case (m, (k, _)) if m.contains(k) => m
+                case (m, (k, v))                  => m.updated(k, v)
+              }
+            } ++ best.metadata
+            best.copy(metadata = mergedMetadata)
+          }
           .toList
           .sortBy(source => -source.score)
 

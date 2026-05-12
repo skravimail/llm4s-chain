@@ -10,6 +10,10 @@ object JsonSchema:
       description: Option[String] = None,
       definitions: Map[String, JsonSchema] = Map.empty,
   ) extends JsonSchema:
+    require(
+      required.subsetOf(properties.keySet),
+      s"ObjectSchema.required references unknown properties: ${(required -- properties.keySet).toList.sorted.mkString(", ")}",
+    )
     def propertyNames: Set[String] = properties.keySet
 
   final case class StringSchema(

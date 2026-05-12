@@ -19,12 +19,12 @@ final class SupervisorAgent[F[_]: MonadThrow, In, Out](
 
   override def run(input: In, scope: AgentScope[F]): F[Out] =
     planner.plan(input, scope, registry).flatMap { steps =>
-      steps.traverse(runStep(input, scope)).flatMap { results =>
+      steps.zipWithIndex.traverse { case (step, idx) => runStep(input, scope, idx)(step) }.flatMap { results =>
         scope.put(s"$name.plan", steps).flatMap(_ => aggregate(input, results, scope))
       }
     }
 
-  private def runStep(input: In, scope: AgentScope[F])(step: PlanStep[In]): F[StepResult[In, Out]] =
+  private def runStep(input: In, scope: AgentScope[F], index: Int)(step: PlanStep[In]): F[StepResult[In, Out]] =
     registry.get(step.agentName) match
       case None =>
         MonadThrow[F].raiseError(
@@ -32,7 +32,7 @@ final class SupervisorAgent[F[_]: MonadThrow, In, Out](
         )
       case Some(agent) =>
         agent.run(step.input.getOrElse(input), scope).flatTap { output =>
-          scope.put(step.outputKey.getOrElse(s"$name.${step.agentName}"), output)
+          scope.put(step.outputKey.getOrElse(s"$name.$index.${step.agentName}"), output)
         }.map(output => StepResult(step, output))
 
 object SupervisorAgent:

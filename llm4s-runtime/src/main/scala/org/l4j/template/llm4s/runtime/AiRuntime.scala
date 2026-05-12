@@ -5,6 +5,7 @@ import cats.syntax.all.*
 import org.l4j.template.llm4s.core.ChatBackend
 import org.l4j.template.llm4s.core.ChatMessage
 import org.l4j.template.llm4s.core.ChatRequest
+import org.l4j.template.llm4s.core.FinishReason
 import org.l4j.template.llm4s.memory.ChatMemory
 
 final class AiRuntime[F[_]: MonadThrow](
@@ -90,12 +91,22 @@ final class AiRuntime[F[_]: MonadThrow](
       backend.chat(request).flatMap { response =>
         val aiMessage = response.message
         if !aiMessage.hasToolCalls then
-          MonadThrow[F].pure(
-            ChatRunResult(
-              text = response.text,
-              messages = request.messages :+ aiMessage,
-            )
-          )
+          aiMessage.finishReason match
+            case Some(FinishReason.ContentFilter) =>
+              MonadThrow[F].raiseError(
+                RuntimeException("AiRuntime chat aborted: provider returned finishReason=content_filter")
+              )
+            case Some(FinishReason.Error) =>
+              MonadThrow[F].raiseError(
+                RuntimeException("AiRuntime chat aborted: provider returned finishReason=error")
+              )
+            case _ =>
+              MonadThrow[F].pure(
+                ChatRunResult(
+                  text = response.text,
+                  messages = request.messages :+ aiMessage,
+                )
+              )
         else
           ToolLoop
             .executeAll(

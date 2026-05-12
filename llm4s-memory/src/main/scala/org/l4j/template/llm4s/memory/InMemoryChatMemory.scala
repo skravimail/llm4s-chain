@@ -1,5 +1,6 @@
 package org.l4j.template.llm4s.memory
 
+import cats.Monad
 import cats.effect.kernel.Ref
 import cats.effect.kernel.Sync
 import cats.syntax.functor.*
@@ -14,6 +15,9 @@ final class InMemoryChatMemory[F[_]: Sync, Id] private (
 
   override def replace(id: Id, messages: List[ChatMessage]): F[Unit] =
     state.update(_.updated(id, messages))
+
+  override def append(id: Id, messages: List[ChatMessage])(using F: Monad[F]): F[Unit] =
+    state.update(map => map.updated(id, map.getOrElse(id, Nil) ++ messages))
 
 object InMemoryChatMemory:
   def create[F[_]: Sync, Id]: F[InMemoryChatMemory[F, Id]] =
