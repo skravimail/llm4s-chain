@@ -76,7 +76,59 @@ class RagSpec extends FunSuite:
     assert(PgVectorConfig("embeddings", idColumn = "id or 1=1").validated.isLeft)
   }
 
+  test("content aggregator deduplicates sources by id and keeps the best score") {
+    val aggregated = ContentAggregator.dedupeByIdKeepBestScore.aggregate(
+      List(
+        RetrievedSource("a", "lower", score = 0.2),
+        RetrievedSource("b", "middle", score = 0.5),
+        RetrievedSource("a", "higher", score = 0.9),
+      )
+    )
+
+    assertEquals(aggregated.map(source => source.id -> source.text), List("a" -> "higher", "b" -> "middle"))
+  }
+
+  test("advanced content retriever transforms routes aggregates and reranks results") {
+    val primaryRetriever = StaticRetriever(
+      Map(
+        "scala" -> List(
+          RetrievedSource("lang", "Scala is strongly typed", score = 0.4, metadata = Map("rank" -> "3")),
+          RetrievedSource("shared", "Old shared result", score = 0.2, metadata = Map("rank" -> "9")),
+        ),
+        "scala effects" -> List(
+          RetrievedSource("shared", "Best shared result", score = 0.95, metadata = Map("rank" -> "2"))
+        ),
+      )
+    )
+    val secondaryRetriever = StaticRetriever(
+      Map(
+        "scala" -> List(
+          RetrievedSource("runtime", "Cats Effect powers runtime composition", score = 0.7, metadata = Map("rank" -> "1"))
+        )
+      )
+    )
+
+    val retriever = AdvancedContentRetriever[IO](
+      queryTransformer = QueryTransformer.static[IO](query => List(query, s"$query effects")),
+      queryRouter = QueryRouter.static[IO](List(primaryRetriever, secondaryRetriever)),
+      reRanker = MetadataRanker,
+      maxResults = 2,
+    )
+
+    val results = retriever.retrieve("scala").unsafeRunSync()
+
+    assertEquals(results.map(_.id), List("runtime", "shared"))
+    assertEquals(results.find(_.id == "shared").map(_.text), Some("Best shared result"))
+  }
+
 private final class StaticEmbeddingModel(values: Map[String, EmbeddingVector]) extends EmbeddingModel[IO]:
   override def embed(text: String): IO[EmbeddingVector] =
     IO.fromOption(values.get(text))(IllegalArgumentException(s"No embedding for: $text"))
 
+private final class StaticRetriever(results: Map[String, List[RetrievedSource]]) extends ContentRetriever[IO]:
+  override def retrieve(query: String): IO[List[RetrievedSource]] =
+    IO.pure(results.getOrElse(query, Nil))
+
+private object MetadataRanker extends ReRanker[IO]:
+  override def rerank(query: String, sources: List[RetrievedSource]): IO[List[RetrievedSource]] =
+    IO.pure(sources.sortBy(_.metadata.get("rank").flatMap(_.toIntOption).getOrElse(Int.MaxValue)))
