@@ -594,6 +594,109 @@ Validation:
 - `llm4sMcp/test`
 - explicit all-module sweep passed.
 
+### PR-16: Add Non-Macro `AiAgent` Ergonomics Layer
+
+Commit: _pending_  
+Status: In progress  
+Branch: `pr16_non_macro_aiagent`
+
+Purpose:
+
+- Provide a non-macro, plain-Scala-3 alternative to `AiService.materialize[T]`
+  that delivers the same three call shapes (plain chat, typed structured
+  output, tool-using chat) without the macro tax.
+- Eliminate the `unsafeRunSync` deadlock surface noted in
+  `Module Review Findings → llm4s-macros #1` for users who don't need
+  the annotated-trait API.
+- Avoid the `String.replace`-based `{{placeholder}}` substitution (and the
+  `.toString` garbage-prompt risk from `Module Review Findings → llm4s-macros #2`)
+  in favour of native Scala 3 string interpolation.
+- Drop the `@experimental` requirement that the macro inherits from
+  `Symbol.newClass` reflection.
+
+Background:
+
+- `AiService.materialize[T]` reads `@system`/`@user` annotations off an
+  abstract trait and synthesises an implementation that calls
+  `AiRuntime.chat` (or `StructuredOutputRuntime.chat`) and then forces the
+  result with `unsafeRunSync()(using IORuntime.global)`. That hides effect
+  composition from the caller and is a documented deadlock risk on the
+  calling thread when the demo is embedded in another `IO` program.
+- Prompt parameters are substituted via `userTemplate.replace("{{name}}", v.toString)`,
+  so `List(...)`, `Option(...)`, and case classes produce ugly,
+  framework-y prompt strings.
+- The three demo methods (`Assistant.ask`, `Reviewer.review`, `Tutor.explain`)
+  are each 3 lines of effectful glue over the existing native runtime; the
+  trait-plus-annotation framing pays for itself only when there are many
+  methods sharing the same shape, which is not this demo.
+
+Design:
+
+- Add `llm4s-runtime/.../AiAgent.scala`: a small generic builder around the
+  existing `AiRuntime` and `StructuredOutputRuntime`.
+  - `final class AiAgent[F[_]: MonadThrow](backend, tools, config)`
+  - `def chat(system: String, user: String): F[String]`
+  - `def chat[A](system: String, user: String)(using StructuredCodec[A]): F[A]`
+  - `def withTools(tk: ToolKit[F]): AiAgent[F]`
+  - `def withConfig(c: RuntimeConfig): AiAgent[F]`
+  - Memory-aware variants if/when needed (memory-shaped overloads mirror
+    the runtime's existing API).
+- Add `src/main/scala/org/l4j/template/demo/AgentDemoMain.scala`:
+  an `IOApp.Simple` parallel to `MacroDemoMain` that delivers the same
+  three demo flows (plain chat, typed `CvReview`, tool-using `define`) using
+  plain `def` functions and Scala 3 `s"..."` interpolation — no traits,
+  no annotations, no `@experimental`, no `unsafeRunSync` inside method
+  bodies.
+- Keep `MacroDemoMain` exactly as it is so the two styles remain available
+  side-by-side for users to compare.
+
+What's gained:
+
+- Methods return `F[A]` (here `IO[A]`), so callers compose with the rest of
+  cats-effect normally; `unsafeRun*` only ever appears in the `IOApp` entry.
+- Prompt interpolation is compiler-checked; placeholders cannot drift from
+  parameters.
+- Step-into debugging works — no synthesised class bytecode.
+- No `@experimental`; uses only stable Scala 3 features.
+
+What's given up:
+
+- The "annotated trait → implementation" declarative feel where prompt,
+  system message, and tools live in one block. The macro is shorter when
+  there are many methods sharing the same shape; for diverse call shapes
+  the explicit builder is strictly clearer.
+
+Key scope:
+
+- `llm4s-runtime`
+- `AiAgent[F]`
+- `AgentDemoMain` (demo only — no module changes downstream).
+
+Acceptance:
+
+- `AiAgent.chat(system, user)` returns `F[String]` and uses the existing
+  `AiRuntime` loop (tool calls, max-turn limit, finish-reason handling all
+  inherited).
+- `AiAgent.chat[A](system, user)` returns `F[A]` via existing
+  `StructuredOutputRuntime` semantics.
+- `AgentDemoMain` runs against an OpenAI-compatible local server and prints
+  the same three sections (`[1/3] Plain chat`, `[2/3] Typed return`,
+  `[3/3] Tool-using agent`) as `MacroDemoMain`.
+- `llm4sRuntime/test` continues to pass; new tests cover the builder
+  surface (`withTools`, structured-vs-plain dispatch).
+
+Related findings closed (for non-macro callers):
+
+- `Module Review Findings → llm4s-macros #1`: deadlock-prone
+  `unsafeRunSync` — non-macro path stays in `F[_]`.
+- `Module Review Findings → llm4s-macros #2`: `.toString` parameter
+  substitution — replaced by native interpolation.
+
+Validation:
+
+- `llm4sRuntime/test`
+- explicit all-module sweep (same gate as PR-15).
+
 ## Post-Roadmap Cleanup
 
 These are not required for the 15-PR framework-parity pass, but they should be considered before publishing the native implementation as a real library.
@@ -848,6 +951,10 @@ Completed:
 - PR-1 through PR-15
 - Framework-parity roadmap implementation is complete.
 
+In progress:
+
+- PR-16: non-macro `AiAgent` ergonomics layer on `pr16_non_macro_aiagent`.
+
 Remaining:
 
 - No PRs remain in the original framework-parity roadmap.
@@ -855,5 +962,6 @@ Remaining:
 
 Immediate next step:
 
+- Land PR-16 (non-macro `AiAgent` + parallel demo).
 - Optional post-roadmap cleanup: remove or isolate the legacy LangChain4j demo/dependency surface before publishing.
 - Address top items from `Suggested Fix Order` in `Module Review Findings`, starting with the broken `EmbeddingVector.cosineSimilarity`.
