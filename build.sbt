@@ -11,8 +11,6 @@ val uPickleVersion     = "4.1.0"
 val catsEffectVersion  = "3.5.4"
 val fs2Version         = "3.10.2"
 val sttpVersion        = "3.10.3"
-val langChain4j        = "1.14.1"
-val langChain4jAgentic = "1.14.1-beta24"
 
 lazy val commonSettings = Seq(
   scalacOptions ++= Seq(
@@ -188,11 +186,11 @@ lazy val root = (project in file("."))
       "ch.qos.logback" % "logback-classic" % logbackVersion,
       "com.typesafe.scala-logging" %% "scala-logging" % scalaLogging,
       "com.lihaoyi" %% "upickle" % uPickleVersion,
-      "dev.langchain4j" % "langchain4j" % langChain4j,
-      "dev.langchain4j" % "langchain4j-open-ai" % langChain4j,
-      "dev.langchain4j" % "langchain4j-agentic" % langChain4jAgentic,
+      "org.typelevel" %% "cats-effect" % catsEffectVersion,
+      "com.softwaremill.sttp.client3" %% "core" % sttpVersion,
+      "com.softwaremill.sttp.client3" %% "async-http-client-backend-cats" % sttpVersion,
     ),
-    Compile / mainClass := Some("org.l4j.template.l4j_macro.demo.MacroDemoMain"),
+    Compile / mainClass := Some("org.l4j.template.demo.MacroDemoMain"),
     Compile / scalafmtOnCompile := false,
   )
 
