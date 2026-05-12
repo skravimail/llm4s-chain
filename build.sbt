@@ -8,6 +8,8 @@ val munitVersion      = "1.1.1"
 val logbackVersion    = "1.4.14"
 val scalaLogging      = "3.9.5"
 val uPickleVersion    = "4.1.0"
+val catsEffectVersion = "3.5.4"
+val sttpVersion       = "3.10.3"
 val langChain4j       = "1.14.1"
 val langChain4jAgentic = "1.14.1-beta24"
 
@@ -30,11 +32,26 @@ lazy val llm4sCore = (project in file("llm4s-core"))
   .settings(commonSettings)
   .settings(
     name := "llm4s-core",
+    exportJars := true,
     libraryDependencies ++= testDeps,
   )
 
-lazy val root = (project in file("."))
+lazy val llm4sOpenAiCompat = (project in file("llm4s-openai-compat"))
   .dependsOn(llm4sCore)
+  .settings(commonSettings)
+  .settings(
+    name := "llm4s-openai-compat",
+    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat,
+    libraryDependencies ++= testDeps ++ Seq(
+      "org.typelevel" %% "cats-effect" % catsEffectVersion,
+      "com.lihaoyi" %% "upickle" % uPickleVersion,
+      "com.softwaremill.sttp.client3" %% "core" % sttpVersion,
+      "com.softwaremill.sttp.client3" %% "async-http-client-backend-cats" % sttpVersion,
+    ),
+  )
+
+lazy val root = (project in file("."))
+  .dependsOn(llm4sCore, llm4sOpenAiCompat)
   .settings(commonSettings)
   .settings(
     name := "l4j-template",
