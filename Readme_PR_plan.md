@@ -596,8 +596,8 @@ Validation:
 
 ### PR-16: Add Non-Macro `AiAgent` Ergonomics Layer
 
-Commit: _pending_  
-Status: In progress  
+Commit: `4d57126`  
+Status: Complete  
 Branch: `pr16_non_macro_aiagent`
 
 Purpose:
@@ -957,9 +957,6 @@ Completed:
 
 - PR-1 through PR-15
 - Framework-parity roadmap implementation is complete.
-
-In progress:
-
 - PR-16: non-macro `AiAgent` ergonomics layer on `pr16_non_macro_aiagent`.
 
 Remaining:
@@ -969,6 +966,5 @@ Remaining:
 
 Immediate next step:
 
-- Land PR-16 (non-macro `AiAgent` + parallel demo).
 - Optional post-roadmap cleanup: remove or isolate the legacy LangChain4j demo/dependency surface before publishing.
 - Address top items from `Suggested Fix Order` in `Module Review Findings`, starting with the broken `EmbeddingVector.cosineSimilarity`.
