@@ -456,7 +456,7 @@ Validation:
 ### PR-13: Add Native MCP Tool Integration
 
 Commit: `f3c5744`  
-Status: Complete with validation caveat
+Status: Complete
 
 Purpose:
 
@@ -501,34 +501,22 @@ Acceptance:
 Validation:
 
 - `llm4sMcp/test` passed.
-- Full explicit all-module sweep was attempted but blocked by the approval reviewer due the current usage limit. Re-run the full sweep before starting PR-14.
-
-## Remaining PRs
+- Full explicit all-module sweep passed before PR-14 started.
 
 ### PR-14: Add Guardrails And Moderation Hooks
 
-Status: Not started
+Commit: `3a3c185`  
+Status: Complete
 
 Purpose:
 
 - Add reusable safety and policy interception points around model calls, tool calls, structured outputs, and final responses.
 - Provide moderation adapter contracts without tying the core to one provider.
 
-Recommended module:
+Key scope:
 
 - `llm4s-guardrails`
-
-Recommended build dependencies:
-
-- `llm4s-core`
-- `llm4s-runtime`
-- `cats-effect`
-- `munit`
-
-Core types to add:
-
 - `GuardrailResult`
-- `GuardrailDecision`
 - `GuardrailViolation`
 - `InputGuardrail[F]`
 - `OutputGuardrail[F]`
@@ -538,100 +526,70 @@ Core types to add:
 - `ModerationResult`
 - `RetryPolicy`
 - `GuardedChatBackend[F]`
-- `GuardedAiRuntime[F]` if runtime-level wrapping is cleaner than backend-level wrapping.
+- `GuardedToolKit`
 
-Recommended behavior:
+Implemented behavior:
 
 - Input guardrails run before backend calls.
-- Output guardrails run after assistant responses and structured decoding.
-- Tool guardrails can allow, block, or rewrite tool calls.
-- Moderation hooks can be plugged in before requests and after responses.
-- Retry policy can retry recoverable guardrail/model failures.
-- Violations should preserve structured metadata for logs and UI surfaces.
+- Output guardrails run after backend responses.
+- Tool guardrails can allow or block tool calls.
+- Blocked tool calls return an error `ToolResult`.
+- Moderation hooks can be plugged into input and output guardrails.
+- Retry policy retries recoverable backend failures.
+- Violations preserve structured metadata.
 
-Design options:
+Acceptance:
 
-- Backend wrapper:
-  - Pros: easy to apply globally to any runtime.
-  - Cons: less context about tool-loop turn and decoded structured output.
-- Runtime wrapper:
-  - Pros: richer context, better tool-call interception.
-  - Cons: more coupled to runtime internals.
-- Recommended: backend wrapper for request/response guardrails plus runtime hook points for tool-call guardrails.
+- Guarded backend blocks unsafe input before invoking the underlying backend.
+- Guarded backend blocks unsafe output after invoking the underlying backend.
+- Moderation input guardrail blocks flagged requests.
+- Guarded tool kit returns an error result when a tool call is blocked.
+- Retry policy retries recoverable backend failures.
 
-Acceptance criteria:
-
-- Guardrail chain allows clean input/output.
-- Guardrail chain blocks unsafe input before backend invocation.
-- Guardrail chain blocks unsafe output after backend response.
-- Tool guardrail can block a tool call and return an error `ToolResult`.
-- Retry policy retries recoverable failures and stops at max attempts.
-- Moderation adapter can be mocked in tests.
-
-Suggested tests:
+Validation:
 
 - `llm4sGuardrails/test`
-- runtime integration test showing blocked input does not hit backend.
-- runtime integration test showing blocked tool call produces a tool error message.
-- full explicit all-module sweep.
-
-Suggested commit:
-
-```text
-PR-14: add guardrails and moderation hooks
-```
+- explicit all-module sweep passed.
 
 ### PR-15: Add Multimodal Cleanup And Secondary Capability Pass
 
-Status: Not started
+Commit: `befe22e`  
+Status: Complete
 
 Purpose:
 
 - Finish the framework-parity pass by tightening multimodal request/result handling and cleaning up remaining native module boundaries.
 
-Candidate scope:
+Key scope:
 
-- Expand multimodal content support.
-- Normalize image input handling across providers.
-- Normalize multimodal tool results.
-- Add provider capability negotiation helpers.
-- Add optional image-generation/reranker extension points if they remain lightweight.
-- Remove or isolate remaining LangChain4j dependencies from active native modules.
-- Add examples showing native-only usage.
-
-Recommended areas to review:
-
-- `llm4s-core/AiContent`
-- `llm4s-core/ModelCapabilities`
+- `AiContent.File`
+- `AiContent.requiredCapabilities`
+- `ChatRequest.requiredCapabilities`
+- `ModelCapabilities.validate`
+- `UnsupportedModelCapabilities`
 - `llm4s-openai-compat`
-- `llm4s-runtime`
-- `llm4s-tools`
 - `llm4s-mcp`
-- root `build.sbt`
-- legacy `src/main/scala/org/l4j/template/l4j_macro`
 
-Acceptance criteria:
+Implemented behavior:
 
-- Text and image inputs are represented in provider-neutral core ADTs.
-- Tool results can return text, structured JSON, images, or mixed content.
-- OpenAI-compatible wire encoder handles supported multimodal content.
-- Unsupported provider capability fails clearly.
-- Native examples do not require LangChain4j.
-- Remaining LangChain4j dependencies are either removed or isolated behind legacy/demo code.
+- Text, image, and file inputs are represented in provider-neutral core ADTs.
+- Request capability requirements are derived from multimodal content, tools, and JSON Schema response format.
+- Unsupported provider capabilities fail clearly through `ModelCapabilities.validate`.
+- OpenAI-compatible wire encoder emits multimodal user content parts for text, images, and files.
+- MCP `resource` content can convert into native file content.
 
-Suggested tests:
+Acceptance:
 
-- core multimodal content tests.
-- OpenAI-compatible multimodal encoder tests.
-- MCP image content conversion tests.
-- tool result multimodal tests.
-- full explicit all-module sweep.
+- Core tests cover capability detection and unsupported capability reporting.
+- OpenAI-compatible tests cover multimodal request encoding.
+- MCP tests cover resource-to-file content conversion.
 
-Suggested commit:
+Validation:
 
-```text
-PR-15: add multimodal cleanup
-```
+- `llm4sCore/test`
+- `llm4sOpenAiCompat/test`
+- `llm4sMcp/test`
+- explicit all-module sweep passed.
 
 ## Post-Roadmap Cleanup
 
@@ -696,15 +654,13 @@ Recommended example docs:
 
 Completed:
 
-- PR-1 through PR-13
+- PR-1 through PR-15
+- Framework-parity roadmap implementation is complete.
 
 Remaining:
 
-- PR-14 guardrails and moderation hooks
-- PR-15 multimodal cleanup and secondary capability pass
+- No PRs remain in the original framework-parity roadmap.
 
 Immediate next step:
 
-- Re-run the full explicit all-module SBT sweep because the PR-13 full sweep was blocked by the approval usage limit.
-- Then implement PR-14.
-
+- Optional post-roadmap cleanup: remove or isolate the legacy LangChain4j demo/dependency surface before publishing.
