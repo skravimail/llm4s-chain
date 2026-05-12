@@ -13,7 +13,7 @@ object BackendSupport:
 
   def fromEnv: Resource[IO, ChatBackend[IO]] =
     val baseUrl   = sys.env.getOrElse("LLM4S_BASE_URL", sys.env.getOrElse("LANGCHAIN4J_BASE_URL", "http://localhost:8000/v1"))
-    val apiKey    = sys.env.getOrElse("LLM4S_API_KEY", sys.env.getOrElse("LANGCHAIN4J_API_KEY", sys.env.getOrElse("OPENAI_API_KEY", "dummy")))
+    val apiKey    = sys.env.getOrElse("LLM4S_API_KEY", sys.env.getOrElse("LANGCHAIN4J_API_KEY", sys.env.getOrElse("OPENAI_API_KEY", "4850")))
     val modelName = sys.env.getOrElse("LLM4S_MODEL", sys.env.getOrElse("LANGCHAIN4J_MODEL", "gemma-4-e4b-it-4bit"))
 
     AsyncHttpClientCatsBackend.resource[IO]().map { sttp =>

@@ -35,23 +35,29 @@ object SchemaEncoder:
       case product: Mirror.ProductOf[A] => productEncoder(product)
       case sum: Mirror.SumOf[A]         => enumEncoder(sum)
 
-  private inline def productEncoder[A](product: Mirror.ProductOf[A]): SchemaEncoder[A] =
-    new SchemaEncoder[A]:
-      private val labels = labelsOf[product.MirroredElemLabels]
-      private val encoders = encodersOf[product.MirroredElemTypes]
+  final class ProductSchemaEncoder[A](
+      labels: List[String],
+      encoders: List[SchemaEncoder[?]],
+  ) extends SchemaEncoder[A]:
+    override val schema: JsonSchema =
+      JsonSchema.ObjectSchema(
+        properties = labels.zip(encoders).map { case (label, encoder) => label -> encoder.schema }.toMap,
+        required = labels.zip(encoders).collect {
+          case (label, encoder) if !encoder.isOptional => label
+        }.toSet,
+      )
 
-      override val schema: JsonSchema =
-        JsonSchema.ObjectSchema(
-          properties = labels.zip(encoders).map { case (label, encoder) => label -> encoder.schema }.toMap,
-          required = labels.zip(encoders).collect {
-            case (label, encoder) if !encoder.isOptional => label
-          }.toSet,
-        )
+  final class EnumSchemaEncoder[A](labels: List[String]) extends SchemaEncoder[A]:
+    override val schema: JsonSchema = JsonSchema.EnumSchema(labels)
+
+  private inline def productEncoder[A](product: Mirror.ProductOf[A]): SchemaEncoder[A] =
+    ProductSchemaEncoder[A](
+      labelsOf[product.MirroredElemLabels],
+      encodersOf[product.MirroredElemTypes],
+    )
 
   private inline def enumEncoder[A](sum: Mirror.SumOf[A]): SchemaEncoder[A] =
-    new SchemaEncoder[A]:
-      override val schema: JsonSchema =
-        JsonSchema.EnumSchema(labelsOf[sum.MirroredElemLabels])
+    EnumSchemaEncoder[A](labelsOf[sum.MirroredElemLabels])
 
   private inline def encodersOf[Elems <: Tuple]: List[SchemaEncoder[?]] =
     inline erasedValue[Elems] match

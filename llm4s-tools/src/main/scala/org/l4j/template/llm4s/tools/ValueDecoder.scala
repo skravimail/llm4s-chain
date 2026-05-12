@@ -62,33 +62,45 @@ object ValueDecoder:
       case product: Mirror.ProductOf[A] => productDecoder(product)
       case sum: Mirror.SumOf[A]         => enumDecoder(sum)
 
-  private inline def productDecoder[A](product: Mirror.ProductOf[A]): ValueDecoder[A] =
-    new ValueDecoder[A]:
-      private val labels = labelsOf[product.MirroredElemLabels]
-      private val decoders = decodersOf[product.MirroredElemTypes]
+  final class ProductValueDecoder[A](
+      product: Mirror.ProductOf[A],
+      labels: List[String],
+      decoders: List[ValueDecoder[?]],
+  ) extends ValueDecoder[A]:
+    override def decode(value: ujson.Value): Either[String, A] =
+      value match
+        case ujson.Obj(fields) =>
+          decodeElements(fields, labels.zip(decoders)).map { values =>
+            product.fromProduct(Tuple.fromArray(values.toArray))
+          }
+        case other =>
+          Left(s"expected object, got ${other.getClass.getSimpleName}")
 
-      override def decode(value: ujson.Value): Either[String, A] =
-        value match
-          case ujson.Obj(fields) =>
-            decodeElements(fields, labels.zip(decoders)).map { values =>
-              product.fromProduct(Tuple.fromArray(values.toArray))
-            }
-          case other =>
-            Left(s"expected object, got ${other.getClass.getSimpleName}")
+  final class EnumValueDecoder[A](
+      labels: List[String],
+      values: List[Any],
+  ) extends ValueDecoder[A]:
+    override def decode(value: ujson.Value): Either[String, A] =
+      value match
+        case ujson.Str(label) =>
+          labels.indexOf(label) match
+            case -1    => Left(s"expected one of ${labels.mkString(", ")}, got $label")
+            case index => Right(values(index).asInstanceOf[A])
+        case other =>
+          Left(s"expected enum label, got ${other.getClass.getSimpleName}")
+
+  private inline def productDecoder[A](product: Mirror.ProductOf[A]): ValueDecoder[A] =
+    ProductValueDecoder[A](
+      product,
+      labelsOf[product.MirroredElemLabels],
+      decodersOf[product.MirroredElemTypes],
+    )
 
   private inline def enumDecoder[A](sum: Mirror.SumOf[A]): ValueDecoder[A] =
-    new ValueDecoder[A]:
-      private val labels = labelsOf[sum.MirroredElemLabels]
-      private val values = valuesOf[sum.MirroredElemTypes]
-
-      override def decode(value: ujson.Value): Either[String, A] =
-        value match
-          case ujson.Str(label) =>
-            labels.indexOf(label) match
-              case -1    => Left(s"expected one of ${labels.mkString(", ")}, got $label")
-              case index => Right(values(index).asInstanceOf[A])
-          case other =>
-            Left(s"expected enum label, got ${other.getClass.getSimpleName}")
+    EnumValueDecoder[A](
+      labelsOf[sum.MirroredElemLabels],
+      valuesOf[sum.MirroredElemTypes],
+    )
 
   private def decodeElements(
       fields: collection.Map[String, ujson.Value],

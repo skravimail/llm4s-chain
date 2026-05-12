@@ -14,14 +14,23 @@ trait StructuredCodec[A]:
 
 object StructuredCodec:
 
+  final class DerivedStructuredCodec[A](
+      override val schemaName: String,
+      schemaEncoder: SchemaEncoder[A],
+      valueDecoder: ValueDecoder[A],
+  ) extends StructuredCodec[A]:
+    override val schema: JsonSchema = schemaEncoder.schema
+    override def decode(raw: String): Either[String, A] =
+      try valueDecoder.decode(ujson.read(raw))
+      catch case error: Throwable => Left(Option(error.getMessage).getOrElse(error.getClass.getSimpleName))
+
   inline given derived[A](using
       mirror: Mirror.Of[A],
       schemaEncoder: SchemaEncoder[A],
       valueDecoder: ValueDecoder[A],
   ): StructuredCodec[A] =
-    new StructuredCodec[A]:
-      override val schemaName: String = constValue[mirror.MirroredLabel].toString
-      override val schema: JsonSchema = schemaEncoder.schema
-      override def decode(raw: String): Either[String, A] =
-        try valueDecoder.decode(ujson.read(raw))
-        catch case error: Throwable => Left(Option(error.getMessage).getOrElse(error.getClass.getSimpleName))
+    DerivedStructuredCodec[A](
+      constValue[mirror.MirroredLabel].toString,
+      schemaEncoder,
+      valueDecoder,
+    )
