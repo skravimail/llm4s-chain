@@ -7,10 +7,8 @@ This guide explains how to use the native `llm4s-*` modules implemented on the `
 ```mermaid
 flowchart TB
   app["Application code / examples"]
-  legacy["Legacy LangChain4j demos\n(src/main/scala)"]
 
-  macros["llm4s-macros\nTrait materialization\n@system / @user / @tool"]
-  structured["llm4s-structured\nTyped structured outputs\nJSON Schema + decoding"]
+  structured["llm4s-structured\nTyped structured outputs\nJSON Schema + decoding\nAiAgent builder"]
   runtime["llm4s-runtime\nChat loop\nTool loop\nInvocationContext"]
   streaming["llm4s-streaming\nStream events\nStreaming runtime"]
   openai["llm4s-openai-compat\nOpenAI-compatible HTTP/SSE backend"]
@@ -26,7 +24,7 @@ flowchart TB
   mcpServer["MCP servers"]
   vectorStore["Embedding stores\nIn-memory / pgvector boundary"]
 
-  app --> macros
+  app --> structured
   app --> runtime
   app --> streaming
   app --> rag
@@ -34,12 +32,9 @@ flowchart TB
   app --> mcp
   app --> guardrails
 
-  macros --> runtime
-  macros --> structured
-  macros --> tools
-  macros --> memory
-
   structured --> runtime
+  structured --> tools
+  structured --> memory
   streaming --> runtime
   tools --> runtime
   guardrails --> runtime
@@ -61,8 +56,6 @@ flowchart TB
   openai --> provider
   mcp --> mcpServer
   rag --> vectorStore
-
-  legacy -. temporary until post-roadmap cleanup .-> app
 ```
 
 ## Module Map
@@ -71,8 +64,7 @@ flowchart TB
 - `llm4s-openai-compat`: OpenAI-compatible HTTP and SSE wire support.
 - `llm4s-runtime`: chat execution and tool-call loop.
 - `llm4s-tools`: Scala 3 derivation for tool schemas and argument decoding.
-- `llm4s-macros`: trait-based AI service materialization with `@system`, `@user`, `@tool`, and `@param`.
-- `llm4s-structured`: typed output decoding with JSON Schema response format.
+- `llm4s-structured`: typed output decoding with JSON Schema response format, plus `AiAgent[F]`, a small builder over the runtime for plain chat, typed chat, and tool-using chat.
 - `llm4s-streaming`: streaming events and token collection.
 - `llm4s-memory`: session memory and window memory.
 - `llm4s-rag`: embeddings, stores, retrieval, augmentation, advanced routing, aggregation, and reranking.
@@ -147,29 +139,35 @@ val request = ChatRequest(
 val effect = AiRuntime[IO](backend).chatRequest(request)
 ```
 
-## Trait-Based AI Services
+## `AiAgent` Builder
 
-Use `llm4s-macros` when you want a LangChain4j-style typed service interface without runtime reflection.
+Use `AiAgent[F]` for a small, non-macro facade over `AiRuntime` and `StructuredOutputRuntime`. It returns `F[A]` directly — no `unsafeRunSync`, no `@experimental` — and uses native Scala 3 string interpolation in place of `{{placeholder}}` templates.
 
 ```scala
-import scala.annotation.experimental
-import org.l4j.template.llm4s.macros.AiService
-import org.l4j.template.llm4s.macros.system
-import org.l4j.template.llm4s.macros.user
+import cats.effect.IO
+import org.l4j.template.llm4s.structured.AiAgent
 
-@experimental
-trait Greeter:
-  @system("You are friendly and concise.")
-  @user("Say hello to {{name}}")
-  def greet(name: String): String
+def greet(agent: AiAgent[IO], name: String): IO[String] =
+  agent.chat(
+    system = "You are friendly and concise.",
+    user = s"Say hello to $name",
+  )
 
-@experimental
-val greeter = AiService.materialize[Greeter](backend)
-
-val text: String = greeter.greet("Ada")
+val program: IO[String] =
+  greet(AiAgent[IO](backend), "Ada")
 ```
 
-Prompt placeholders must match method parameter names. Invalid placeholders fail at compile time.
+Tool-using chat is the same call shape — attach a `ToolKit` with `withTools`:
+
+```scala
+val tooled = AiAgent[IO](backend).withTools(myToolKit)
+
+def explain(topic: String): IO[String] =
+  tooled.chat(
+    system = "You are a programming tutor. Call tools first when relevant.",
+    user = s"Explain: $topic",
+  )
+```
 
 ## Tools
 
@@ -229,7 +227,15 @@ val summary: IO[Summary] =
   )
 ```
 
-Structured outputs also work through `AiService.materialize` when a `StructuredCodec[A]` or `upickle` reader is available for the return type.
+`AiAgent.chatAs[A]` is the same flow at higher level when a `StructuredCodec[A]` is in scope:
+
+```scala
+val review: IO[Summary] =
+  AiAgent[IO](backend).chatAs[Summary](
+    system = "Return only structured output.",
+    user = "Summarize the benefits of Scala 3.",
+  )
+```
 
 ## Streaming
 
@@ -276,7 +282,7 @@ val program =
   yield second
 ```
 
-`AiService.materialize` also has a memory-aware overload that accepts `ChatMemory[IO, MemoryId]` and `MemoryId`.
+`AiAgent` also has memory-aware variants: `chatWithMemory` and `chatAsWithMemory[A]` accept a `ChatMemory[F, Id]` and the session id directly.
 
 ## RAG
 
@@ -506,10 +512,6 @@ env SBT_OPTS=-Dsbt.boot.directory=/Users/alpha/AI_ML/llm4s-template/.sbt-boot\ -
 Run the full explicit module sweep before committing cross-module changes:
 
 ```bash
-env SBT_OPTS=-Dsbt.boot.directory=/Users/alpha/AI_ML/llm4s-template/.sbt-boot\ -Dsbt.ivy.home=/Users/alpha/AI_ML/llm4s-template/.ivy2 COURSIER_CACHE=/Users/alpha/AI_ML/llm4s-template/.coursier sbt 'llm4sCore/test' 'llm4sMemory/test' 'llm4sRag/test' 'llm4sAgentic/test' 'llm4sMcp/test' 'llm4sGuardrails/test' 'llm4sRuntime/test' 'llm4sStreaming/test' 'llm4sOpenAiCompat/test' 'llm4sTools/test' 'llm4sStructured/test' 'llm4sMacros/test'
+env SBT_OPTS=-Dsbt.boot.directory=/Users/alpha/AI_ML/llm4s-template/.sbt-boot\ -Dsbt.ivy.home=/Users/alpha/AI_ML/llm4s-template/.ivy2 COURSIER_CACHE=/Users/alpha/AI_ML/llm4s-template/.coursier sbt 'llm4sCore/test' 'llm4sMemory/test' 'llm4sRag/test' 'llm4sAgentic/test' 'llm4sMcp/test' 'llm4sGuardrails/test' 'llm4sRuntime/test' 'llm4sStreaming/test' 'llm4sOpenAiCompat/test' 'llm4sTools/test' 'llm4sStructured/test'
 ```
-
-## Current Caveat
-
-The native framework modules are complete through the framework-parity roadmap. The root project still includes legacy LangChain4j dependencies because the old demo code under `src/main/scala/org/l4j/template/l4j_macro` still references LangChain4j. The next cleanup step is to move that legacy code into a separate demo module, rewrite it against native `llm4s-*`, or remove it.
 

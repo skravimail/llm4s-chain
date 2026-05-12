@@ -165,20 +165,8 @@ lazy val llm4sStructured = (project in file("llm4s-structured"))
     ),
   )
 
-lazy val llm4sMacros = (project in file("llm4s-macros"))
-  .dependsOn(llm4sCore, llm4sRuntime, llm4sTools, llm4sStructured, llm4sMemory)
-  .settings(commonSettings)
-  .settings(
-    name := "llm4s-macros",
-    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat,
-    libraryDependencies ++= testDeps ++ Seq(
-      "org.typelevel" %% "cats-effect" % catsEffectVersion,
-      "com.lihaoyi" %% "upickle" % uPickleVersion,
-    ),
-  )
-
 lazy val root = (project in file("."))
-  .dependsOn(llm4sCore, llm4sMemory, llm4sRag, llm4sAgentic, llm4sMcp, llm4sGuardrails, llm4sRuntime, llm4sStreaming, llm4sOpenAiCompat, llm4sTools, llm4sStructured, llm4sMacros)
+  .dependsOn(llm4sCore, llm4sMemory, llm4sRag, llm4sAgentic, llm4sMcp, llm4sGuardrails, llm4sRuntime, llm4sStreaming, llm4sOpenAiCompat, llm4sTools, llm4sStructured)
   .settings(commonSettings)
   .settings(
     name := "l4j-template",
@@ -190,7 +178,7 @@ lazy val root = (project in file("."))
       "com.softwaremill.sttp.client3" %% "core" % sttpVersion,
       "com.softwaremill.sttp.client3" %% "async-http-client-backend-cats" % sttpVersion,
     ),
-    Compile / mainClass := Some("org.l4j.template.demo.MacroDemoMain"),
+    Compile / mainClass := Some("org.l4j.template.demo.AgentDemoMain"),
     Compile / scalafmtOnCompile := false,
   )
 

@@ -3,59 +3,63 @@ l4j-template
 
 Quickstart
 ----------
-Scala 3 project demonstrating a compile-time, macro-generated AiService layer
-on top of [langchain4j](https://github.com/langchain4j/langchain4j). The macro
-emits a concrete `new T { ... }` for trait-shaped AI services — no
-`java.lang.reflect.Proxy`, no runtime annotation scanning.
+Scala 3 project providing native, cats-effect/sttp-based building blocks for
+LLM applications: chat, tool calling, typed structured outputs, streaming,
+memory, RAG, deterministic and supervisor-style agentic workflows, MCP-backed
+tools, guardrails, and multimodal requests.
 
-See [Readme_macro.md](./Readme_macro.md) for a walkthrough of the macro and the
-`AgenticBridge` that plugs the generated impls into `langchain4j-agentic`'s
-orchestrator.
+See [Usage_Readme.md](./Usage_Readme.md) for the per-module usage guide and
+[Readme_PR_plan.md](./Readme_PR_plan.md) for delivery history and the module
+review findings backlog.
 
 Features
 --------
-- Scala 3 macro replaces langchain4j's reflective `AiServices` Proxy with
-  compile-time class synthesis
-- `{{var}}` placeholders in `@user` templates are validated against parameter
-  names at compile time
-- Typed return values decoded via uPickle (no Jackson POJOs)
-- `@tool` methods on Scala classes are turned into langchain4j
-  `ToolSpecification`s + direct dispatchers, also at compile time
-- `AgenticBridge.asAgent[T](impl)` wraps a macro impl as an `AgentExecutor`
-  suitable for `AgenticServices.{sequence,parallel,…}Builder().subAgents(...)`
+- Provider-neutral core ADTs in `llm4s-core` and an OpenAI-compatible HTTP/SSE
+  backend in `llm4s-openai-compat`.
+- `AiRuntime` chat-and-tool loop with compile-time tool argument decoding.
+- `AiAgent[F]` builder over the runtime for plain chat, typed structured
+  output, and tool-using chat without macros, `unsafeRunSync`, or
+  `@experimental`.
+- Streaming runtime (text deltas, tool-call deltas, completion markers).
+- Session memory + windowing.
+- RAG primitives + advanced retrieval composition.
+- Deterministic workflows (sequence / parallel / conditional / loop) and a
+  supervisor planner.
+- MCP JSON-RPC client (stdio + HTTP) adapted to native tool kits.
+- Input/output/tool guardrails and a moderation contract.
 
 Prerequisites
 -------------
-- JDK 21+
+- JDK 17+
 - SBT
 - An OpenAI-compatible chat endpoint (real OpenAI, a local OMLX server, etc.)
 
 Configure the model
 -------------------
-Every demo reads three env vars (with fall-throughs to a local OMLX server):
+Demos read three env vars (with fall-throughs to a local OMLX server):
 
 ```bash
-export LANGCHAIN4J_BASE_URL=http://localhost:8000/v1      # OpenAI-compat endpoint
-export LANGCHAIN4J_API_KEY=sk-...                         # or any non-empty placeholder for local OMLX
-export LANGCHAIN4J_MODEL=gemma-4-e4b-it-4bit              # model name on that endpoint
+export LLM4S_BASE_URL=http://localhost:8000/v1       # OpenAI-compat endpoint
+export LLM4S_API_KEY=...                             # any non-empty placeholder for local OMLX
+export LLM4S_MODEL=gemma-4-e4b-it-4bit               # model name on that endpoint
 ```
 
 Run the demos
 -------------
-Three runnable mains live under `org.l4j.template.l4j_macro.demo.*`:
+Three runnable mains live under `org.l4j.template.demo.*`:
 
 ```bash
-# 1. Macro AiService end-to-end: plain chat, typed CvReview return, tool-using tutor.
-sbt "runMain org.l4j.template.l4j_macro.demo.MacroDemoMain"
+# 1. AiAgent end-to-end: plain chat, typed CvReview return, tool-using tutor.
+sbt "runMain org.l4j.template.demo.AgentDemoMain"
 
-# 2. Sequential agentic pipeline (CreativeWriter → AudienceEditor → StyleEditor).
-sbt "runMain org.l4j.template.l4j_macro.demo.agentic.SequentialDemoMain"
+# 2. Sequential agentic pipeline (writer -> audience editor -> style editor).
+sbt "runMain org.l4j.template.demo.agentic.SequentialDemoMain"
 
-# 3. Parallel agentic workflow (ManagerReviewer || TechnicalReviewer).
-sbt "runMain org.l4j.template.l4j_macro.demo.agentic.ParallelDemoMain"
+# 3. Parallel agentic workflow (manager reviewer || technical reviewer).
+sbt "runMain org.l4j.template.demo.agentic.ParallelDemoMain"
 ```
 
-`sbt run` (no main class) launches `MacroDemoMain` by default.
+`sbt run` (no main class) launches `AgentDemoMain` by default.
 
 Format & compile
 ----------------
@@ -67,13 +71,18 @@ sbt compile
 Layout
 ------
 ```
-src/main/scala/org/l4j/template/l4j_macro/
-  AiService.scala         — `materialize[T](model)` macro entry point
-  Tools.scala / ToolKit   — `@tool` method harness builder
-  Runtime.scala           — chat loop called from generated impls
-  annotations.scala       — @system / @user / @tool / @param markers
-  agentic/AgenticBridge   — adapter to langchain4j-agentic's orchestrator
-  demo/                   — runnable examples
+llm4s-core/             provider-neutral protocol ADTs
+llm4s-openai-compat/    OpenAI-compatible HTTP/SSE backend
+llm4s-runtime/          chat loop, tool loop, runtime config
+llm4s-tools/            tool schema + argument decoding derivation
+llm4s-structured/       typed structured outputs + AiAgent builder
+llm4s-streaming/        streaming runtime and events
+llm4s-memory/           session and window memory
+llm4s-rag/              embeddings, stores, retrieval, augmentation
+llm4s-agentic/          deterministic workflows + supervisor planner
+llm4s-mcp/              MCP JSON-RPC client (stdio + HTTP)
+llm4s-guardrails/       guardrails, moderation, retry policy
+src/                    demos
 ```
 
 CI

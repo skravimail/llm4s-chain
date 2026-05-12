@@ -6,23 +6,19 @@ import org.l4j.template.demo.BackendSupport
 import org.l4j.template.llm4s.agentic.Agent
 import org.l4j.template.llm4s.agentic.AgentScope
 import org.l4j.template.llm4s.agentic.ParallelWorkflow
-import org.l4j.template.llm4s.macros.AiService
+import org.l4j.template.llm4s.structured.AiAgent
 
-import scala.annotation.experimental
-
-@experimental
 object ParallelDemoMain extends IOApp.Simple:
 
   override def run: IO[Unit] =
     BackendSupport.fromEnv.use { backend =>
-      val manager   = AiService.materialize[ManagerReviewer](backend)
-      val technical = AiService.materialize[TechnicalReviewer](backend)
+      val agent = AiAgent[IO](backend)
 
       val managerAgent = Agent.liftScoped[IO, CvUnderReview, CvScoredReview]("managerReview") { (input, _) =>
-        IO(manager.reviewCv(input.candidateCv, input.jobDescription))
+        ParallelDemoApi.reviewByManager(agent, input.candidateCv, input.jobDescription)
       }
       val technicalAgent = Agent.liftScoped[IO, CvUnderReview, CvScoredReview]("technicalReview") { (input, _) =>
-        IO(technical.reviewCv(input.candidateCv, input.jobDescription))
+        ParallelDemoApi.reviewByTechnical(agent, input.candidateCv, input.jobDescription)
       }
 
       val workflow = ParallelWorkflow(managerAgent.workflow, technicalAgent.workflow)
@@ -47,7 +43,7 @@ object ParallelDemoMain extends IOApp.Simple:
         result  <- workflow.run(input, scope)
         elapsed <- IO((System.nanoTime() - started) / 1_000_000)
         (managerReview, techReview) = result
-        _ <- IO.println("\n== Parallel pipeline (two native reviewers, run concurrently) ==")
+        _ <- IO.println("\n== Parallel pipeline (two AiAgent reviewers, run concurrently) ==")
         _ <- IO.println(s"\n--- Manager review ---")
         _ <- IO.println(s"  score:    ${managerReview.score}")
         _ <- IO.println(s"  feedback: ${managerReview.feedback}")

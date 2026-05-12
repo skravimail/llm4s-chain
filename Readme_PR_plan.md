@@ -34,8 +34,7 @@ The native implementation is built around small Scala modules:
 - `llm4s-openai-compat`: OpenAI-compatible HTTP/SSE backend.
 - `llm4s-runtime`: runtime chat loop and tool-call orchestration.
 - `llm4s-tools`: Scala 3 tool schema and argument derivation.
-- `llm4s-macros`: compile-time AI service materialization.
-- `llm4s-structured`: typed structured-output support.
+- `llm4s-structured`: typed structured-output support plus the non-macro `AiAgent[F]` builder.
 - `llm4s-streaming`: streaming runtime and events.
 - `llm4s-memory`: session/conversation memory.
 - `llm4s-rag`: embeddings, stores, retrieval, augmentation, and advanced RAG pipeline.
@@ -60,7 +59,7 @@ Each PR should be committed separately after its unit tests pass.
 Preferred PR gate:
 
 ```bash
-env SBT_OPTS=-Dsbt.boot.directory=/Users/alpha/AI_ML/llm4s-template/.sbt-boot\ -Dsbt.ivy.home=/Users/alpha/AI_ML/llm4s-template/.ivy2 COURSIER_CACHE=/Users/alpha/AI_ML/llm4s-template/.coursier sbt 'llm4sCore/test' 'llm4sMemory/test' 'llm4sRag/test' 'llm4sAgentic/test' 'llm4sMcp/test' 'llm4sRuntime/test' 'llm4sStreaming/test' 'llm4sOpenAiCompat/test' 'llm4sTools/test' 'llm4sStructured/test' 'llm4sMacros/test'
+env SBT_OPTS=-Dsbt.boot.directory=/Users/alpha/AI_ML/llm4s-template/.sbt-boot\ -Dsbt.ivy.home=/Users/alpha/AI_ML/llm4s-template/.ivy2 COURSIER_CACHE=/Users/alpha/AI_ML/llm4s-template/.coursier sbt 'llm4sCore/test' 'llm4sMemory/test' 'llm4sRag/test' 'llm4sAgentic/test' 'llm4sMcp/test' 'llm4sRuntime/test' 'llm4sStreaming/test' 'llm4sOpenAiCompat/test' 'llm4sTools/test' 'llm4sStructured/test'
 ```
 
 Focused PR gates should also run the touched modules directly, for example:
@@ -190,32 +189,34 @@ Acceptance:
 ### PR-5: Add Native Macro AI Services
 
 Commit: `35c1d95`  
-Status: Complete
+Status: Removed (superseded by PR-16; module deleted on `pr16_non_macro_aiagent`)
 
-Purpose:
+Purpose (historical):
 
 - Migrate macro-generated AI service traits onto the native runtime.
 - Preserve the current annotation-driven user API.
 
-Key scope:
+Key scope (removed):
 
 - `llm4s-macros`
 - `AiService`
 - macro materialization
 - compile-time prompt placeholder validation
 
-Preserved API:
+Reason for removal:
 
-- `@system`
-- `@user`
-- `@tool`
-- `@param`
-
-Acceptance:
-
-- Materialized services execute prompt templates against `ChatBackend[IO]`.
-- Compile-time validation rejects invalid prompt placeholders.
-- Native tool calls work from materialized services.
+- The macro layer synthesised methods that called `unsafeRunSync` on the
+  caller's thread (deadlock surface), used `@experimental` reflection
+  (`Symbol.newClass`), and substituted parameters via
+  `userTemplate.replace("{{name}}", v.toString)` which produced garbage
+  prompts for non-string parameters.
+- PR-16's `AiAgent[F]` covers the same three call shapes (plain chat,
+  typed structured output, tool-using chat) using plain Scala 3 features
+  with `F[A]` returns and native string interpolation. The
+  `llm4s-macros` module, the `Readme_macro.md` walkthrough, and the
+  `MacroDemoMain`/`MacroDemoApi` demos were deleted; the agentic demos
+  (`SequentialDemoMain`, `ParallelDemoMain`) were rewritten to use
+  `AiAgent`.
 
 ### PR-6: Add Structured Output Support
 
@@ -296,14 +297,17 @@ Acceptance:
 - Memory stores messages per id.
 - Window memory trims to the configured size.
 - Runtime persists conversational history.
-- Materialized services can use session memory across calls.
+- Memory-aware runtime/structured paths preserve history across calls.
+  (The original `llm4s-macros` memory-aware overload that satisfied this
+  acceptance criterion at PR-8 time was removed in PR-16; the same
+  behaviour is now available via `AiAgent.chatWithMemory` /
+  `chatAsWithMemory`.)
 
 Validation:
 
 - `llm4sMemory/test`
 - `llm4sRuntime/test`
 - `llm4sStructured/test`
-- `llm4sMacros/test`
 - explicit all-module sweep passed.
 
 ### PR-9: Add Native RAG Phase One
@@ -647,14 +651,15 @@ Design:
     memory-aware variants.
   - `def withTools(tk: ToolKit[F]): AiAgent[F]`
   - `def withConfig(c: RuntimeConfig): AiAgent[F]`
-- Add `src/main/scala/org/l4j/template/demo/AgentDemoMain.scala`:
-  an `IOApp.Simple` parallel to `MacroDemoMain` that delivers the same
-  three demo flows (plain chat, typed `CvReview`, tool-using `define`) using
-  plain `def` functions and Scala 3 `s"..."` interpolation — no traits,
-  no annotations, no `@experimental`, no `unsafeRunSync` inside method
-  bodies.
-- Keep `MacroDemoMain` exactly as it is so the two styles remain available
-  side-by-side for users to compare.
+- Add `src/main/scala/org/l4j/template/demo/AgentDemoMain.scala`: an
+  `IOApp.Simple` that delivers the three core demo flows (plain chat,
+  typed `CvReview`, tool-using `define`) using plain `def` functions and
+  Scala 3 `s"..."` interpolation — no traits, no annotations, no
+  `@experimental`, no `unsafeRunSync` inside method bodies.
+- (Followup commit on this branch) delete `llm4s-macros`, `MacroDemoMain`,
+  and `MacroDemoApi`; rewrite `SequentialDemoMain` / `ParallelDemoMain` /
+  their `*DemoApi` files to use `AiAgent` directly. PR-5 is now marked as
+  Removed.
 
 What's gained:
 
@@ -686,18 +691,17 @@ Acceptance:
 - `AiAgent.chatAs[A](system, user)` returns `F[A]` via existing
   `StructuredOutputRuntime` semantics.
 - `AgentDemoMain` runs against an OpenAI-compatible local server and prints
-  the same three sections (`[1/3] Plain chat`, `[2/3] Typed return`,
-  `[3/3] Tool-using agent`) as `MacroDemoMain`.
+  three sections (`[1/3] Plain chat`, `[2/3] Typed return`,
+  `[3/3] Tool-using agent`).
 - `llm4sStructured/test` continues to pass; new tests cover the builder
   surface (`chat` plain text, `chatAs` typed decode, `withTools` immutability,
   `withConfig` immutability + max-turn enforcement).
 
-Related findings closed (for non-macro callers):
+Related findings closed:
 
-- `Module Review Findings → llm4s-macros #1`: deadlock-prone
-  `unsafeRunSync` — non-macro path stays in `F[_]`.
-- `Module Review Findings → llm4s-macros #2`: `.toString` parameter
-  substitution — replaced by native interpolation.
+- The entire `Module Review Findings → llm4s-macros` table is moot now
+  that the module is deleted; the section is preserved below as a
+  historical note explaining what failed.
 
 Validation:
 
@@ -902,16 +906,23 @@ or were deferred as design tradeoffs — see the commit history for details).
 | 3 | I | `StructuredOutputRuntime.scala:22, 52` | No check that `toolKit` and structured response format are compatible | Validate or document interaction | — |
 | 4 | P | `StructuredCodec.scala:10-27` | `schemaName` derived from class name — rename = silent schema break | Optional `schemaVersion`; doc compatibility rule | — |
 
-#### `llm4s-macros` (3 files)
+#### `llm4s-macros` (removed in PR-16 — historical only)
+
+The `llm4s-macros` module was deleted on `pr16_non_macro_aiagent`; the table
+below is preserved as a record of why. The deadlock-prone `unsafeRunSync`
+codegen (#1) and the `.toString` parameter substitution (#2) were the
+proximate motivation; #3–#6 were design-quality issues that no longer apply
+because `AiAgent[F]` does all of this via normal Scala 3 features instead of
+codegen.
 
 | # | Sev | Location | Issue | Fix | Fixed |
 |---|-----|----------|-------|-----|-------|
-| 1 | R | `AiService.scala:204` | Generated synchronous methods call `.unsafeRunSync()` — deadlock risk on calling thread | Generate `F[A]` returns by default; opt-in sync wrapper | — |
-| 2 | R | `AiService.scala:193` | Parameter substitution uses `.toString` — `List(...)` etc. yield garbage prompts | `@paramFormat` annotation or JSON serialization default | — |
-| 3 | I | `AiService.scala:212-250` | Missing `StructuredCodec`/`Reader` summon error doesn't guide user | Improve error message with derivation hint | — |
-| 4 | I | `AiService.scala:158` | Structured return types not verified at expansion time | Use `Expr.summon` to fail early | — |
-| 5 | I | `AiService.scala:144-151` | Placeholder name validation OK, but no warning when interpolating non-stringy types | Compile-time advisory or formatter typeclass | — |
-| 6 | P | `AiService.scala:70` | Overloads (with/without memory, with/without guardrails) lack disambiguation guidance | Inline scaladoc / `@deprecated` redirect | — |
+| 1 | R | `AiService.scala:204` | Generated synchronous methods call `.unsafeRunSync()` — deadlock risk on calling thread | Generate `F[A]` returns by default; opt-in sync wrapper | 2026-05-12 (module removed) |
+| 2 | R | `AiService.scala:193` | Parameter substitution uses `.toString` — `List(...)` etc. yield garbage prompts | `@paramFormat` annotation or JSON serialization default | 2026-05-12 (module removed) |
+| 3 | I | `AiService.scala:212-250` | Missing `StructuredCodec`/`Reader` summon error doesn't guide user | Improve error message with derivation hint | 2026-05-12 (module removed) |
+| 4 | I | `AiService.scala:158` | Structured return types not verified at expansion time | Use `Expr.summon` to fail early | 2026-05-12 (module removed) |
+| 5 | I | `AiService.scala:144-151` | Placeholder name validation OK, but no warning when interpolating non-stringy types | Compile-time advisory or formatter typeclass | 2026-05-12 (module removed) |
+| 6 | P | `AiService.scala:70` | Overloads (with/without memory, with/without guardrails) lack disambiguation guidance | Inline scaladoc / `@deprecated` redirect | 2026-05-12 (module removed) |
 
 ### Cross-Cutting Themes
 
@@ -919,8 +930,8 @@ or were deferred as design tradeoffs — see the commit history for details).
    `McpClient` all use direct `apply`/`.str` access; one missing field crashes
    the chat path. A small typed-extraction helper would close this everywhere.
 2. **Error type erasure.** Backend transport, structured decoding, runtime
-   loop limits, guardrails, and macros all collapse to `RuntimeException`. A
-   small hierarchy of typed errors per module would improve operability.
+   loop limits, and guardrails all collapse to `RuntimeException`. A small
+   hierarchy of typed errors per module would improve operability.
 3. **Concurrency invariants undocumented.** `ChatMemory.append`, `AgentScope`,
    `ParallelWorkflow`, and `StdioMcpTransport` all have race conditions that
    pass tests today because the tests are sequential.
@@ -941,7 +952,8 @@ or were deferred as design tradeoffs — see the commit history for details).
 3. `AiRuntime.scala:92-98` finish-reason handling — silently swallows
    content-filter / error completions. (Fixed 2026-05-12.)
 4. `AiService.scala:204` `unsafeRunSync` — deadlock surface in macro-generated
-   code.
+   code. (Resolved 2026-05-12 by removing the `llm4s-macros` module in PR-16
+   and replacing it with the non-macro `AiAgent[F]` builder.)
 5. `ChatMemory.append` atomicity — multi-user correctness.
    (Fixed 2026-05-12.)
 6. SSE decoder fixes: split-frame buffering, tool-arg accumulation,

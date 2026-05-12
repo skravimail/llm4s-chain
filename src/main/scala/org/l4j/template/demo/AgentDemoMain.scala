@@ -4,9 +4,25 @@ import cats.effect.IO
 import cats.effect.IOApp
 import org.l4j.template.llm4s.core.ToolResult
 import org.l4j.template.llm4s.structured.AiAgent
-import org.l4j.template.llm4s.tools.SchemaEncoder.given
+import org.l4j.template.llm4s.structured.StructuredCodec
+import org.l4j.template.llm4s.tools.SchemaEncoder
 import org.l4j.template.llm4s.tools.ToolDefinition
-import org.l4j.template.llm4s.tools.ValueDecoder.given
+import org.l4j.template.llm4s.tools.ValueDecoder
+
+final case class CvReview(score: Int, feedback: String)
+    derives StructuredCodec,
+      SchemaEncoder,
+      ValueDecoder
+
+final case class DefineArgs(term: String) derives SchemaEncoder, ValueDecoder
+
+object WikiLookup:
+  def define(term: String): String =
+    term.toLowerCase match
+      case "monad"   => "A monad is a design pattern for sequencing effectful computations."
+      case "functor" => "A functor maps elements of one set to another while preserving structure."
+      case "fiber"   => "A fiber is a lightweight, cooperatively-scheduled unit of concurrent execution."
+      case _         => s"No definition found for '$term'"
 
 object AgentDemoMain extends IOApp.Simple:
 
