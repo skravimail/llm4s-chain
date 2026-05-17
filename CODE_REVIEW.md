@@ -279,6 +279,15 @@ runtime across derived agents.
 
 ## 13. `AiAgent` surface is asymmetric and cramped
 
+> ✅ **Partially fixed** — 2026-05-17 in `2128627`.
+> Added `AiAgent.chat(request, opts)` and `chat(messages, opts)`
+> taking a `ChatOptions[F]` with `toolKit` / `temperature` /
+> `responseFormat` / `metadata` per‑call overrides. The legacy
+> `(system, user)` grid is kept for backward compatibility. Streaming
+> integration was deliberately deferred — `llm4s-structured` cannot
+> depend on `llm4s-streaming` without a module reshuffle (relates to
+> PR‑14 / PR‑17).
+
 `AiAgent` exposes `chat`, `chatAs`, `chatWithMemory`, `chatAsWithMemory` — but
 only `(system, user)` shapes. There is no:
 
