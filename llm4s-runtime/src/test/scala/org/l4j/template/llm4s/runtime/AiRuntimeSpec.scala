@@ -3,6 +3,7 @@ package org.l4j.template.llm4s.runtime
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 import munit.FunSuite
+import scala.concurrent.duration.*
 import org.l4j.template.llm4s.core.AiContent
 import org.l4j.template.llm4s.core.ChatBackend
 import org.l4j.template.llm4s.core.ChatMessage
@@ -184,6 +185,51 @@ class AiRuntimeSpec extends FunSuite:
 
     assertEquals(result, "done")
     assertEquals(backend.requests.length, turns + 1)
+  }
+
+  test("ToolLoop runs concurrent tool calls in parallel") {
+    val backend = RecordingBackend(
+      List(
+        ChatResponse(
+          ChatMessage.AiMessage(
+            contents = Nil,
+            toolCalls = List(
+              ToolCall("slow_a", "{}", Some("a")),
+              ToolCall("slow_b", "{}", Some("b")),
+            ),
+            finishReason = Some(FinishReason.ToolCalls),
+          )
+        ),
+        ChatResponse(ChatMessage.AiMessage.from("done")),
+      )
+    )
+    val perCallSleep = 250.millis
+    def slow(label: String): ToolExecutor[IO] =
+      new ToolExecutor[IO]:
+        override def execute(call: ToolCall, ctx: InvocationContext): IO[ToolResult] =
+          IO.sleep(perCallSleep).as(ToolResult.Text(label))
+
+    val toolkit = ToolKit[IO](
+      schemas = List(
+        ToolSchema("slow_a", "", JsonSchema.ObjectSchema(Map.empty)),
+        ToolSchema("slow_b", "", JsonSchema.ObjectSchema(Map.empty)),
+      ),
+      executors = Map("slow_a" -> slow("A"), "slow_b" -> slow("B")),
+    )
+    val runtime = AiRuntime[IO](backend, RuntimeConfig(maxTurns = 4))
+
+    val start = System.nanoTime()
+    val text = runtime.chat(None, "go", toolkit).unsafeRunSync()
+    val elapsed = (System.nanoTime() - start).nanos
+
+    assertEquals(text, "done")
+    // Sequential would take ~2x perCallSleep; parallel must finish closer to 1x.
+    // Use a generous bound (1.7x) to avoid flakiness on slow CI but still
+    // reject sequential execution.
+    assert(
+      elapsed < perCallSleep * 1.7,
+      s"tool calls did not run in parallel (took $elapsed for two ${perCallSleep} tools)",
+    )
   }
 
   test("runtime persists conversational history through chat memory") {

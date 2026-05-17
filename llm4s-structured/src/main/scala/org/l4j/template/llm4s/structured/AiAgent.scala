@@ -1,13 +1,14 @@
 package org.l4j.template.llm4s.structured
 
 import cats.MonadThrow
+import cats.Parallel
 import org.l4j.template.llm4s.core.ChatBackend
 import org.l4j.template.llm4s.memory.ChatMemory
 import org.l4j.template.llm4s.runtime.AiRuntime
 import org.l4j.template.llm4s.runtime.RuntimeConfig
 import org.l4j.template.llm4s.runtime.ToolKit
 
-final class AiAgent[F[_]: MonadThrow](
+final class AiAgent[F[_]: MonadThrow: Parallel](
     backend: ChatBackend[F],
     val tools: ToolKit[F],
     val config: RuntimeConfig,
@@ -51,13 +52,13 @@ final class AiAgent[F[_]: MonadThrow](
 
 object AiAgent:
 
-  def apply[F[_]: MonadThrow](backend: ChatBackend[F]): AiAgent[F] =
+  def apply[F[_]: MonadThrow: Parallel](backend: ChatBackend[F]): AiAgent[F] =
     new AiAgent[F](backend, ToolKit.empty[F], RuntimeConfig())
 
-  def apply[F[_]: MonadThrow](backend: ChatBackend[F], tools: ToolKit[F]): AiAgent[F] =
+  def apply[F[_]: MonadThrow: Parallel](backend: ChatBackend[F], tools: ToolKit[F]): AiAgent[F] =
     new AiAgent[F](backend, tools, RuntimeConfig())
 
-  def apply[F[_]: MonadThrow](
+  def apply[F[_]: MonadThrow: Parallel](
       backend: ChatBackend[F],
       tools: ToolKit[F],
       config: RuntimeConfig,

@@ -1,6 +1,7 @@
 package org.l4j.template.llm4s.runtime
 
 import cats.MonadThrow
+import cats.Parallel
 import cats.syntax.all.*
 import org.l4j.template.llm4s.core.ChatBackend
 import org.l4j.template.llm4s.core.ChatMessage
@@ -8,7 +9,7 @@ import org.l4j.template.llm4s.core.ChatRequest
 import org.l4j.template.llm4s.core.FinishReason
 import org.l4j.template.llm4s.memory.ChatMemory
 
-final class AiRuntime[F[_]: MonadThrow](
+final class AiRuntime[F[_]: MonadThrow: Parallel](
     backend: ChatBackend[F],
     config: RuntimeConfig = RuntimeConfig(),
 ):

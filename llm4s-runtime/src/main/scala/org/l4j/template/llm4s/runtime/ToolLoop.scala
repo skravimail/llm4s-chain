@@ -1,6 +1,7 @@
 package org.l4j.template.llm4s.runtime
 
 import cats.MonadThrow
+import cats.Parallel
 import cats.syntax.all.*
 import org.l4j.template.llm4s.core.ChatMessage
 import org.l4j.template.llm4s.core.ChatRequest
@@ -9,13 +10,18 @@ import org.l4j.template.llm4s.core.ToolResult
 
 object ToolLoop:
 
-  def executeAll[F[_]: MonadThrow](
+  /** Run all tool calls in the turn concurrently and collect their results in
+    * the original call order. The OpenAI tool spec allows the model to emit
+    * multiple parallel tool calls in a single turn; doing them sequentially
+    * needlessly serialises tool latency. Result ordering is preserved by
+    * `parTraverse`. */
+  def executeAll[F[_]: MonadThrow: Parallel](
       toolCalls: List[ToolCall],
       toolKit: ToolKit[F],
       turn: Int,
       request: ChatRequest,
   ): F[List[ChatMessage.ToolResultMessage]] =
-    toolCalls.traverse { toolCall =>
+    toolCalls.parTraverse { toolCall =>
       val context = InvocationContext(turn = turn, request = request, toolCall = toolCall)
 
       val effect = toolKit.executors.get(toolCall.name) match

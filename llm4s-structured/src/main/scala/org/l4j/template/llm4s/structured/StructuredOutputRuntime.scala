@@ -1,6 +1,7 @@
 package org.l4j.template.llm4s.structured
 
 import cats.MonadThrow
+import cats.Parallel
 import cats.syntax.all.*
 import org.l4j.template.llm4s.core.ChatBackend
 import org.l4j.template.llm4s.core.ChatMessage
@@ -13,7 +14,7 @@ import org.l4j.template.llm4s.runtime.ToolKit
 
 object StructuredOutputRuntime:
 
-  def chat[F[_]: MonadThrow, A](
+  def chat[F[_]: MonadThrow: Parallel, A](
       backend: ChatBackend[F],
       config: RuntimeConfig,
       system: Option[String],
@@ -42,7 +43,7 @@ object StructuredOutputRuntime:
           case Left(error)  => MonadThrow[F].raiseError(RuntimeException(error))
       }
 
-  def chatWithMemory[F[_]: MonadThrow, A, Id](
+  def chatWithMemory[F[_]: MonadThrow: Parallel, A, Id](
       backend: ChatBackend[F],
       config: RuntimeConfig,
       memory: ChatMemory[F, Id],

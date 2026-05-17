@@ -1,6 +1,7 @@
 package org.l4j.template.llm4s.guardrails
 
 import cats.MonadThrow
+import cats.Parallel
 import cats.syntax.all.*
 import org.l4j.template.llm4s.core.ToolCall
 import org.l4j.template.llm4s.core.ToolResult
@@ -9,7 +10,7 @@ import org.l4j.template.llm4s.runtime.ToolExecutor
 import org.l4j.template.llm4s.runtime.ToolKit
 
 object GuardedToolKit:
-  def apply[F[_]: MonadThrow](
+  def apply[F[_]: MonadThrow: Parallel](
       underlying: ToolKit[F],
       guardrails: GuardrailChain[F],
   ): ToolKit[F] =
@@ -18,7 +19,7 @@ object GuardedToolKit:
     }.toMap
     ToolKit(underlying.schemas, executors)
 
-private final case class GuardedToolExecutor[F[_]: MonadThrow](
+private final case class GuardedToolExecutor[F[_]: MonadThrow: Parallel](
     underlying: ToolExecutor[F],
     guardrails: GuardrailChain[F],
 ) extends ToolExecutor[F]:

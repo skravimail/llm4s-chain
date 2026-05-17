@@ -4,6 +4,7 @@ import cats.effect.IO
 import cats.effect.Ref
 import cats.effect.unsafe.implicits.global
 import munit.FunSuite
+import scala.concurrent.duration.*
 import org.l4j.template.llm4s.core.ChatBackend
 import org.l4j.template.llm4s.core.ChatMessage
 import org.l4j.template.llm4s.core.ChatRequest
@@ -84,6 +85,33 @@ class GuardrailsSpec extends FunSuite:
     assert(result.text.contains("tool call blocked by guardrail"))
   }
 
+  test("input guardrails run in parallel via checkInput") {
+    val perGuardSleep = 200.millis
+    val chain = GuardrailChain[IO](input = List.fill(4)(SlowAllow(perGuardSleep)))
+
+    val start = System.nanoTime()
+    chain.checkInput(ChatRequest(List(ChatMessage.UserMessage.from("hi")))).unsafeRunSync()
+    val elapsed = (System.nanoTime() - start).nanos
+
+    // Sequential = 4 * perGuardSleep; parallel must finish well below 2x.
+    assert(
+      elapsed < perGuardSleep * 2,
+      s"input guardrails did not run in parallel (took $elapsed for 4x ${perGuardSleep})",
+    )
+  }
+
+  test("checkInputSequential preserves transformation chaining") {
+    val chain = GuardrailChain[IO](
+      input = List(AppendTag("[A]"), AppendTag("[B]")),
+    )
+
+    val transformed = chain.checkInputSequential(
+      ChatRequest(List(ChatMessage.UserMessage.from("hi")))
+    ).unsafeRunSync()
+
+    assertEquals(transformed.messages.last.text, "hi[A][B]")
+  }
+
   test("retry policy retries recoverable backend failures") {
     val program = for
       remainingFailures <- Ref.of[IO, Int](1)
@@ -122,6 +150,19 @@ private final case class BlockWhenResponseContains(token: String) extends Output
     if response.text.contains(token) then
       IO.pure(GuardrailResult.Block(GuardrailViolation("output.blocked", s"output contained $token")))
     else IO.pure(GuardrailResult.Allow(response))
+
+private final case class SlowAllow(sleep: FiniteDuration) extends InputGuardrail[IO]:
+  override def check(request: ChatRequest): IO[GuardrailResult[ChatRequest]] =
+    IO.sleep(sleep).as(GuardrailResult.Allow(request))
+
+private final case class AppendTag(tag: String) extends InputGuardrail[IO]:
+  override def check(request: ChatRequest): IO[GuardrailResult[ChatRequest]] =
+    val mutated = request.copy(messages = request.messages.map {
+      case ChatMessage.UserMessage(contents) =>
+        ChatMessage.UserMessage.from(contents.flatMap(_.textValue).mkString + tag)
+      case other => other
+    })
+    IO.pure(GuardrailResult.Allow(mutated))
 
 private final case class BlockTool(name: String) extends ToolGuardrail[IO]:
   override def check(call: ToolCall, context: InvocationContext): IO[GuardrailResult[ToolCall]] =
