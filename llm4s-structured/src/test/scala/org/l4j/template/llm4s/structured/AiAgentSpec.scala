@@ -92,6 +92,28 @@ class AiAgentSpec extends FunSuite:
     assertEquals(backend.requests.head.tools.map(_.name), List("ping"))
   }
 
+  test("AiAgent.withTools reuses the same underlying AiRuntime") {
+    val backend = RecordingBackend(Nil)
+    val base = AiAgent[IO](backend)
+    val withA = base.withTools(ToolKit.empty[IO])
+    val withB = withA.withTools(ToolKit.empty[IO])
+
+    // Reference equality: not just structurally equal — actually the same
+    // instance, so any state the runtime acquires is shared across derived
+    // agents.
+    assert(base.runtime eq withA.runtime)
+    assert(withA.runtime eq withB.runtime)
+  }
+
+  test("AiAgent.withConfig builds a new runtime (config is baked in)") {
+    val backend = RecordingBackend(Nil)
+    val base = AiAgent[IO](backend)
+    val tweaked = base.withConfig(RuntimeConfig(maxTurns = 3))
+
+    assert(!(base.runtime eq tweaked.runtime))
+    assertEquals(tweaked.config.maxTurns, 3)
+  }
+
   test("AiAgent.withConfig overrides runtime config without mutating the original") {
     val infiniteToolCall = ChatResponse(
       ChatMessage.AiMessage(
@@ -117,10 +139,10 @@ class AiAgentSpec extends FunSuite:
     assertEquals(base.config.maxTurns, RuntimeConfig().maxTurns)
     assertEquals(limited.config.maxTurns, 1)
 
-    val error = intercept[RuntimeException] {
+    val error = intercept[org.l4j.template.llm4s.runtime.AiRuntimeError.MaxTurnsExceeded] {
       limited.chat("loop", "go").unsafeRunSync()
     }
-    assertEquals(error.getMessage, "AiRuntime chat exceeded 1 tool-call turns")
+    assertEquals(error.maxTurns, 1)
   }
 
   private final case class Review(summary: String, score: Int)
