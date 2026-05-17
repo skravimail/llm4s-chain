@@ -9,6 +9,7 @@ import org.l4j.template.llm4s.memory.ChatMemory
 import org.l4j.template.llm4s.memory.MemoryAwareRuntime
 import org.l4j.template.llm4s.runtime.AiRuntime
 import org.l4j.template.llm4s.runtime.RuntimeConfig
+import org.l4j.template.llm4s.runtime.RuntimeListener
 import org.l4j.template.llm4s.runtime.ToolKit
 
 /** An agent is a thin facade over a single [[AiRuntime]] plus per-agent
@@ -100,3 +101,15 @@ object AiAgent:
       config: RuntimeConfig,
   ): AiAgent[F] =
     new AiAgent[F](backend, tools, config, AiRuntime[F](backend, config))
+
+  /** Listener-aware overload — every chat the agent runs fires the given
+    * `RuntimeListener`'s events (chat / provider / tool). Use this to plug
+    * tracing or metrics in once at construction time instead of wrapping
+    * every call site. */
+  def apply[F[_]: MonadThrow: Parallel](
+      backend: ChatBackend[F],
+      tools: ToolKit[F],
+      config: RuntimeConfig,
+      listener: RuntimeListener[F],
+  ): AiAgent[F] =
+    new AiAgent[F](backend, tools, config, AiRuntime[F](backend, config, listener))

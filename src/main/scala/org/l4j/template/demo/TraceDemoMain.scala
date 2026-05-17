@@ -2,31 +2,26 @@ package org.l4j.template.demo
 
 import cats.effect.IO
 import cats.effect.IOApp
-import cats.effect.Resource
-import org.l4j.template.llm4s.core.ChatBackend
 import org.l4j.template.llm4s.core.ToolCall
 import org.l4j.template.llm4s.core.ToolResult
-import org.l4j.template.llm4s.openai.OpenAiCompatBackend
-import org.l4j.template.llm4s.openai.OpenAiCompatConfig
-import org.l4j.template.llm4s.openai.SttpOpenAiTransport
 import org.l4j.template.llm4s.runtime.AiRuntime
 import org.l4j.template.llm4s.runtime.InvocationContext
 import org.l4j.template.llm4s.runtime.RuntimeConfig
 import org.l4j.template.llm4s.runtime.ToolErrorPolicy
 import org.l4j.template.llm4s.runtime.ToolKit
-import sttp.client3.asynchttpclient.cats.AsyncHttpClientCatsBackend
 
 /** Demonstrates the PR-8 / PR-8b..PR-8f tracing seams end-to-end.
   *
-  * Listener wiring is driven entirely by `config.yaml` (PR-23):
+  * Listener wiring is driven entirely by `config.yaml` (PR-23) via
+  * [[BackendSupport.fromConfig]] — same plumbing every other demo uses,
+  * so the only thing special here is the deliberately tool-using prompt
+  * that exercises every event type in a single run.
   *
   *   tracing:
   *     runtime: info       # off | info | debug
   *     http: info          # off | info | debug
   *     guardrails: off
   *     workflow: off
-  *
-  * Bump either to `debug` to see full request / response / tool payloads.
   *
   * Run after `set -a; source .env; set +a`:
   *
@@ -37,32 +32,6 @@ import sttp.client3.asynchttpclient.cats.AsyncHttpClientCatsBackend
   * sttp HTTP request, sttp HTTP response, tool invocation, the next
   * provider turn, and chat completion all share the same id. */
 object TraceDemoMain extends IOApp.Simple:
-
-  private def backendResource(
-      app: AppConfig,
-      bundle: ListenerBundle[IO],
-  ): Resource[IO, ChatBackend[IO]] =
-    AsyncHttpClientCatsBackend
-      .resourceUsingConfigBuilder[IO](updateConfig = _
-        .setRequestTimeout(app.llm.requestTimeout.toMillis.toInt)
-        .setReadTimeout(app.llm.requestTimeout.toMillis.toInt))
-      .map { sttpBackend =>
-        val transport = SttpOpenAiTransport[IO](
-          sttp.model.Uri.unsafeParse(app.llm.baseUrl),
-          sttpBackend,
-          bundle.http,
-        )
-        OpenAiCompatBackend[IO](
-          OpenAiCompatConfig(
-            baseUrl = app.llm.baseUrl,
-            apiKey = app.llm.apiKey,
-            model = app.llm.model,
-            responseFormatMode = app.llm.responseFormatMode,
-            requestTimeout = app.llm.requestTimeout,
-          ),
-          transport,
-        )
-      }
 
   private val defineTool: ToolKit[IO] = ToolKit[IO](
     schemas = List(
@@ -85,10 +54,7 @@ object TraceDemoMain extends IOApp.Simple:
   )
 
   override def run: IO[Unit] =
-    val app = AppConfig.load()
-    app.logging.apply()
-    val bundle = TracingWiring.buildListeners[IO](app.tracing, IO.println(_))
-    backendResource(app, bundle).use { backend =>
+    BackendSupport.fromConfig.use { case (backend, bundle, app) =>
       val runtime = AiRuntime[IO](
         backend,
         RuntimeConfig(toolFailurePolicy = ToolErrorPolicy.SurfaceToModel),

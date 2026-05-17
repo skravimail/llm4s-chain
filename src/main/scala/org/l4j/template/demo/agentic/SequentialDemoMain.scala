@@ -5,13 +5,15 @@ import cats.effect.IOApp
 import org.l4j.template.demo.BackendSupport
 import org.l4j.template.llm4s.agentic.Agent
 import org.l4j.template.llm4s.agentic.AgentScope
+import org.l4j.template.llm4s.runtime.RuntimeConfig
+import org.l4j.template.llm4s.runtime.ToolKit
 import org.l4j.template.llm4s.structured.AiAgent
 
 object SequentialDemoMain extends IOApp.Simple:
 
   override def run: IO[Unit] =
-    BackendSupport.fromEnv.use { backend =>
-      val agent = AiAgent[IO](backend)
+    BackendSupport.fromConfig.use { case (backend, bundle, _) =>
+      val agent = AiAgent[IO](backend, ToolKit.empty[IO], RuntimeConfig(), bundle.runtime)
 
       val writerAgent = Agent.liftScoped[IO, StoryDraft, StoryDraft]("writer") { (draft, _) =>
         SequentialDemoApi.generateStory(agent, draft.topic).map(story => draft.copy(story = story))

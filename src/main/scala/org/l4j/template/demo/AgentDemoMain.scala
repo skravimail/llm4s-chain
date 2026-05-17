@@ -3,6 +3,8 @@ package org.l4j.template.demo
 import cats.effect.IO
 import cats.effect.IOApp
 import org.l4j.template.llm4s.core.ToolResult
+import org.l4j.template.llm4s.runtime.RuntimeConfig
+import org.l4j.template.llm4s.runtime.ToolKit
 import org.l4j.template.llm4s.structured.AiAgent
 import org.l4j.template.llm4s.structured.StructuredCodec
 import org.l4j.template.llm4s.tools.SchemaEncoder
@@ -64,8 +66,8 @@ object AgentDemoMain extends IOApp.Simple:
     }
 
   override def run: IO[Unit] =
-    BackendSupport.fromEnv.use { backend =>
-      val plain: AiAgent[IO] = AiAgent[IO](backend)
+    BackendSupport.fromConfig.use { case (backend, bundle, _) =>
+      val plain: AiAgent[IO] = AiAgent[IO](backend, ToolKit.empty[IO], RuntimeConfig(), bundle.runtime)
       val tooled: AiAgent[IO] = plain.withTools(defineTool.toToolKit)
 
       val cv =

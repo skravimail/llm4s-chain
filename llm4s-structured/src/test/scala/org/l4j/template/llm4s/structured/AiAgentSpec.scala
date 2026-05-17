@@ -14,8 +14,10 @@ import org.l4j.template.llm4s.core.ResponseFormat
 import org.l4j.template.llm4s.core.ToolCall
 import org.l4j.template.llm4s.core.ToolResult
 import org.l4j.template.llm4s.core.ToolSchema
+import org.l4j.template.llm4s.core.TraceContext
 import org.l4j.template.llm4s.runtime.InvocationContext
 import org.l4j.template.llm4s.runtime.RuntimeConfig
+import org.l4j.template.llm4s.runtime.RuntimeListener
 import org.l4j.template.llm4s.runtime.ToolExecutor
 import org.l4j.template.llm4s.runtime.ToolKit
 import org.l4j.template.llm4s.tools.SchemaEncoder
@@ -169,6 +171,22 @@ class AiAgentSpec extends FunSuite:
 
     assertEquals(result, "merged")
     assertEquals(backend.requests.head.messages.map(_.role), List("user", "assistant", "user"))
+  }
+
+  test("AiAgent(backend, tools, config, listener) wires the listener into the runtime") {
+    val backend = RecordingBackend(List(ChatResponse(ChatMessage.AiMessage.from("hi"))))
+    val seen = scala.collection.mutable.ListBuffer.empty[String]
+    val listener = new RuntimeListener.Default[IO]:
+      override def onChatStarted(t: TraceContext, r: ChatRequest): IO[Unit] =
+        IO { seen += "chat.started"; () }
+      override def onChatCompleted(t: TraceContext, r: ChatRequest, text: String, turns: Int, d: Long): IO[Unit] =
+        IO { seen += s"chat.completed:$text"; () }
+    val agent = AiAgent[IO](backend, ToolKit.empty[IO], RuntimeConfig(), listener)
+
+    val result = agent.chat("be terse", "hello").unsafeRunSync()
+
+    assertEquals(result, "hi")
+    assertEquals(seen.toList, List("chat.started", "chat.completed:hi"))
   }
 
   test("AiAgent.withConfig overrides runtime config without mutating the original") {
