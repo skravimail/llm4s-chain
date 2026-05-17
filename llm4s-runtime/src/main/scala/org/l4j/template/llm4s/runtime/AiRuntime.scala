@@ -7,6 +7,7 @@ import org.l4j.template.llm4s.core.ChatBackend
 import org.l4j.template.llm4s.core.ChatMessage
 import org.l4j.template.llm4s.core.ChatRequest
 import org.l4j.template.llm4s.core.FinishReason
+import org.l4j.template.llm4s.core.TraceContext
 
 object AiRuntime:
   def apply[F[_]: MonadThrow: Parallel](
@@ -36,6 +37,7 @@ final class AiRuntime[F[_]: MonadThrow: Parallel](
   private final case class ChatRunResult(
       text: String,
       messages: List[ChatMessage],
+      trace: TraceContext,
   )
 
   def chat(
@@ -71,16 +73,40 @@ final class AiRuntime[F[_]: MonadThrow: Parallel](
   ): F[(String, List[ChatMessage])] =
     run(request, toolKit).map(r => (r.text, r.messages))
 
+  /** Same as [[chatRequestWithMessages]] but also exposes the trace context
+    * the run was bound to — so callers can correlate downstream operations
+    * (e.g. a memory write performed by a wrapper) under the same trace.
+    *
+    * Used by `MemoryAwareRuntime` to fire `onMemoryWritten` under the chat's
+    * own `TraceContext` instead of inventing a new one. */
+  def chatRequestWithTrace(
+      request: ChatRequest,
+      toolKit: ToolKit[F] = ToolKit.empty[F],
+  ): F[(String, List[ChatMessage], TraceContext)] =
+    run(request, toolKit).map(r => (r.text, r.messages, r.trace))
+
   private def run(
       request: ChatRequest,
       toolKit: ToolKit[F],
   ): F[ChatRunResult] =
+    val trace = TraceContext.fresh()
     val initial = request.copy(tools = toolKit.schemas)
+    val started = MonadThrow[F].pure(System.nanoTime())
+
     for
-      _ <- listener.onChatStarted(initial)
-      result <- loop(turn = 0, request = initial, toolKit = toolKit)
-      _ <- listener.onChatCompleted(initial, result.text, result.messages.length - initial.messages.length)
-    yield result
+      startNanos <- started
+      _ <- listener.onChatStarted(trace, initial)
+      result <- loop(trace, turn = 0, request = initial, toolKit = toolKit)
+        .onError { case t => listener.onChatFailed(trace, initial, t) }
+      durationNs = System.nanoTime() - startNanos
+      _ <- listener.onChatCompleted(
+        trace,
+        initial,
+        result.text,
+        result.messages.length - initial.messages.length,
+        durationNs,
+      )
+    yield result.copy(trace = trace)
 
   /** Drive the chat loop in a stack-safe way via `tailRecM`.
     *
@@ -90,6 +116,7 @@ final class AiRuntime[F[_]: MonadThrow: Parallel](
     * Eval, etc.) will not stack-overflow regardless of `maxTurns`.
     */
   private def loop(
+      trace: TraceContext,
       turn: Int,
       request: ChatRequest,
       toolKit: ToolKit[F],
@@ -99,40 +126,52 @@ final class AiRuntime[F[_]: MonadThrow: Parallel](
         if currentTurn >= config.maxTurns then
           MonadThrow[F].raiseError(AiRuntimeError.MaxTurnsExceeded(config.maxTurns))
         else
-          backend.chat(currentRequest).flatMap { response =>
-            val aiMessage = response.message
-            if !aiMessage.hasToolCalls then
-              aiMessage.finishReason match
-                case Some(FinishReason.ContentFilter) =>
-                  MonadThrow[F].raiseError(AiRuntimeError.ContentFiltered)
-                case Some(FinishReason.Error) =>
-                  MonadThrow[F].raiseError(AiRuntimeError.ProviderError())
-                case _ =>
-                  MonadThrow[F].pure(
-                    Right(
-                      ChatRunResult(
-                        text = response.text,
-                        messages = currentRequest.messages :+ aiMessage,
+          for
+            _ <- listener.onProviderRequest(trace, currentTurn, currentRequest)
+            providerStart = System.nanoTime()
+            response <- backend.chat(currentRequest)
+            providerDuration = System.nanoTime() - providerStart
+            _ <- listener.onProviderResponse(trace, currentTurn, response, providerDuration)
+            stepped <- {
+              val aiMessage = response.message
+              if !aiMessage.hasToolCalls then
+                aiMessage.finishReason match
+                  case Some(FinishReason.ContentFilter) =>
+                    MonadThrow[F].raiseError[Either[(Int, ChatRequest), ChatRunResult]](
+                      AiRuntimeError.ContentFiltered
+                    )
+                  case Some(FinishReason.Error) =>
+                    MonadThrow[F].raiseError[Either[(Int, ChatRequest), ChatRunResult]](
+                      AiRuntimeError.ProviderError()
+                    )
+                  case _ =>
+                    MonadThrow[F].pure[Either[(Int, ChatRequest), ChatRunResult]](
+                      Right(
+                        ChatRunResult(
+                          text = response.text,
+                          messages = currentRequest.messages :+ aiMessage,
+                          trace = trace,
+                        )
                       )
                     )
+              else
+                ToolLoop
+                  .executeAll(
+                    toolCalls = aiMessage.toolCalls,
+                    toolKit = toolKit,
+                    turn = currentTurn + 1,
+                    request = currentRequest,
+                    config = config,
+                    listener = listener,
+                    trace = trace,
                   )
-            else
-              ToolLoop
-                .executeAll(
-                  toolCalls = aiMessage.toolCalls,
-                  toolKit = toolKit,
-                  turn = currentTurn + 1,
-                  request = currentRequest,
-                  config = config,
-                  listener = listener,
-                )
-                .map { toolMessages =>
-                  val nextRequest = currentRequest.copy(
-                    messages = currentRequest.messages ++ (aiMessage :: toolMessages),
-                    tools = toolKit.schemas,
-                  )
-                  Left((currentTurn + 1, nextRequest))
-                }
-          }
+                  .map { toolMessages =>
+                    val nextRequest = currentRequest.copy(
+                      messages = currentRequest.messages ++ (aiMessage :: toolMessages),
+                      tools = toolKit.schemas,
+                    )
+                    Left((currentTurn + 1, nextRequest))
+                  }
+            }
+          yield stepped
     }
-

@@ -1,5 +1,3 @@
-
-
 # llm4s-template — Code Review
 
 A prioritised list of improvements identified during a walk‑through of the
