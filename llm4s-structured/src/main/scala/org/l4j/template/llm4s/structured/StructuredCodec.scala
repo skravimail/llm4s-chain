@@ -20,9 +20,16 @@ object StructuredCodec:
       valueDecoder: ValueDecoder[A],
   ) extends StructuredCodec[A]:
     override val schema: JsonSchema = schemaEncoder.schema
+
+    /** Decode the raw model output into `A`.
+      *
+      * PR-20: routes the response through [[JsonExtractor]] first, so a
+      * chatty model that wraps its JSON in a markdown fence or prefixes
+      * it with prose still decodes successfully. Strict-schema servers
+      * pay zero overhead (the fast path is `ujson.read` on the trimmed
+      * input). */
     override def decode(raw: String): Either[String, A] =
-      try valueDecoder.decode(ujson.read(raw))
-      catch case error: Throwable => Left(Option(error.getMessage).getOrElse(error.getClass.getSimpleName))
+      JsonExtractor.extract(raw).flatMap(valueDecoder.decode)
 
   inline given derived[A](using
       mirror: Mirror.Of[A],
