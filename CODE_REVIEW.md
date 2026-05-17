@@ -100,6 +100,13 @@ the library.
 
 ## 5. `Resource[F, _]` discipline for HTTP‑owning backends
 
+> ✅ **Fixed** — 2026-05-17 in `0f28ce3`.
+> Added `OpenAiCompatBackend.resource[F: Async](config): Resource[F, ChatBackend[F]]`
+> which builds and owns the full sttp `AsyncHttpClient` stack, and
+> `OpenAiCompatStreamingBackend.resource(...)` for the streaming variant.
+> The demo `BackendSupport` was migrated to the new factory. Tests
+> assert finalizers fire on `.use` exit.
+
 `OpenAiCompatBackend` takes an `OpenAiTransport[F]` by value. The underlying
 sttp backend holds thread pools and an HTTP client. The library never
 expresses lifetime — there is no
