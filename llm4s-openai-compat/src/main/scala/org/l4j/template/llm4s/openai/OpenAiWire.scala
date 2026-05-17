@@ -99,11 +99,35 @@ object OpenAiWire:
           "content" -> ujson.Str(result.text),
           "tool_call_id" -> toolCallId.getOrElse(""),
         )
+      case ai: ChatMessage.AiMessage if ai.hasToolCalls =>
+        // Assistant turns that issued tool calls MUST include the
+        // tool_calls array in the conversation history so the provider
+        // can match the next tool-role message to its originating call.
+        // Without this, Gemini's compat translates the next tool message
+        // into a function_response with no name and rejects the request
+        // (PR-21 follow-up). real OpenAI also expects this in multi-turn
+        // tool flows; omitting it was a latent bug.
+        ujson.Obj(
+          "role" -> "assistant",
+          "content" -> encodeContents(ai.contents),
+          "tool_calls" -> ujson.Arr.from(ai.toolCalls.map(encodeToolCall)),
+        )
       case other =>
         ujson.Obj(
           "role" -> other.role,
           "content" -> encodeContents(other.contents),
         )
+
+  private def encodeToolCall(call: ToolCall): ujson.Obj =
+    val obj = ujson.Obj(
+      "type" -> "function",
+      "function" -> ujson.Obj(
+        "name" -> call.name,
+        "arguments" -> call.argumentsJson,
+      ),
+    )
+    call.callId.foreach(id => obj("id") = ujson.Str(id))
+    obj
 
   private def encodeContents(contents: List[AiContent]): ujson.Value =
     if contents.forall(_.isInstanceOf[AiContent.Text]) then

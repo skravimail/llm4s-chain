@@ -74,7 +74,39 @@ class OpenAiCompatBackendSpec extends FunSuite:
     assert(!json.obj.contains("response_format"))
   }
 
+  test("PR-21 follow-up: assistant message with tool_calls includes the tool_calls array on the wire") {
+    import org.l4j.template.llm4s.core.AiContent
+    import org.l4j.template.llm4s.core.ToolCall
+    val request = ChatRequest(
+      messages = List(
+        ChatMessage.UserMessage.from("u"),
+        ChatMessage.AiMessage(
+          contents = List(AiContent.Text("")),
+          toolCalls = List(
+            ToolCall("define", """{"term":"monad"}""", Some("call-1")),
+            ToolCall("define", """{"term":"functor"}""", None),
+          ),
+          finishReason = Some(FinishReason.ToolCalls),
+        ),
+      ),
+    )
+
+    val json = OpenAiWire.encodeChatRequest("m", request)
+    val asst = json("messages").arr.toList.find(_("role").str == "assistant").get
+
+    assertEquals(asst("tool_calls").arr.size, 2)
+    val first = asst("tool_calls").arr(0)
+    assertEquals(first("type").str, "function")
+    assertEquals(first("function")("name").str, "define")
+    assertEquals(first("function")("arguments").str, """{"term":"monad"}""")
+    assertEquals(first("id").str, "call-1")
+    // Second call has no id — must not synthesize one
+    assert(!asst("tool_calls").arr(1).obj.contains("id"))
+  }
+
   test("PR-21: tool-result wire message includes `name` (Gemini compat requires it)") {
+    import org.l4j.template.llm4s.core.ToolCall
+    val _ = ToolCall // silence unused-import path
     val request = ChatRequest(
       messages = List(
         ChatMessage.UserMessage.from("u"),
