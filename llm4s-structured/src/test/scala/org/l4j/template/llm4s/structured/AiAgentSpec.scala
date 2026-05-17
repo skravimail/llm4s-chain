@@ -173,6 +173,24 @@ class AiAgentSpec extends FunSuite:
     assertEquals(backend.requests.head.messages.map(_.role), List("user", "assistant", "user"))
   }
 
+  test("AiAgent.chatAs fires the wired RuntimeListener (regression: chatAs used to bypass it)") {
+    val backend = RecordingBackend(
+      List(ChatResponse(ChatMessage.AiMessage.from("""{"summary":"Good","score":9}""")))
+    )
+    val seen = scala.collection.mutable.ListBuffer.empty[String]
+    val listener = new RuntimeListener.Default[IO]:
+      override def onChatStarted(t: TraceContext, r: ChatRequest): IO[Unit] =
+        IO { seen += "chat.started"; () }
+      override def onChatCompleted(t: TraceContext, r: ChatRequest, text: String, turns: Int, d: Long): IO[Unit] =
+        IO { seen += "chat.completed"; () }
+    val agent = AiAgent[IO](backend, ToolKit.empty[IO], RuntimeConfig(), listener)
+
+    val result = agent.chatAs[Review]("Return JSON.", "Review Scala").unsafeRunSync()
+
+    assertEquals(result, Review("Good", 9))
+    assertEquals(seen.toList, List("chat.started", "chat.completed"))
+  }
+
   test("AiAgent(backend, tools, config, listener) wires the listener into the runtime") {
     val backend = RecordingBackend(List(ChatResponse(ChatMessage.AiMessage.from("hi"))))
     val seen = scala.collection.mutable.ListBuffer.empty[String]

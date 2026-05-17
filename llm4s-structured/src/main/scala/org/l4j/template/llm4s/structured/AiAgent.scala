@@ -28,7 +28,7 @@ final class AiAgent[F[_]: MonadThrow: Parallel] private (
     runtime.chat(Some(system), user, tools)
 
   def chatAs[A](system: String, user: String)(using StructuredCodec[A]): F[A] =
-    StructuredOutputRuntime.chat[F, A](backend, config, Some(system), user, tools)
+    StructuredOutputRuntime.chat[F, A](runtime, Some(system), user, tools)
 
   def chatWithMemory[Id](
       memory: ChatMemory[F, Id],
@@ -45,8 +45,7 @@ final class AiAgent[F[_]: MonadThrow: Parallel] private (
       user: String,
   )(using StructuredCodec[A]): F[A] =
     StructuredOutputRuntime.chatWithMemory[F, A, Id](
-      backend = backend,
-      config = config,
+      runtime = runtime,
       memory = memory,
       memoryId = memoryId,
       system = Some(system),
