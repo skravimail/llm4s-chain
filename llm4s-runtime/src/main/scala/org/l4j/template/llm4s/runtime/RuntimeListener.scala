@@ -96,6 +96,29 @@ trait RuntimeListener[F[_]]:
   def onMemoryRead(trace: TraceContext, memoryId: String, messageCount: Int): F[Unit]
   def onMemoryWritten(trace: TraceContext, memoryId: String, messageCount: Int): F[Unit]
 
+  // -- Streaming scope ------------------------------------------------------
+
+  /** Fired when a `StreamingAiRuntime.stream(...)` consumer subscribes (i.e.
+    * the first event is pulled, not when the `TokenStream` is constructed —
+    * fs2 is lazy). Stream events are too chatty to emit individually; the
+    * pair below brackets the whole stream and reports total event count. */
+  def onStreamStarted(trace: TraceContext, request: ChatRequest): F[Unit]
+
+  def onStreamCompleted(
+      trace: TraceContext,
+      request: ChatRequest,
+      eventCount: Long,
+      durationNanos: Long,
+  ): F[Unit]
+
+  def onStreamFailed(
+      trace: TraceContext,
+      request: ChatRequest,
+      error: Throwable,
+      eventCount: Long,
+      durationNanos: Long,
+  ): F[Unit]
+
 object RuntimeListener:
 
   /** All-noop listener. Provided as the default so unwired runtimes carry no
@@ -111,6 +134,9 @@ object RuntimeListener:
     override def onToolFailed(c: ToolCall, ctx: InvocationContext, e: Throwable, a: Int, w: Boolean): F[Unit] = F.unit
     override def onMemoryRead(t: TraceContext, id: String, n: Int): F[Unit] = F.unit
     override def onMemoryWritten(t: TraceContext, id: String, n: Int): F[Unit] = F.unit
+    override def onStreamStarted(t: TraceContext, r: ChatRequest): F[Unit] = F.unit
+    override def onStreamCompleted(t: TraceContext, r: ChatRequest, n: Long, d: Long): F[Unit] = F.unit
+    override def onStreamFailed(t: TraceContext, r: ChatRequest, e: Throwable, n: Long, d: Long): F[Unit] = F.unit
 
   /** Helper for adopters who want a partial-override style with reasonable
     * defaults. Extend this instead of the bare trait and only override the
@@ -126,3 +152,6 @@ object RuntimeListener:
     override def onToolFailed(c: ToolCall, ctx: InvocationContext, e: Throwable, a: Int, w: Boolean): F[Unit] = F.unit
     override def onMemoryRead(t: TraceContext, id: String, n: Int): F[Unit] = F.unit
     override def onMemoryWritten(t: TraceContext, id: String, n: Int): F[Unit] = F.unit
+    override def onStreamStarted(t: TraceContext, r: ChatRequest): F[Unit] = F.unit
+    override def onStreamCompleted(t: TraceContext, r: ChatRequest, n: Long, d: Long): F[Unit] = F.unit
+    override def onStreamFailed(t: TraceContext, r: ChatRequest, e: Throwable, n: Long, d: Long): F[Unit] = F.unit
