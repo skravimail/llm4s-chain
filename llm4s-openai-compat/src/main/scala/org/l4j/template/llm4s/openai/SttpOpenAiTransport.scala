@@ -3,6 +3,8 @@ package org.l4j.template.llm4s.openai
 import cats.MonadThrow
 import cats.syntax.all.*
 import org.l4j.template.llm4s.core.TraceContext
+import scala.concurrent.duration.Duration
+import scala.concurrent.duration.FiniteDuration
 import sttp.client3.*
 import sttp.model.Uri
 
@@ -34,6 +36,7 @@ final class SttpOpenAiTransport[F[_]: MonadThrow](
     baseUri: Uri,
     backend: SttpBackend[F, Any],
     listener: HttpListener[F],
+    readTimeout: Duration = SttpOpenAiTransport.DefaultReadTimeout,
 ) extends OpenAiTransport[F]:
 
   override def post(
@@ -58,6 +61,7 @@ final class SttpOpenAiTransport[F[_]: MonadThrow](
       .headers(headers)
       .contentType("application/json")
       .response(asStringAlways)
+      .readTimeout(readTimeout)
       .body(ujson.write(body))
 
     listener.onHttpRequest(trace, request.method, request.uri) >> {
@@ -89,6 +93,14 @@ final class SttpOpenAiTransport[F[_]: MonadThrow](
     }
 
 object SttpOpenAiTransport:
+  /** Conservative ceiling on a single HTTP round-trip — large enough for
+    * slow local models (gemma, llama.cpp) generating structured output,
+    * small enough to fail fast on a hung server. Adopters who need a
+    * tighter or looser cap pass `readTimeout` to the constructor (or
+    * derive it from `OpenAiCompatConfig.requestTimeout`). */
+  val DefaultReadTimeout: FiniteDuration =
+    scala.concurrent.duration.Duration(5, scala.concurrent.duration.MINUTES)
+
   def apply[F[_]: MonadThrow](
       baseUri: Uri,
       backend: SttpBackend[F, Any],
@@ -101,3 +113,11 @@ object SttpOpenAiTransport:
       listener: HttpListener[F],
   ): SttpOpenAiTransport[F] =
     new SttpOpenAiTransport[F](baseUri, backend, listener)
+
+  def apply[F[_]: MonadThrow](
+      baseUri: Uri,
+      backend: SttpBackend[F, Any],
+      listener: HttpListener[F],
+      readTimeout: Duration,
+  ): SttpOpenAiTransport[F] =
+    new SttpOpenAiTransport[F](baseUri, backend, listener, readTimeout)

@@ -74,5 +74,7 @@ object OpenAiCompatBackend:
     val transport = SttpOpenAiTransport[F](
       baseUri = Uri.unsafeParse(config.baseUrl),
       backend = sttpBackend,
+      listener = HttpListener.noop[F],
+      readTimeout = config.requestTimeout,
     )
     new OpenAiCompatBackend[F](config, transport)

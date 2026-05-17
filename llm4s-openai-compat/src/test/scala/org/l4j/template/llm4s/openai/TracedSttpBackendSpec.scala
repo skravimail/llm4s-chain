@@ -120,6 +120,33 @@ class TracedSttpBackendSpec extends FunSuite:
     assertEquals(httpIds.size, 2)
   }
 
+  test("SttpOpenAiTransport applies its readTimeout to the outgoing sttp request") {
+    import scala.concurrent.duration.*
+    val responseJson = """{"id":"r","choices":[{"finish_reason":"stop","message":{"content":"hi"}}]}"""
+    val program = for
+      seen <- Ref.of[IO, Option[Duration]](None)
+      sttpBackend = new SttpBackend[IO, Any]:
+        override def send[T, R >: Any & Effect[IO]](r: Request[T, R]): IO[Response[T]] =
+          seen.set(Some(r.options.readTimeout)) *>
+            IO.pure(Response[T](responseJson.asInstanceOf[T], StatusCode.Ok))
+        override def close(): IO[Unit] = IO.unit
+        override val responseMonad: SttpMonadError[IO] =
+          new sttp.client3.impl.cats.CatsMonadAsyncError[IO]
+      transport = SttpOpenAiTransport[IO](
+        Uri.unsafeParse("https://example.test/v1"),
+        sttpBackend,
+        HttpListener.noop[IO],
+        300.seconds,
+      )
+      _ <- transport.post("/chat/completions", ujson.Obj(), Map.empty)
+      observed <- seen.get
+    yield observed
+
+    val observed = program.unsafeRunSync()
+    // Without the fix, observed would be sttp's basicRequest default (1 minute).
+    assertEquals(observed, Some(300.seconds))
+  }
+
   test("traced backend forwards close() and responseMonad to underlying") {
     val closeCount = Ref.unsafe[IO, Int](0)
     val under = closingBackend(closeCount)

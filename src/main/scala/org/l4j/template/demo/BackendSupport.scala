@@ -51,6 +51,7 @@ object BackendSupport:
             Uri.unsafeParse(app.llm.baseUrl),
             sttpBackend,
             bundle.http,
+            app.llm.requestTimeout,
           )
           val backend = OpenAiCompatBackend[IO](
             OpenAiCompatConfig(
