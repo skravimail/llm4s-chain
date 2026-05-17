@@ -9,9 +9,29 @@ import org.l4j.template.llm4s.core.ChatRequest
 import org.l4j.template.llm4s.core.FinishReason
 import org.l4j.template.llm4s.memory.ChatMemory
 
+object AiRuntime:
+  def apply[F[_]: MonadThrow: Parallel](
+      backend: ChatBackend[F],
+  ): AiRuntime[F] =
+    new AiRuntime[F](backend, RuntimeConfig(), RuntimeListener.noop[F])
+
+  def apply[F[_]: MonadThrow: Parallel](
+      backend: ChatBackend[F],
+      config: RuntimeConfig,
+  ): AiRuntime[F] =
+    new AiRuntime[F](backend, config, RuntimeListener.noop[F])
+
+  def apply[F[_]: MonadThrow: Parallel](
+      backend: ChatBackend[F],
+      config: RuntimeConfig,
+      listener: RuntimeListener[F],
+  ): AiRuntime[F] =
+    new AiRuntime[F](backend, config, listener)
+
 final class AiRuntime[F[_]: MonadThrow: Parallel](
     backend: ChatBackend[F],
-    config: RuntimeConfig = RuntimeConfig(),
+    config: RuntimeConfig,
+    listener: RuntimeListener[F],
 ):
 
   private final case class ChatRunResult(
@@ -77,7 +97,12 @@ final class AiRuntime[F[_]: MonadThrow: Parallel](
       request: ChatRequest,
       toolKit: ToolKit[F],
   ): F[ChatRunResult] =
-    loop(turn = 0, request = request.copy(tools = toolKit.schemas), toolKit = toolKit)
+    val initial = request.copy(tools = toolKit.schemas)
+    for
+      _ <- listener.onChatStarted(initial)
+      result <- loop(turn = 0, request = initial, toolKit = toolKit)
+      _ <- listener.onChatCompleted(initial, result.text, result.messages.length - initial.messages.length)
+    yield result
 
   /** Drive the chat loop in a stack-safe way via `tailRecM`.
     *
@@ -121,6 +146,7 @@ final class AiRuntime[F[_]: MonadThrow: Parallel](
                   turn = currentTurn + 1,
                   request = currentRequest,
                   config = config,
+                  listener = listener,
                 )
                 .map { toolMessages =>
                   val nextRequest = currentRequest.copy(
