@@ -214,6 +214,13 @@ None of these were observed.
 
 ## 10. JSON is hand‑built with string interpolation in at least one place
 
+> ✅ **Fixed** — 2026-05-17 in `abf793d`.
+> Replaced the interpolated JSON in `GuardedToolExecutor` with
+> `ujson.Obj`. Regression test added that round‑trips backslash,
+> double quote, newline, tab, and a non‑BMP emoji to assert the
+> output parses back cleanly. (PR-4 already cleaned up the same
+> pattern in `ToolDefinition`.)
+
 `GuardedToolExecutor` builds JSON like this:
 
 ```scala
