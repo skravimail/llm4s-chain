@@ -23,6 +23,9 @@ count grew from 51 → **120** across all modules; all green under
 | PR-8d | `76dbc95`  | natchez adapter module — `NatchezRuntimeListener` / `NatchezGuardrailListener` / `NatchezWorkflowListener` |
 | PR-8e | `8f15647`  | HTTP-level listener: `HttpListener[F]` + `TracedSttpBackend[F, P]` + `NatchezHttpListener` |
 | PR-8f | `506e4f7`  | Thread `TraceContext` through `OpenAiTransport` so plain `HttpListener` events correlate with chat events without needing natchez |
+| PR-18 | `c720ac7`  | `ResponseFormatMode { JsonSchema \| JsonObject \| Disabled }` on `OpenAiCompatConfig` — older servers (osaurus, older LM Studio, llama.cpp) that don't implement strict json_schema now usable |
+| PR-19 | `09831f1`  | `OpenAiCompatConfig.requestTimeout` (default 60s) wired into `AsyncHttpClientCatsBackend.resourceUsingConfigBuilder`; `LLM4S_REQUEST_TIMEOUT_SECONDS` env knob — local models generating structured output over long prompts no longer hit the sttp 60s default |
+| PR-20 | `b6ff757`  | `JsonExtractor` pulls JSON out of markdown fences / prose preludes / prose suffixes; `DerivedStructuredCodec.decode` now routes through it — `chatAs[T]` survives chatty models that wrap their output |
 | PR-9  | `9492f30`  | `ChatBackendLaws` + SSE corpus + `JsonSchema` wire round-trip coverage    |
 | PR-10 | `abf793d`  | `GuardedToolExecutor` builds error JSON via `ujson.Obj`                   |
 | PR-11 | `6ca04c2`  | `ChatTranscript(system, turns)` replaces the `dropLeadingSystem` hack     |
