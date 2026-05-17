@@ -58,6 +58,14 @@ stack‑safety issue.
 
 ## 3. `ToolKit` stores schemas and executors in two unrelated collections
 
+> ✅ **Fixed** — 2026-05-17 in `53a144f`.
+> Repackaged as `Map[String, ToolEntry[F]]` with the schema + executor
+> paired by construction. New constructors `ToolKit.of`,
+> `ToolKit.fromPairs`, `withEntry`, and a backwards‑compatible
+> `apply(schemas, executors)` that *fails loudly* on the orphan / typo
+> case (the existing `GuardrailsSpec` was relying on that footgun and
+> was fixed in the same commit).
+
 ```scala
 final case class ToolKit[F[_]](
     schemas: List[ToolSchema],
