@@ -9,10 +9,16 @@ object OpenAiStreamDecoder:
 
   def decodeLine(line: String): List[StreamEvent] =
     val trimmed = line.trim
-    if trimmed.isEmpty || trimmed == "data: [DONE]" then
+    if trimmed.isEmpty || trimmed.startsWith(":") || trimmed == "data: [DONE]" then
+      // SSE keepalive lines start with `:`; empty / [DONE] are framing.
       Nil
     else if trimmed.startsWith("data: ") then
-      decodeJson(ujson.read(trimmed.stripPrefix("data: ")))
+      // Providers occasionally emit partial chunks during reconnects or
+      // back-pressure. Don't propagate parser errors out of the decoder —
+      // skip the bad line so the rest of the stream keeps flowing.
+      scala.util.Try(ujson.read(trimmed.stripPrefix("data: "))).toOption
+        .toList
+        .flatMap(decodeJson)
     else
       Nil
 
