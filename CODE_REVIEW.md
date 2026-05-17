@@ -166,13 +166,31 @@ error blob just trains it to keep doing it.
 
 ## 8. No telemetry / tracing seams
 
-> ✅ **Fixed** — 2026-05-17 in `d818a07`.
-> Added `RuntimeListener[F]` with `onChatStarted`, `onChatCompleted`,
+> ✅ **Fixed** — 2026-05-17 in `d818a07` (PR-8 v1) and `3c96525` (PR-8b v2).
+>
+> PR-8 added `RuntimeListener[F]` with `onChatStarted`, `onChatCompleted`,
 > `onToolCalled`, `onToolSucceeded`, `onToolFailed`. Wired through
 > `AiRuntime` and `ToolLoop` (including the `RetryOnce` retry leg).
 > `RuntimeListener.noop` is the default so existing code is
 > unaffected; adopters pass their own to instrument metrics, logs, or
 > traces. Tests assert events fire in the expected order.
+>
+> PR-8b extended the seam for true end-to-end tracking:
+> - Added `TraceContext` (with `TraceId` / `SpanId`) in `llm4s-core`;
+>   threaded through `InvocationContext` and every chat-level event.
+> - Added `onProviderRequest` / `onProviderResponse` per backend
+>   round-trip, so multi-turn loops are observable per turn (not just
+>   bracketed once).
+> - Added `onChatFailed`; completion events now carry `durationNanos`.
+> - `onToolFailed` carries `attempt` (1-based) and `willRetry` so
+>   `RetryOnce` retries are distinguishable from independent failures.
+> - Added `onMemoryRead` / `onMemoryWritten` on `MemoryAwareRuntime`,
+>   firing under the chat's own `TraceContext`.
+> - Sibling `GuardrailListener` in `llm4s-guardrails` with
+>   `onInputBlocked` / `onOutputBlocked` / `onToolBlocked`; wired into
+>   `GuardrailChain` (parallel + sequential variants).
+> - 10 new tests cover correlation, timing, retry visibility, and
+>   guardrail/chat failure paths.
 
 For a library aimed at agentic workflows there is no `Trace[F]` typeclass, no
 hook to emit per‑turn / per‑tool events, no metric counters. People will write

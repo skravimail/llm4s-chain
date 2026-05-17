@@ -18,6 +18,7 @@ count grew from 51 → **120** across all modules; all green under
 | PR-6  | `992c8a2`  | Parallel guardrails and parallel tool calls (`Parallel[F]` threaded through `AiRuntime` / `AiAgent`) |
 | PR-7  | `cb9b1e1`  | `ToolErrorPolicy.{SurfaceToModel, FailFast, RetryOnce}` + typed unknown-tool errors |
 | PR-8  | `d818a07`  | `RuntimeListener[F]` telemetry hook (chat-started/completed, tool-called/succeeded/failed) |
+| PR-8b | `3c96525`  | `RuntimeListener` v2: `TraceContext`, per-call timing, per-provider-call visibility, retry visibility, memory I/O hooks, sibling `GuardrailListener` |
 | PR-9  | `9492f30`  | `ChatBackendLaws` + SSE corpus + `JsonSchema` wire round-trip coverage    |
 | PR-10 | `abf793d`  | `GuardedToolExecutor` builds error JSON via `ujson.Obj`                   |
 | PR-11 | `6ca04c2`  | `ChatTranscript(system, turns)` replaces the `dropLeadingSystem` hack     |
