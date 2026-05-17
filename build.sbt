@@ -1,16 +1,13 @@
 // build.sbt — project root
+//
+// Versions and grouped library dependencies live in project/Dependencies.scala
+// (PR-15). Don't add new versions inline here.
+
+import Dependencies.*
 
 ThisBuild / organization := "org.l4j.template"
 ThisBuild / version := "0.1.0-SNAPSHOT"
 ThisBuild / scalaVersion := "3.3.4"
-
-val munitVersion       = "1.1.1"
-val logbackVersion     = "1.4.14"
-val scalaLogging       = "3.9.5"
-val uPickleVersion     = "4.1.0"
-val catsEffectVersion  = "3.5.4"
-val fs2Version         = "3.10.2"
-val sttpVersion        = "3.10.3"
 
 lazy val commonSettings = Seq(
   scalacOptions ++= Seq(
@@ -19,12 +16,18 @@ lazy val commonSettings = Seq(
     "-unchecked",
     "-encoding", "UTF-8",
     "-Wunused:imports",
+    "-Wvalue-discard",
+    "-Wnonunit-statement",
+    // `-Xfatal-warnings` deliberately *not* set yet: existing code emits
+    // a few benign anonymous-class-at-inline-site warnings; turning them
+    // fatal would block useful PRs. See CODE_REVIEW.md PR-15.
   ),
   Test / fork := false,
-)
-
-lazy val testDeps = Seq(
-  "org.scalameta" %% "munit" % munitVersion % Test
+  // Flat layering avoids sbt's hierarchical classloader splitting cats-effect
+  // / fs2 classes across loaders inside test runs, which otherwise produces
+  // spurious `LinkageError`s on Scala 3 inline-derived givens. Set once here
+  // instead of being copy-pasted into every sub-project (PR-15).
+  Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat,
 )
 
 lazy val llm4sCore = (project in file("llm4s-core"))
@@ -41,11 +44,7 @@ lazy val llm4sRuntime = (project in file("llm4s-runtime"))
   .settings(
     name := "llm4s-runtime",
     exportJars := true,
-    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat,
-    libraryDependencies ++= testDeps ++ Seq(
-      "org.typelevel" %% "cats-effect" % catsEffectVersion,
-      "com.lihaoyi" %% "upickle" % uPickleVersion,
-    ),
+    libraryDependencies ++= standardModuleDeps,
   )
 
 lazy val llm4sStreaming = (project in file("llm4s-streaming"))
@@ -54,11 +53,7 @@ lazy val llm4sStreaming = (project in file("llm4s-streaming"))
   .settings(
     name := "llm4s-streaming",
     exportJars := true,
-    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat,
-    libraryDependencies ++= testDeps ++ Seq(
-      "org.typelevel" %% "cats-effect" % catsEffectVersion,
-      "co.fs2" %% "fs2-core" % fs2Version,
-    ),
+    libraryDependencies ++= testDeps ++ catsEffectFs2Deps,
   )
 
 lazy val llm4sOpenAiCompat = (project in file("llm4s-openai-compat"))
@@ -66,14 +61,7 @@ lazy val llm4sOpenAiCompat = (project in file("llm4s-openai-compat"))
   .settings(commonSettings)
   .settings(
     name := "llm4s-openai-compat",
-    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat,
-    libraryDependencies ++= testDeps ++ Seq(
-      "org.typelevel" %% "cats-effect" % catsEffectVersion,
-      "co.fs2" %% "fs2-core" % fs2Version,
-      "com.lihaoyi" %% "upickle" % uPickleVersion,
-      "com.softwaremill.sttp.client3" %% "core" % sttpVersion,
-      "com.softwaremill.sttp.client3" %% "async-http-client-backend-cats" % sttpVersion,
-    ),
+    libraryDependencies ++= testDeps ++ catsEffectFs2Deps ++ Seq(uPickle) ++ sttpDeps,
   )
 
 lazy val llm4sTools = (project in file("llm4s-tools"))
@@ -82,11 +70,7 @@ lazy val llm4sTools = (project in file("llm4s-tools"))
   .settings(
     name := "llm4s-tools",
     exportJars := true,
-    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat,
-    libraryDependencies ++= testDeps ++ Seq(
-      "org.typelevel" %% "cats-effect" % catsEffectVersion,
-      "com.lihaoyi" %% "upickle" % uPickleVersion,
-    ),
+    libraryDependencies ++= standardModuleDeps,
   )
 
 lazy val llm4sMemory = (project in file("llm4s-memory"))
@@ -95,10 +79,7 @@ lazy val llm4sMemory = (project in file("llm4s-memory"))
   .settings(
     name := "llm4s-memory",
     exportJars := true,
-    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat,
-    libraryDependencies ++= testDeps ++ Seq(
-      "org.typelevel" %% "cats-effect" % catsEffectVersion,
-    ),
+    libraryDependencies ++= testDeps ++ catsEffectDeps,
   )
 
 lazy val llm4sRag = (project in file("llm4s-rag"))
@@ -107,11 +88,7 @@ lazy val llm4sRag = (project in file("llm4s-rag"))
   .settings(
     name := "llm4s-rag",
     exportJars := true,
-    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat,
-    libraryDependencies ++= testDeps ++ Seq(
-      "org.typelevel" %% "cats-effect" % catsEffectVersion,
-      "com.lihaoyi" %% "upickle" % uPickleVersion,
-    ),
+    libraryDependencies ++= standardModuleDeps,
   )
 
 lazy val llm4sAgentic = (project in file("llm4s-agentic"))
@@ -120,10 +97,7 @@ lazy val llm4sAgentic = (project in file("llm4s-agentic"))
   .settings(
     name := "llm4s-agentic",
     exportJars := true,
-    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat,
-    libraryDependencies ++= testDeps ++ Seq(
-      "org.typelevel" %% "cats-effect" % catsEffectVersion,
-    ),
+    libraryDependencies ++= testDeps ++ catsEffectDeps,
   )
 
 lazy val llm4sMcp = (project in file("llm4s-mcp"))
@@ -132,12 +106,7 @@ lazy val llm4sMcp = (project in file("llm4s-mcp"))
   .settings(
     name := "llm4s-mcp",
     exportJars := true,
-    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat,
-    libraryDependencies ++= testDeps ++ Seq(
-      "org.typelevel" %% "cats-effect" % catsEffectVersion,
-      "com.lihaoyi" %% "upickle" % uPickleVersion,
-      "com.softwaremill.sttp.client3" %% "core" % sttpVersion,
-    ),
+    libraryDependencies ++= testDeps ++ catsEffectDeps ++ Seq(uPickle, sttpCore),
   )
 
 lazy val llm4sGuardrails = (project in file("llm4s-guardrails"))
@@ -146,10 +115,7 @@ lazy val llm4sGuardrails = (project in file("llm4s-guardrails"))
   .settings(
     name := "llm4s-guardrails",
     exportJars := true,
-    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat,
-    libraryDependencies ++= testDeps ++ Seq(
-      "org.typelevel" %% "cats-effect" % catsEffectVersion,
-    ),
+    libraryDependencies ++= testDeps ++ catsEffectDeps,
   )
 
 lazy val llm4sStructured = (project in file("llm4s-structured"))
@@ -158,11 +124,21 @@ lazy val llm4sStructured = (project in file("llm4s-structured"))
   .settings(
     name := "llm4s-structured",
     exportJars := true,
-    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat,
-    libraryDependencies ++= testDeps ++ Seq(
-      "org.typelevel" %% "cats-effect" % catsEffectVersion,
-      "com.lihaoyi" %% "upickle" % uPickleVersion,
-    ),
+    libraryDependencies ++= standardModuleDeps,
+  )
+
+/** Pseudo-aggregate that lets CI compile/test everything with a single task
+  * (`sbt all/test`) without dragging the demo runner's runtime deps in. */
+lazy val all = (project in file(".all"))
+  .settings(commonSettings)
+  .settings(
+    name := "llm4s-all",
+    publish / skip := true,
+  )
+  .aggregate(
+    llm4sCore, llm4sRuntime, llm4sStreaming, llm4sOpenAiCompat,
+    llm4sTools, llm4sMemory, llm4sRag, llm4sAgentic, llm4sMcp,
+    llm4sGuardrails, llm4sStructured,
   )
 
 lazy val root = (project in file("."))
@@ -171,12 +147,12 @@ lazy val root = (project in file("."))
   .settings(
     name := "l4j-template",
     libraryDependencies ++= testDeps ++ Seq(
-      "ch.qos.logback" % "logback-classic" % logbackVersion,
-      "com.typesafe.scala-logging" %% "scala-logging" % scalaLogging,
-      "com.lihaoyi" %% "upickle" % uPickleVersion,
-      "org.typelevel" %% "cats-effect" % catsEffectVersion,
-      "com.softwaremill.sttp.client3" %% "core" % sttpVersion,
-      "com.softwaremill.sttp.client3" %% "async-http-client-backend-cats" % sttpVersion,
+      logback,
+      scalaLogging,
+      uPickle,
+      catsEffect,
+      sttpCore,
+      sttpCatsAsync,
     ),
     Compile / mainClass := Some("org.l4j.template.demo.AgentDemoMain"),
     Compile / scalafmtOnCompile := false,
