@@ -87,9 +87,15 @@ object OpenAiWire:
 
   private def encodeMessage(message: ChatMessage): ujson.Obj =
     message match
-      case ChatMessage.ToolResultMessage(_, toolCallId, result) =>
+      case ChatMessage.ToolResultMessage(toolName, toolCallId, result) =>
+        // `name` is optional for real OpenAI (it gets the function from
+        // tool_call_id) but Gemini's OpenAI-compat layer maps `tool`-role
+        // messages into its native `function_response` shape, which makes
+        // the function name required. Sending it on every tool message is
+        // a harmless superset that all known providers accept (PR-21).
         ujson.Obj(
           "role" -> "tool",
+          "name" -> toolName,
           "content" -> ujson.Str(result.text),
           "tool_call_id" -> toolCallId.getOrElse(""),
         )

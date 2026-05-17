@@ -74,6 +74,26 @@ class OpenAiCompatBackendSpec extends FunSuite:
     assert(!json.obj.contains("response_format"))
   }
 
+  test("PR-21: tool-result wire message includes `name` (Gemini compat requires it)") {
+    val request = ChatRequest(
+      messages = List(
+        ChatMessage.UserMessage.from("u"),
+        ChatMessage.ToolResultMessage(
+          toolName = "lookup",
+          toolCallId = Some("call-99"),
+          result = org.l4j.template.llm4s.core.ToolResult.Text("ok"),
+        ),
+      ),
+    )
+
+    val json = OpenAiWire.encodeChatRequest("m", request)
+    val toolMsg = json("messages").arr.toList.find(_("role").str == "tool").get
+
+    assertEquals(toolMsg("name").str, "lookup")
+    assertEquals(toolMsg("tool_call_id").str, "call-99")
+    assertEquals(toolMsg("content").str, "ok")
+  }
+
   test("response_format mode defaults to JsonSchema (existing behaviour)") {
     val schema = JsonSchema.ObjectSchema(Map("a" -> JsonSchema.StringSchema()), Set("a"))
     val request = ChatRequest(
