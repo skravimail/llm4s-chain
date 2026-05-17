@@ -116,6 +116,16 @@ For a cats‑effect‑native library this is a notable omission.
 
 ## 6. Sequential guardrail and tool execution where parallel is correct
 
+> ✅ **Fixed** — 2026-05-17 in `992c8a2`.
+> `GuardrailChain.checkInput/checkOutput/checkTool` now require
+> `Parallel[F]` and `parTraverse` the registered guardrails (first
+> block wins). Sequential transform‑chain semantics are retained as
+> opt‑in `checkInputSequential` (and its output/tool siblings).
+> `ToolLoop.executeAll` now `parTraverse`s tool calls. `Parallel[F]`
+> threaded through `AiRuntime`, `AiAgent`, `StructuredOutputRuntime`,
+> `GuardedChatBackend`, and `GuardedToolKit`. Sleep‑and‑measure tests
+> prove the parallelism.
+
 - `GuardrailChain.checkInput` `foldLeft`s through input guardrails one at a
   time. Most of those are independent checks; on async I/O (e.g. moderation
   calls) you pay latency you don’t need to. `parTraverse` over independent
