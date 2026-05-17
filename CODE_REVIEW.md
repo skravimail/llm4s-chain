@@ -34,6 +34,13 @@ have to grep error strings to react to failures.
 
 ## 2. Wrong effect constraints and missing stack‑safety in the chat loop
 
+> ✅ **Fixed** — 2026-05-17 in `a131773`.
+> `AiRuntime.loop` is now expressed as `Monad[F].tailRecM` over
+> `(turn, request)`, so any monad with a stack‑safe `tailRecM`
+> (cats‑effect `IO`, `Eval`, …) drives it without exhausting the JVM
+> stack. A 5000‑turn test was added. `MonadThrow` is retained where it
+> is actually needed (raising typed errors / `handleErrorWith`).
+
 `ToolLoop.executeAll`, `AiRuntime.loop`, `GuardrailChain.checkInput` all demand
 `MonadThrow[F]`, but several of those paths never raise — they only
 `pure`/`map`/`flatMap`. Conversely, `AiRuntime.loop`’s recursion is **not
