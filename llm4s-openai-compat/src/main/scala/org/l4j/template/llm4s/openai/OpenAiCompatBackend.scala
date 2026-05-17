@@ -50,9 +50,20 @@ object OpenAiCompatBackend:
     * code should hand lifetime to `Resource`.
     */
   def resource[F[_]: Async](config: OpenAiCompatConfig): Resource[F, ChatBackend[F]] =
-    AsyncHttpClientCatsBackend.resource[F]().map { sttp =>
-      fromSttp(config, sttp)
-    }
+    AsyncHttpClientCatsBackend
+      .resourceUsingConfigBuilder[F](
+        updateConfig = _
+          // Wall-clock cap on a single request (PR-19). Defaults to 60s in
+          // sttp; small local models often need 2–5× that for structured
+          // generation.
+          .setRequestTimeout(config.requestTimeout.toMillis.toInt)
+          // Read timeout governs how long we'll wait between bytes from
+          // the server. For streaming-style responses the model can stall
+          // mid-stream while it thinks; keep this in lockstep with the
+          // request timeout.
+          .setReadTimeout(config.requestTimeout.toMillis.toInt)
+      )
+      .map(sttp => fromSttp(config, sttp))
 
   /** Wrap an externally-owned sttp backend. The caller keeps responsibility
     * for closing it. */

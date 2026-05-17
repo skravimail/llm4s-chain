@@ -6,6 +6,7 @@ import org.l4j.template.llm4s.core.ChatBackend
 import org.l4j.template.llm4s.openai.OpenAiCompatBackend
 import org.l4j.template.llm4s.openai.OpenAiCompatConfig
 import org.l4j.template.llm4s.openai.ResponseFormatMode
+import scala.concurrent.duration.*
 
 object BackendSupport:
 
@@ -16,6 +17,9 @@ object BackendSupport:
     val responseFormatMode = parseResponseFormatMode(
       sys.env.getOrElse("LLM4S_RESPONSE_FORMAT_MODE", "json_schema")
     )
+    val requestTimeout = parseTimeoutSeconds(
+      sys.env.getOrElse("LLM4S_REQUEST_TIMEOUT_SECONDS", "60")
+    )
 
     OpenAiCompatBackend.resource[IO](
       OpenAiCompatConfig(
@@ -23,8 +27,20 @@ object BackendSupport:
         apiKey = apiKey,
         model = modelName,
         responseFormatMode = responseFormatMode,
+        requestTimeout = requestTimeout,
       )
     )
+
+  /** Parse `LLM4S_REQUEST_TIMEOUT_SECONDS` into a `FiniteDuration`. Local
+    * models generating structured output frequently need 2–5× the sttp 60s
+    * default; this env knob avoids editing code to bump it (PR-19). */
+  private def parseTimeoutSeconds(raw: String): FiniteDuration =
+    raw.trim.toIntOption match
+      case Some(n) if n > 0 => n.seconds
+      case _ =>
+        throw IllegalArgumentException(
+          s"Invalid LLM4S_REQUEST_TIMEOUT_SECONDS='$raw'; expected a positive integer"
+        )
 
   /** Parse `LLM4S_RESPONSE_FORMAT_MODE`. Defaults to JsonSchema (the strict
     * shape) but adopters running against older servers (osaurus, older LM

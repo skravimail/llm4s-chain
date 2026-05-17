@@ -22,10 +22,17 @@ enum ResponseFormatMode:
   case JsonObject
   case Disabled
 
+import scala.concurrent.duration.*
+
 final case class OpenAiCompatConfig(
     baseUrl: String,
     apiKey: String,
     model: String,
     defaultHeaders: Map[String, String] = Map.empty,
     responseFormatMode: ResponseFormatMode = ResponseFormatMode.JsonSchema,
+    /** Per-request HTTP timeout passed down to the sttp `AsyncHttpClient`.
+      * Defaults to 60s (the sttp default). Bump this for slow local models
+      * — a small gemma running structured output over a multi-paragraph
+      * prompt can easily exceed 60s on consumer hardware (PR-19). */
+    requestTimeout: FiniteDuration = 60.seconds,
 )

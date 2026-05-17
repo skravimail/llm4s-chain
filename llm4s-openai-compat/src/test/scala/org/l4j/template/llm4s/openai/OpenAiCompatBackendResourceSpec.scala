@@ -54,6 +54,22 @@ class OpenAiCompatBackendResourceSpec extends FunSuite:
     assertEquals(program.unsafeRunSync(), 1)
   }
 
+  test("PR-19: OpenAiCompatConfig.requestTimeout has a sensible default and propagates to the resource builder") {
+    import scala.concurrent.duration.*
+    // Default-construct: should be the documented 60-second sttp default.
+    val default = OpenAiCompatConfig("http://x/v1", "k", "m")
+    assertEquals(default.requestTimeout, 60.seconds)
+
+    // Overriding through copy is the normal customisation path.
+    val tuned = default.copy(requestTimeout = 300.seconds)
+    assertEquals(tuned.requestTimeout, 300.seconds)
+
+    // Smoke-test that the Resource builds with a custom timeout (we don't
+    // hit the network — just prove the wiring compiles and doesn't throw).
+    val res = OpenAiCompatBackend.resource[IO](tuned)
+    res.use(_ => IO.unit).unsafeRunSync()
+  }
+
   test("OpenAiCompatStreamingBackend.resource releases its inner transport") {
     val program = for
       released <- Ref.of[IO, Int](0)
