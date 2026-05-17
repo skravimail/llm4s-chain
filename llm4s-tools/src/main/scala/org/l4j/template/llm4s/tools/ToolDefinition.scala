@@ -27,7 +27,30 @@ object ToolDefinition:
   )(
       fn: A => F[ToolResult]
   )(using schemaEncoder: SchemaEncoder[A], valueDecoder: ValueDecoder[A]): ToolDefinition[F] =
-    val schema = schemaEncoder.schema match
+    build(name, description, schemaEncoder.schema, valueDecoder, fn)
+
+  /** Build a tool from any type that has a `ToolDef[A]` — typically obtained
+    * via `case class Args(...) derives ToolDef`.
+    *
+    * One context bound instead of two means schema and decoder cannot drift
+    * apart at the call site.
+    */
+  def fromArgs[F[_]: MonadThrow, A](
+      name: String,
+      description: String,
+  )(
+      fn: A => F[ToolResult]
+  )(using toolDef: ToolDef[A]): ToolDefinition[F] =
+    build(name, description, toolDef.schema, toolDef.decoder, fn)
+
+  private def build[F[_]: MonadThrow, A](
+      name: String,
+      description: String,
+      rawSchema: JsonSchema,
+      decoder: ValueDecoder[A],
+      fn: A => F[ToolResult],
+  ): ToolDefinition[F] =
+    val schema = rawSchema match
       case objectSchema: JsonSchema.ObjectSchema => objectSchema
       case other =>
         JsonSchema.ObjectSchema(
@@ -42,17 +65,14 @@ object ToolDefinition:
             call: org.l4j.template.llm4s.core.ToolCall,
             context: InvocationContext,
         ): F[ToolResult] =
-          valueDecoder.decode(ujson.read(call.argumentsJson)) match
+          decoder.decode(ujson.read(call.argumentsJson)) match
             case Right(args) =>
               fn(args)
             case Left(message) =>
               MonadThrow[F].pure(
                 ToolResult.StructuredJson(
-                  s"""{"error":"${escape(message)}"}""",
+                  ujson.write(ujson.Obj("error" -> message)),
                   isError = true,
                 )
               )
     )
-
-  private def escape(value: String): String =
-    value.replace("\\", "\\\\").replace("\"", "\\\"")
