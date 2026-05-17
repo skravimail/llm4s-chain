@@ -303,6 +303,19 @@ feature request without becoming 2×2×N.
 
 ## 14. Module boundaries leak
 
+> ✅ **Fixed** — 2026-05-17 in `e179359`.
+> - `InvocationContext` moved to `llm4s-core`. A type alias remains in
+>   `llm4s-runtime` for source compatibility, but `llm4s-guardrails`
+>   now imports `InvocationContext` from core directly (the trait
+>   surface no longer points at the runtime module).
+> - `AiRuntime` no longer depends on `llm4s-memory`. `chatWithMemory`
+>   / `chatRequestWithMemory` migrated to `MemoryAwareRuntime[F, Id]`
+>   in `llm4s-memory`, which wraps an `AiRuntime` using a new
+>   `chatRequestWithMessages` hook. `build.sbt` reverses the
+>   dependency direction; `AiAgent` and `StructuredOutputRuntime`
+>   construct `MemoryAwareRuntime` on demand. The memory round‑trip
+>   test moved to `MemoryAwareRuntimeSpec`.
+
 - `llm4s-guardrails` depends on `llm4s-runtime` only because `ToolGuardrail`
   needs `InvocationContext`. That type lives in `llm4s-runtime` but is really
   a *cross‑cutting* value (also referenced by `llm4s-tools`). It probably
