@@ -257,6 +257,14 @@ not carry “oops, strip the system prompt” logic around.
 
 ## 12. `AiAgent` constructs a fresh `AiRuntime` per agent and per copy
 
+> ✅ **Fixed** — 2026-05-17 in `05ca1f0`.
+> `AiAgent` now holds an explicit `runtime` field that `withTools`
+> threads through unchanged — derived agents share the same
+> `AiRuntime` instance, so any future runtime state (rate limiter,
+> in‑flight counter, cache) is shared not duplicated. `withConfig`
+> still builds a new runtime because config is baked into it. Tests
+> use reference equality to lock the invariant.
+
 ```scala
 private val runtime: AiRuntime[F] = AiRuntime[F](backend, config)
 ...
