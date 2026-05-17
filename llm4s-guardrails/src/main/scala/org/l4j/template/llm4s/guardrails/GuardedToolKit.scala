@@ -30,11 +30,14 @@ private final case class GuardedToolExecutor[F[_]: MonadThrow: Parallel](
       .flatMap(underlying.execute(_, context))
       .recover { case GuardrailBlockedException(violation) =>
         ToolResult.StructuredJson(
-          s"""{"error":"tool call blocked by guardrail","code":"${escape(violation.code)}","message":"${escape(violation.message)}"}""",
+          ujson.write(
+            ujson.Obj(
+              "error" -> "tool call blocked by guardrail",
+              "code" -> violation.code,
+              "message" -> violation.message,
+            )
+          ),
           isError = true,
         )
       }
-
-  private def escape(value: String): String =
-    value.replace("\\", "\\\\").replace("\"", "\\\"")
 
