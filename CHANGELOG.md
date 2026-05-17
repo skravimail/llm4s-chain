@@ -1,5 +1,44 @@
 # Native Scala 3 Framework-Parity PR Plan
 
+## 2026-05-17 — CODE_REVIEW.md punch list cleared (PR-1 through PR-17)
+
+Seventeen review items from `CODE_REVIEW.md` were implemented end-to-end on the
+`pr16_non_macro_aiagent` branch, each delivered as a pair of commits (one for
+the code change + tests, one for the `CODE_REVIEW.md` status update). Test
+count grew from 51 → **120** across all modules; all green under
+`sbt all/test`.
+
+| PR    | Fix commit | Headline                                                                  |
+| ----- | ---------- | ------------------------------------------------------------------------- |
+| PR-1  | `2a4260d`  | Typed `AiRuntimeError` ADT replaces `RuntimeException(String)`            |
+| PR-2  | `a131773`  | Stack-safe chat loop via `Monad.tailRecM`                                 |
+| PR-3  | `53a144f`  | `ToolKit` backed by `Map[String, ToolEntry]`; orphan schemas / executors fail loudly |
+| PR-4  | `9e01c71`  | `derives ToolDef` collapses schema + decoder into one inline-derived clause |
+| PR-5  | `0f28ce3`  | `OpenAiCompatBackend.resource[F]` (and streaming variant) own sttp lifecycle |
+| PR-6  | `992c8a2`  | Parallel guardrails and parallel tool calls (`Parallel[F]` threaded through `AiRuntime` / `AiAgent`) |
+| PR-7  | `cb9b1e1`  | `ToolErrorPolicy.{SurfaceToModel, FailFast, RetryOnce}` + typed unknown-tool errors |
+| PR-8  | `d818a07`  | `RuntimeListener[F]` telemetry hook (chat-started/completed, tool-called/succeeded/failed) |
+| PR-9  | `9492f30`  | `ChatBackendLaws` + SSE corpus + `JsonSchema` wire round-trip coverage    |
+| PR-10 | `abf793d`  | `GuardedToolExecutor` builds error JSON via `ujson.Obj`                   |
+| PR-11 | `6ca04c2`  | `ChatTranscript(system, turns)` replaces the `dropLeadingSystem` hack     |
+| PR-12 | `05ca1f0`  | `AiAgent` shares one `AiRuntime` across `withTools` copies                |
+| PR-13 | `2128627`  | Unified `AiAgent.chat(request, opts)` surface with per-call `ChatOptions` overrides |
+| PR-14 | `e179359`  | `InvocationContext` moves to `llm4s-core`; `MemoryAwareRuntime` decouples `llm4s-runtime` from `llm4s-memory` |
+| PR-15 | `2d5f767`  | `project/Dependencies.scala`, stricter warnings, `Test/classLoaderLayeringStrategy` centralised, new `all` aggregate |
+| PR-16 | `d54adb8`  | Documentation consolidated: `README.md` / `CHANGELOG.md` / `docs/USAGE.md` / `CODE_REVIEW.md` |
+| PR-17 | `0d4b474`  | `agentic.Agent` → `WorkflowAgent` (back-compat `Agent` alias retained)    |
+
+Notes:
+
+- PR-9 also hardened `OpenAiStreamDecoder` to skip SSE comment lines and to swallow partial-chunk JSON parse errors instead of crashing the stream.
+- PR-13 deferred `AiAgent` streaming integration — `llm4s-structured` currently cannot depend on `llm4s-streaming` without a module reshuffle.
+- PR-15 enables `-Wvalue-discard` and `-Wnonunit-statement` but intentionally leaves `-Xfatal-warnings` off; Scala 3 inline-derivation `E197` warnings would otherwise block unrelated PRs.
+- PR-17 only resolves the `Agent` vs `AiAgent` clash. `ChatBackend` / `StreamingChatBackend` unification and the `org.l4j.template.llm4s.*` package collapse are flagged as separate future PRs.
+
+See `CODE_REVIEW.md` for the original review and the inline `✅ Fixed` blocks tying each item to its commit.
+
+---
+
 This document tracks the roadmap for replacing the LangChain4j dependency surface with native Scala 3 modules on the `l4jOnly_codex` branch.
 
 The target is framework parity, not full ecosystem parity. The goal is to support the main LangChain4j-style application patterns natively:
