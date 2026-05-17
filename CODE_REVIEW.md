@@ -381,6 +381,16 @@ with overlapping content. The PR plan is delivery history (belongs in
 
 ## 17. Naming nits that will compound
 
+> ✅ **Partially fixed** — 2026-05-17 in `0d4b474`.
+> The most painful clash is the only one resolved: `Agent` in
+> `llm4s-agentic` is renamed to `WorkflowAgent` so it stops colliding
+> with `AiAgent` in `llm4s-structured`. A `type Agent = WorkflowAgent`
+> alias keeps every call site compiling. The other two items
+> (`ChatBackend` / `StreamingChatBackend` unification, collapsing the
+> `org.l4j.template.llm4s.*` package prefix) are deliberately *not*
+> done here — both are cross‑module refactors with real risk and
+> warrant their own PRs.
+
 - `AiRuntime` vs `StreamingAiRuntime` vs `AiAgent` vs `Agent` (the workflow
   agent). Four overlapping concepts using two words. `Agent[F,In,Out]` in
   `llm4s-agentic` and `AiAgent[F]` in `llm4s-structured` are *different
