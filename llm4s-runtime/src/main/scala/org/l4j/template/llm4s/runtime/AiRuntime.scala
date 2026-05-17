@@ -129,7 +129,7 @@ final class AiRuntime[F[_]: MonadThrow: Parallel](
           for
             _ <- listener.onProviderRequest(trace, currentTurn, currentRequest)
             providerStart = System.nanoTime()
-            response <- backend.chat(currentRequest)
+            response <- backend.chat(currentRequest, trace)
             providerDuration = System.nanoTime() - providerStart
             _ <- listener.onProviderResponse(trace, currentTurn, response, providerDuration)
             stepped <- {

@@ -3,6 +3,7 @@ package org.l4j.template.llm4s.openai
 import cats.effect.kernel.Resource
 import fs2.Stream
 import org.l4j.template.llm4s.core.ChatRequest
+import org.l4j.template.llm4s.core.TraceContext
 import org.l4j.template.llm4s.streaming.StreamEvent
 import org.l4j.template.llm4s.streaming.StreamingChatBackend
 
@@ -12,6 +13,12 @@ final class OpenAiCompatStreamingBackend[F[_]](
 ) extends StreamingChatBackend[F]:
 
   override def stream(request: ChatRequest): Stream[F, StreamEvent] =
+    streamWithTrace(request, TraceContext.fresh())
+
+  /** Trace-aware variant — forwards the caller's `TraceContext` to the
+    * streaming transport so HTTP-layer events fire under the same trace
+    * as the streaming chat (PR-8f). */
+  def streamWithTrace(request: ChatRequest, trace: TraceContext): Stream[F, StreamEvent] =
     val headers = Map(
       "Authorization" -> s"Bearer ${config.apiKey}"
     ) ++ config.defaultHeaders
@@ -20,7 +27,7 @@ final class OpenAiCompatStreamingBackend[F[_]](
     body("stream") = ujson.Bool(true)
 
     transport
-      .stream("/chat/completions", body, headers)
+      .stream("/chat/completions", body, headers, trace)
       .flatMap(line => Stream.emits(OpenAiStreamDecoder.decodeLine(line)))
 
 object OpenAiCompatStreamingBackend:

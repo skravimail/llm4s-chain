@@ -4,6 +4,7 @@ import cats.Monad
 import cats.syntax.all.*
 import natchez.Trace
 import natchez.TraceValue.{NumberValue, StringValue}
+import org.l4j.template.llm4s.core.TraceContext
 import org.l4j.template.llm4s.openai.HttpListener
 import sttp.model.Method
 import sttp.model.Uri
@@ -17,14 +18,16 @@ import sttp.model.Uri
   */
 final class NatchezHttpListener[F[_]: Monad: Trace] extends HttpListener[F]:
 
-  override def onHttpRequest(method: Method, uri: Uri): F[Unit] =
+  override def onHttpRequest(trace: TraceContext, method: Method, uri: Uri): F[Unit] =
     Trace[F].put(
       "ai.event"       -> StringValue("http.request"),
+      "ai.trace.id"    -> StringValue(trace.traceId.value),
       "http.method"    -> StringValue(method.method),
       "http.url"       -> StringValue(uri.toString),
     )
 
   override def onHttpResponse(
+      trace: TraceContext,
       method: Method,
       uri: Uri,
       statusCode: Int,
@@ -32,6 +35,7 @@ final class NatchezHttpListener[F[_]: Monad: Trace] extends HttpListener[F]:
   ): F[Unit] =
     Trace[F].put(
       "ai.event"           -> StringValue("http.response"),
+      "ai.trace.id"        -> StringValue(trace.traceId.value),
       "http.method"        -> StringValue(method.method),
       "http.url"           -> StringValue(uri.toString),
       "http.status_code"   -> NumberValue(statusCode),
@@ -39,6 +43,7 @@ final class NatchezHttpListener[F[_]: Monad: Trace] extends HttpListener[F]:
     )
 
   override def onHttpFailure(
+      trace: TraceContext,
       method: Method,
       uri: Uri,
       error: Throwable,
@@ -46,6 +51,7 @@ final class NatchezHttpListener[F[_]: Monad: Trace] extends HttpListener[F]:
   ): F[Unit] =
     Trace[F].put(
       "ai.event"          -> StringValue("http.failure"),
+      "ai.trace.id"       -> StringValue(trace.traceId.value),
       "http.method"       -> StringValue(method.method),
       "http.url"          -> StringValue(uri.toString),
       "ai.duration.ns"    -> NumberValue(durationNanos),

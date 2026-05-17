@@ -1,6 +1,7 @@
 package org.l4j.template.llm4s.openai
 
 import cats.Applicative
+import org.l4j.template.llm4s.core.TraceContext
 import sttp.model.Method
 import sttp.model.Uri
 
@@ -11,20 +12,17 @@ import sttp.model.Uri
   * one chat-event but N HTTP-events (one per provider round-trip). A
   * separate trait keeps both surfaces tightly scoped.
   *
-  * Wire one by wrapping any `SttpBackend` with [[TracedSttpBackend]] and
-  * passing the listener.
-  *
-  * No `TraceContext` parameter here: the runtime doesn't yet thread its
-  * `TraceContext` down to the transport layer (would require changing the
-  * `OpenAiTransport` interface). Adopters who want HTTP events correlated
-  * with chat events should use `NatchezHttpListener` together with
-  * natchez's `IOLocal`-based `Trace`, which auto-propagates the ambient
-  * span — see PR-8e in CODE_REVIEW.md.
+  * Each event carries the `TraceContext` of the originating chat (PR-8f),
+  * so HTTP events correlate with chat / tool events without needing the
+  * IOLocal-based natchez Trace. When the trace isn't known
+  * (e.g. `TracedSttpBackend` wrapping a non-OpenAI backend), the listener
+  * is invoked with a freshly-generated context.
   */
 trait HttpListener[F[_]]:
-  def onHttpRequest(method: Method, uri: Uri): F[Unit]
+  def onHttpRequest(trace: TraceContext, method: Method, uri: Uri): F[Unit]
 
   def onHttpResponse(
+      trace: TraceContext,
       method: Method,
       uri: Uri,
       statusCode: Int,
@@ -32,6 +30,7 @@ trait HttpListener[F[_]]:
   ): F[Unit]
 
   def onHttpFailure(
+      trace: TraceContext,
       method: Method,
       uri: Uri,
       error: Throwable,
@@ -40,11 +39,11 @@ trait HttpListener[F[_]]:
 
 object HttpListener:
   def noop[F[_]](using F: Applicative[F]): HttpListener[F] = new HttpListener[F]:
-    override def onHttpRequest(m: Method, u: Uri): F[Unit] = F.unit
-    override def onHttpResponse(m: Method, u: Uri, s: Int, d: Long): F[Unit] = F.unit
-    override def onHttpFailure(m: Method, u: Uri, e: Throwable, d: Long): F[Unit] = F.unit
+    override def onHttpRequest(t: TraceContext, m: Method, u: Uri): F[Unit] = F.unit
+    override def onHttpResponse(t: TraceContext, m: Method, u: Uri, s: Int, d: Long): F[Unit] = F.unit
+    override def onHttpFailure(t: TraceContext, m: Method, u: Uri, e: Throwable, d: Long): F[Unit] = F.unit
 
   abstract class Default[F[_]](using F: Applicative[F]) extends HttpListener[F]:
-    override def onHttpRequest(m: Method, u: Uri): F[Unit] = F.unit
-    override def onHttpResponse(m: Method, u: Uri, s: Int, d: Long): F[Unit] = F.unit
-    override def onHttpFailure(m: Method, u: Uri, e: Throwable, d: Long): F[Unit] = F.unit
+    override def onHttpRequest(t: TraceContext, m: Method, u: Uri): F[Unit] = F.unit
+    override def onHttpResponse(t: TraceContext, m: Method, u: Uri, s: Int, d: Long): F[Unit] = F.unit
+    override def onHttpFailure(t: TraceContext, m: Method, u: Uri, e: Throwable, d: Long): F[Unit] = F.unit

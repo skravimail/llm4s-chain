@@ -109,7 +109,7 @@ class NatchezAdapterSpec extends FunSuite:
       given Trace[IO] = recordingTrace(buf)
       listener = NatchezHttpListener[IO]
       uri = sttp.model.Uri.unsafeParse("http://example/test")
-      _ <- listener.onHttpResponse(sttp.model.Method.POST, uri, 200, 5000L)
+      _ <- listener.onHttpResponse(TraceContext.of("t-http", "s-http"), sttp.model.Method.POST, uri, 200, 5000L)
       fields <- buf.get
     yield fields
 
@@ -127,7 +127,7 @@ class NatchezAdapterSpec extends FunSuite:
       given Trace[IO] = recordingTrace(buf, errors)
       listener = NatchezHttpListener[IO]
       uri = sttp.model.Uri.unsafeParse("http://example/x")
-      _ <- listener.onHttpFailure(sttp.model.Method.GET, uri, new RuntimeException("dns nx"), 1L)
+      _ <- listener.onHttpFailure(TraceContext.of("t", "s"), sttp.model.Method.GET, uri, new RuntimeException("dns nx"), 1L)
       errs <- errors.get
     yield errs
 

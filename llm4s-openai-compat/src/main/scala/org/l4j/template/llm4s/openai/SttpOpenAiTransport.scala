@@ -1,7 +1,8 @@
 package org.l4j.template.llm4s.openai
 
 import cats.MonadThrow
-import cats.syntax.flatMap.*
+import cats.syntax.all.*
+import org.l4j.template.llm4s.core.TraceContext
 import sttp.client3.*
 import sttp.model.Uri
 
@@ -32,12 +33,24 @@ object OpenAiHttpError:
 final class SttpOpenAiTransport[F[_]: MonadThrow](
     baseUri: Uri,
     backend: SttpBackend[F, Any],
+    listener: HttpListener[F],
 ) extends OpenAiTransport[F]:
 
   override def post(
       path: String,
       body: ujson.Value,
       headers: Map[String, String],
+  ): F[ujson.Value] =
+    post(path, body, headers, TraceContext.fresh())
+
+  /** Trace-aware send path (PR-8f). Fires `HttpListener` events keyed by
+    * the caller's `TraceContext` so HTTP events correlate with chat / tool
+    * events without needing an `IOLocal`-based tracer. */
+  override def post(
+      path: String,
+      body: ujson.Value,
+      headers: Map[String, String],
+      trace: TraceContext,
   ): F[ujson.Value] =
     val uri = path.split('/').filter(_.nonEmpty).foldLeft(baseUri)(_ addPath _)
     val request = basicRequest
@@ -47,9 +60,44 @@ final class SttpOpenAiTransport[F[_]: MonadThrow](
       .response(asStringAlways)
       .body(ujson.write(body))
 
-    backend.send(request).flatMap { response =>
-      if response.code.isSuccess then
-        MonadThrow[F].catchNonFatal(ujson.read(response.body))
-      else
-        MonadThrow[F].raiseError(OpenAiHttpError.fromResponse(response.code.code, response.body))
+    listener.onHttpRequest(trace, request.method, request.uri) >> {
+      val started = MonadThrow[F].pure(System.nanoTime())
+      started.flatMap { start =>
+        backend
+          .send(request)
+          .attempt
+          .flatMap {
+            case Right(response) =>
+              val duration = System.nanoTime() - start
+              listener
+                .onHttpResponse(trace, request.method, request.uri, response.code.code, duration)
+                .productR(
+                  if response.code.isSuccess then
+                    MonadThrow[F].catchNonFatal(ujson.read(response.body))
+                  else
+                    MonadThrow[F].raiseError(
+                      OpenAiHttpError.fromResponse(response.code.code, response.body)
+                    )
+                )
+            case Left(err) =>
+              val duration = System.nanoTime() - start
+              listener
+                .onHttpFailure(trace, request.method, request.uri, err, duration)
+                .productR(MonadThrow[F].raiseError(err))
+          }
+      }
     }
+
+object SttpOpenAiTransport:
+  def apply[F[_]: MonadThrow](
+      baseUri: Uri,
+      backend: SttpBackend[F, Any],
+  ): SttpOpenAiTransport[F] =
+    new SttpOpenAiTransport[F](baseUri, backend, HttpListener.noop[F])
+
+  def apply[F[_]: MonadThrow](
+      baseUri: Uri,
+      backend: SttpBackend[F, Any],
+      listener: HttpListener[F],
+  ): SttpOpenAiTransport[F] =
+    new SttpOpenAiTransport[F](baseUri, backend, listener)
