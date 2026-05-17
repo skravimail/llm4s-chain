@@ -1,16 +1,13 @@
 l4j-template
 =================
 
-Quickstart
-----------
-Scala 3 project providing native, cats-effect/sttp-based building blocks for
-LLM applications: chat, tool calling, typed structured outputs, streaming,
-memory, RAG, deterministic and supervisor-style agentic workflows, MCP-backed
-tools, guardrails, and multimodal requests.
+Scala 3, cats-effect / sttp building blocks for LLM applications:
+provider-neutral chat + tool calling, typed structured outputs, streaming,
+memory, RAG, agentic workflows, MCP tools, guardrails, and multimodals.
 
-See [Usage_Readme.md](./Usage_Readme.md) for the per-module usage guide and
-[Readme_PR_plan.md](./Readme_PR_plan.md) for delivery history and the module
-review findings backlog.
+- **Usage & module guide:** [docs/USAGE.md](./docs/USAGE.md)
+- **Delivery history & PR plan:** [CHANGELOG.md](./CHANGELOG.md)
+- **Open review items / tech-debt punch list:** [CODE_REVIEW.md](./CODE_REVIEW.md)
 
 Features
 --------
