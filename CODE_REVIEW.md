@@ -234,6 +234,13 @@ does. This is a real bug, not just a style preference.
 
 ## 11. `dropLeadingSystem` is a hack that hides a real modelling problem
 
+> ✅ **Fixed** — 2026-05-17 in `6ca04c2`.
+> Added `ChatTranscript(system, turns)` in `llm4s-core` with
+> `fromMessages` / `toMessages` / `withTurn` / `withSystem`.
+> `AiRuntime` persists `ChatTranscript.fromMessages(...).turns` to
+> memory — handles zero, one, mid‑list, and multiple system messages
+> uniformly. `dropLeadingSystem` deleted.
+
 ```scala
 private def dropLeadingSystem(messages: List[ChatMessage]): List[ChatMessage] =
   messages match
