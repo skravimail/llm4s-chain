@@ -49,3 +49,19 @@ class DocsLayoutSpec extends FunSuite:
       "README.md still references the legacy Readme_PR_plan.md path",
     )
   }
+
+  test("USAGE guide does not reference stale branch/doc names or removed APIs") {
+    val text = Files.readString(repoRoot.resolve("docs/USAGE.md"))
+    assert(
+      !text.contains("l4jOnly_codex"),
+      "docs/USAGE.md still references the old branch name",
+    )
+    assert(
+      !text.contains("Readme_PR_plan.md"),
+      "docs/USAGE.md still references the legacy Readme_PR_plan.md path",
+    )
+    assert(
+      !text.contains("runtime.chatWithMemory"),
+      "docs/USAGE.md still references the removed AiRuntime.chatWithMemory API",
+    )
+  }

@@ -248,3 +248,45 @@ class OpenAiCompatBackendSpec extends FunSuite:
     assertEquals(response.text, "Sunny")
     assertEquals(response.finishReason, Some(FinishReason.Stop))
   }
+
+  test("backend omits Authorization header when apiKey is empty") {
+    final class RecordingTransport(response: ujson.Value) extends OpenAiTransport[IO]:
+      var capturedHeaders: Option[Map[String, String]] = None
+
+      override def post(
+          path: String,
+          body: ujson.Value,
+          headers: Map[String, String],
+      ): IO[ujson.Value] =
+        IO {
+          capturedHeaders = Some(headers)
+          response
+        }
+
+    val transport = RecordingTransport(
+      ujson.read(
+        """{
+          |  "id": "resp-3",
+          |  "choices": [{
+          |    "finish_reason": "stop",
+          |    "message": { "content": "ok" }
+          |  }]
+          |}""".stripMargin
+      )
+    )
+    val backend = OpenAiCompatBackend[IO](
+      OpenAiCompatConfig(
+        baseUrl = "http://localhost:11434/v1",
+        apiKey = "",
+        model = "llama",
+        defaultHeaders = Map("X-Test" -> "1"),
+      ),
+      transport,
+    )
+
+    val _ = backend.chat(ChatRequest(messages = List(ChatMessage.UserMessage.from("Ping")))).unsafeRunSync()
+    val headers = transport.capturedHeaders.getOrElse(Map.empty)
+
+    assertEquals(headers.get("X-Test"), Some("1"))
+    assert(!headers.contains("Authorization"))
+  }

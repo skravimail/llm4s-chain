@@ -24,20 +24,21 @@ final class OpenAiCompatBackend[F[_]: MonadThrow](
     * to the transport so HTTP-layer events fire under the same trace as
     * the chat. */
   override def chat(request: ChatRequest, trace: TraceContext): F[ChatResponse] =
-    val headers = Map(
-      "Authorization" -> s"Bearer ${config.apiKey}"
-    ) ++ config.defaultHeaders
-
     transport
       .post(
         path = "/chat/completions",
         body = OpenAiWire.encodeChatRequest(config.model, request, config.responseFormatMode),
-        headers = headers,
+        headers = OpenAiCompatBackend.authHeaders(config),
         trace = trace,
       )
       .map(OpenAiWire.decodeChatResponse)
 
 object OpenAiCompatBackend:
+
+  private[openai] def authHeaders(config: OpenAiCompatConfig): Map[String, String] =
+    val auth =
+      Option.when(config.apiKey.nonEmpty)("Authorization" -> s"Bearer ${config.apiKey}")
+    auth.toMap ++ config.defaultHeaders
 
   /** Build a backend whose lifetime is owned by `Resource`. The underlying
     * sttp `AsyncHttpClient` (and its thread pool) is closed when the resource

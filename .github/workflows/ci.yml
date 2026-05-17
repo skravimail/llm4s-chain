@@ -19,7 +19,7 @@ jobs:
 
     strategy:
       matrix:
-        scala: [ "2.13.16" ]
+        scala: [ "3.3.4" ]
         java: [ "21" ]
       fail-fast: false
 
@@ -55,7 +55,7 @@ jobs:
 
       - name: Compile and test for Scala ${{ matrix.scala }}
         run: |
-          sbt ++${{ matrix.scala }} scalafmtCheckAll compile test
+          sbt ++${{ matrix.scala }} scalafmtCheckAll compile all/test
 
       - name: Upload Test Results (JUnit XML)
         if: always()
@@ -66,7 +66,7 @@ jobs:
 
       - name: Code Coverage Report (scoverage)
         run: |
-          sbt ++${{ matrix.scala }} clean coverage test coverageReport
+          sbt ++${{ matrix.scala }} clean coverage all/test coverageReport
         continue-on-error: true
 
       - name: Upload Coverage to Codecov

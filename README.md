@@ -11,8 +11,8 @@ memory, RAG, agentic workflows, MCP tools, guardrails, and multimodals.
 
 Features
 --------
-- Provider-neutral core ADTs in `llm4s-core` and an OpenAI-compatible HTTP/SSE
-  backend in `llm4s-openai-compat`.
+- Provider-neutral core ADTs in `llm4s-core` and an OpenAI-compatible HTTP
+  backend in `llm4s-openai-compat`, plus a streaming facade/decoder layer.
 - `AiRuntime` chat-and-tool loop with compile-time tool argument decoding.
 - `AiAgent[F]` builder over the runtime for plain chat, typed structured
   output, and tool-using chat without macros, `unsafeRunSync`, or
@@ -33,13 +33,15 @@ Prerequisites
 
 Configure the model
 -------------------
-Demos read three env vars (with fall-throughs to a local OMLX server):
+Demos read `config.yaml` plus provider-specific API key env vars:
 
 ```bash
-export LLM4S_BASE_URL=http://localhost:8000/v1       # OpenAI-compat endpoint
-export LLM4S_API_KEY=...                             # any non-empty placeholder for local OMLX
-export LLM4S_MODEL=gemma-4-e4b-it-4bit               # model name on that endpoint
+export OMLX_API_KEY=local-dev-placeholder
+# or OPENAI_API_KEY / GOOGLE_API_KEY / IBM_API_KEY depending on config.yaml
 ```
+
+Then edit `config.yaml` to choose the provider, model, endpoint override, and
+timeouts.
 
 Run the demos
 -------------
@@ -69,7 +71,7 @@ Layout
 ------
 ```
 llm4s-core/             provider-neutral protocol ADTs
-llm4s-openai-compat/    OpenAI-compatible HTTP/SSE backend
+llm4s-openai-compat/    OpenAI-compatible HTTP backend + streaming decoder
 llm4s-runtime/          chat loop, tool loop, runtime config
 llm4s-tools/            tool schema + argument decoding derivation
 llm4s-structured/       typed structured outputs + AiAgent builder
@@ -84,5 +86,5 @@ src/                    demos
 
 CI
 --
-Includes a GitHub Actions workflow that runs `sbt compile` and the formatter on
-every push / PR.
+Includes a GitHub Actions workflow that runs formatting plus the aggregate test
+suite on every push / PR.

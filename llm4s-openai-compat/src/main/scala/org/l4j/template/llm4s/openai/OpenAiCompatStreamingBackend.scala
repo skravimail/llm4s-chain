@@ -19,15 +19,11 @@ final class OpenAiCompatStreamingBackend[F[_]](
     * streaming transport so HTTP-layer events fire under the same trace
     * as the streaming chat (PR-8f). */
   def streamWithTrace(request: ChatRequest, trace: TraceContext): Stream[F, StreamEvent] =
-    val headers = Map(
-      "Authorization" -> s"Bearer ${config.apiKey}"
-    ) ++ config.defaultHeaders
-
     val body = OpenAiWire.encodeChatRequest(config.model, request, config.responseFormatMode)
     body("stream") = ujson.Bool(true)
 
     transport
-      .stream("/chat/completions", body, headers, trace)
+      .stream("/chat/completions", body, OpenAiCompatBackend.authHeaders(config), trace)
       .flatMap(line => Stream.emits(OpenAiStreamDecoder.decodeLine(line)))
 
 object OpenAiCompatStreamingBackend:

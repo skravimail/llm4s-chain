@@ -30,6 +30,7 @@ class OpenAiCompatStreamingBackendSpec extends FunSuite:
   test("streaming backend sends stream=true and decodes the emitted events") {
     final class RecordingTransport(lines: List[String]) extends OpenAiStreamingTransport[IO]:
       var capturedBody: Option[ujson.Value] = None
+      var capturedHeaders: Option[Map[String, String]] = None
 
       override def stream(
           path: String,
@@ -37,6 +38,7 @@ class OpenAiCompatStreamingBackendSpec extends FunSuite:
           headers: Map[String, String],
       ): Stream[IO, String] =
         capturedBody = Some(body)
+        capturedHeaders = Some(headers)
         Stream.emits(lines).covary[IO]
 
     val transport = new RecordingTransport(
@@ -58,4 +60,32 @@ class OpenAiCompatStreamingBackendSpec extends FunSuite:
     assertEquals(transport.capturedBody.map(_("stream").bool), Some(true))
     assertEquals(events.collect { case StreamEvent.TextDelta(value) => value }, List("Hello"))
     assertEquals(events.collect { case StreamEvent.Completed(response) => response.finishReason }, List(Some(FinishReason.Stop)))
+    assertEquals(transport.capturedHeaders.flatMap(_.get("Authorization")), Some("Bearer secret"))
+  }
+
+  test("streaming backend omits Authorization header when apiKey is empty") {
+    final class RecordingTransport extends OpenAiStreamingTransport[IO]:
+      var capturedHeaders: Option[Map[String, String]] = None
+
+      override def stream(
+          path: String,
+          body: ujson.Value,
+          headers: Map[String, String],
+      ): Stream[IO, String] =
+        capturedHeaders = Some(headers)
+        Stream.empty
+
+    val transport = new RecordingTransport
+    val backend = OpenAiCompatStreamingBackend[IO](
+      OpenAiCompatConfig("http://localhost:11434/v1", "", "llama", defaultHeaders = Map("X-Test" -> "1")),
+      transport,
+    )
+
+    val _ = backend.stream(
+      ChatRequest(messages = List(ChatMessage.UserMessage.from("Ping")))
+    ).compile.drain.unsafeRunSync()
+    val headers = transport.capturedHeaders.getOrElse(Map.empty)
+
+    assertEquals(headers.get("X-Test"), Some("1"))
+    assert(!headers.contains("Authorization"))
   }

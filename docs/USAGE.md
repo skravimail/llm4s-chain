@@ -1,6 +1,6 @@
 # Native Scala 3 Usage Guide
 
-This guide explains how to use the native `llm4s-*` modules implemented on the `l4jOnly_codex` branch. It is usage-focused; the PR history and delivery plan live in `Readme_PR_plan.md`.
+This guide explains how to use the native `llm4s-*` modules in this repository. It is usage-focused; delivery history and review context live in `CHANGELOG.md` and `CODE_REVIEW.md`.
 
 ## Architecture
 
@@ -61,7 +61,7 @@ flowchart TB
 ## Module Map
 
 - `llm4s-core`: provider-neutral messages, content, tools, schemas, response formats, usage, finish reasons, and model capabilities.
-- `llm4s-openai-compat`: OpenAI-compatible HTTP and SSE wire support.
+- `llm4s-openai-compat`: OpenAI-compatible HTTP support plus a streaming facade/decoder layer.
 - `llm4s-runtime`: chat execution and tool-call loop.
 - `llm4s-tools`: Scala 3 derivation for tool schemas and argument decoding.
 - `llm4s-structured`: typed output decoding with JSON Schema response format, plus `AiAgent[F]`, a small builder over the runtime for plain chat, typed chat, and tool-using chat.
@@ -74,35 +74,24 @@ flowchart TB
 
 ## Provider Setup
 
-Use an OpenAI-compatible backend when calling a live model. The backend depends on an `OpenAiTransport`; the provided STTP transport handles HTTP calls.
+Use an OpenAI-compatible backend when calling a live model. The simplest production path is the `Resource` factory, which owns the underlying HTTP client.
 
 ```scala
 import cats.effect.IO
 import org.l4j.template.llm4s.openai.OpenAiCompatBackend
 import org.l4j.template.llm4s.openai.OpenAiCompatConfig
-import org.l4j.template.llm4s.openai.SttpOpenAiTransport
-import sttp.client3.asynchttpclient.cats.AsyncHttpClientCatsBackend
-import sttp.model.Uri
 
 val backendResource =
-  AsyncHttpClientCatsBackend.resource[IO]().map { sttp =>
-    val transport = SttpOpenAiTransport[IO](
-      baseUri = Uri.unsafeParse("https://api.openai.com/v1"),
-      backend = sttp,
+  OpenAiCompatBackend.resource[IO](
+    OpenAiCompatConfig(
+      baseUrl = "https://api.openai.com/v1",
+      apiKey = sys.env("OPENAI_API_KEY"),
+      model = "gpt-4.1-mini",
     )
-
-    OpenAiCompatBackend[IO](
-      OpenAiCompatConfig(
-        baseUrl = "https://api.openai.com/v1",
-        apiKey = sys.env("OPENAI_API_KEY"),
-        model = "gpt-4.1-mini",
-      ),
-      transport,
-    )
-  }
+  )
 ```
 
-The same backend contract works with any OpenAI-compatible endpoint by changing `baseUri`, `apiKey`, and `model`.
+The same backend contract works with any OpenAI-compatible endpoint by changing `baseUrl`, `apiKey`, and `model`.
 
 ## Plain Chat
 
@@ -241,10 +230,39 @@ val review: IO[Summary] =
 
 Use `StreamingAiRuntime` with a `StreamingChatBackend`.
 
+The repository currently provides:
+
+- the provider-neutral streaming runtime in `llm4s-streaming`
+- the OpenAI-compatible line decoder in `OpenAiStreamDecoder`
+- `OpenAiCompatStreamingBackend`, which adapts an `OpenAiStreamingTransport`
+
+It does not currently ship a concrete provider-facing SSE transport implementation, so applications must supply the `OpenAiStreamingTransport[F]` themselves.
+
 ```scala
 import cats.effect.IO
+import fs2.Stream
+import org.l4j.template.llm4s.core.ChatRequest
+import org.l4j.template.llm4s.openai.OpenAiCompatConfig
+import org.l4j.template.llm4s.openai.OpenAiCompatStreamingBackend
+import org.l4j.template.llm4s.openai.OpenAiStreamingTransport
 import org.l4j.template.llm4s.streaming.StreamingAiRuntime
 import org.l4j.template.llm4s.streaming.StreamEvent
+
+val streamingBackend =
+  OpenAiCompatStreamingBackend[IO](
+    OpenAiCompatConfig(
+      baseUrl = "https://api.openai.com/v1",
+      apiKey = sys.env("OPENAI_API_KEY"),
+      model = "gpt-4.1-mini",
+    ),
+    new OpenAiStreamingTransport[IO]:
+      override def stream(
+          path: String,
+          body: ujson.Value,
+          headers: Map[String, String],
+      ): Stream[IO, String] =
+        Stream.raiseError(new NotImplementedError("Supply a real SSE transport"))
+  )
 
 val stream = StreamingAiRuntime[IO](streamingBackend).stream(
   system = Some("Be concise."),
@@ -259,7 +277,7 @@ val events = stream.events.evalMap {
 }
 ```
 
-The native event model supports text deltas, thinking deltas, tool-call deltas, completed tool calls, and final completion.
+The native event model currently surfaces text deltas, thinking deltas, tool-call deltas, and final completion.
 
 ## Memory
 
@@ -269,6 +287,7 @@ Use `InMemoryChatMemory` for session memory, and wrap it with `MessageWindowMemo
 import cats.effect.IO
 import org.l4j.template.llm4s.memory.InMemoryChatMemory
 import org.l4j.template.llm4s.memory.MemoryId
+import org.l4j.template.llm4s.memory.MemoryAwareRuntime
 import org.l4j.template.llm4s.memory.MessageWindowMemory
 import org.l4j.template.llm4s.runtime.AiRuntime
 
@@ -276,9 +295,9 @@ val program =
   for
     base <- InMemoryChatMemory.create[IO, MemoryId]
     memory = MessageWindowMemory[IO, MemoryId](base, maxMessages = 20)
-    runtime = AiRuntime[IO](backend)
-    first <- runtime.chatWithMemory(memory, MemoryId("user-123"), Some("Remember context."), "My name is Ada.")
-    second <- runtime.chatWithMemory(memory, MemoryId("user-123"), Some("Remember context."), "What is my name?")
+    runtime = MemoryAwareRuntime(AiRuntime[IO](backend), memory)
+    first <- runtime.chat(MemoryId("user-123"), Some("Remember context."), "My name is Ada.")
+    second <- runtime.chat(MemoryId("user-123"), Some("Remember context."), "What is my name?")
   yield second
 ```
 
@@ -514,4 +533,3 @@ Run the full explicit module sweep before committing cross-module changes:
 ```bash
 env SBT_OPTS=-Dsbt.boot.directory=/Users/alpha/AI_ML/llm4s-template/.sbt-boot\ -Dsbt.ivy.home=/Users/alpha/AI_ML/llm4s-template/.ivy2 COURSIER_CACHE=/Users/alpha/AI_ML/llm4s-template/.coursier sbt 'llm4sCore/test' 'llm4sMemory/test' 'llm4sRag/test' 'llm4sAgentic/test' 'llm4sMcp/test' 'llm4sGuardrails/test' 'llm4sRuntime/test' 'llm4sStreaming/test' 'llm4sOpenAiCompat/test' 'llm4sTools/test' 'llm4sStructured/test'
 ```
-
