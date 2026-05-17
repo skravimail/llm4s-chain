@@ -84,22 +84,16 @@ final class AiRuntime[F[_]: MonadThrow](
       toolKit: ToolKit[F],
   ): F[ChatRunResult] =
     if turn >= config.maxTurns then
-      MonadThrow[F].raiseError(
-        RuntimeException(s"AiRuntime chat exceeded ${config.maxTurns} tool-call turns")
-      )
+      MonadThrow[F].raiseError(AiRuntimeError.MaxTurnsExceeded(config.maxTurns))
     else
       backend.chat(request).flatMap { response =>
         val aiMessage = response.message
         if !aiMessage.hasToolCalls then
           aiMessage.finishReason match
             case Some(FinishReason.ContentFilter) =>
-              MonadThrow[F].raiseError(
-                RuntimeException("AiRuntime chat aborted: provider returned finishReason=content_filter")
-              )
+              MonadThrow[F].raiseError(AiRuntimeError.ContentFiltered)
             case Some(FinishReason.Error) =>
-              MonadThrow[F].raiseError(
-                RuntimeException("AiRuntime chat aborted: provider returned finishReason=error")
-              )
+              MonadThrow[F].raiseError(AiRuntimeError.ProviderError())
             case _ =>
               MonadThrow[F].pure(
                 ChatRunResult(

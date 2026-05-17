@@ -102,11 +102,54 @@ class AiRuntimeSpec extends FunSuite:
     )
     val runtime = AiRuntime[IO](backend, RuntimeConfig(maxTurns = 1))
 
-    val error = intercept[RuntimeException] {
+    val error = intercept[AiRuntimeError.MaxTurnsExceeded] {
       runtime.chat(None, "loop", toolkit).unsafeRunSync()
     }
 
+    assertEquals(error.maxTurns, 1)
     assertEquals(error.getMessage, "AiRuntime chat exceeded 1 tool-call turns")
+  }
+
+  test("runtime raises ContentFiltered when provider stops on a content filter") {
+    val backend = RecordingBackend(
+      List(
+        ChatResponse(
+          ChatMessage.AiMessage(
+            contents = List(AiContent.Text("partial")),
+            toolCalls = Nil,
+            finishReason = Some(FinishReason.ContentFilter),
+          )
+        )
+      )
+    )
+    val runtime = AiRuntime[IO](backend)
+
+    val error = intercept[AiRuntimeError] {
+      runtime.chat(None, "say something edgy").unsafeRunSync()
+    }
+
+    assertEquals(error, AiRuntimeError.ContentFiltered)
+  }
+
+  test("runtime raises ProviderError when provider stops with finishReason=error") {
+    val backend = RecordingBackend(
+      List(
+        ChatResponse(
+          ChatMessage.AiMessage(
+            contents = Nil,
+            toolCalls = Nil,
+            finishReason = Some(FinishReason.Error),
+          )
+        )
+      )
+    )
+    val runtime = AiRuntime[IO](backend)
+
+    val error = intercept[AiRuntimeError.ProviderError] {
+      runtime.chat(None, "anything").unsafeRunSync()
+    }
+
+    assert(error.getMessage.contains("finishReason=error"))
   }
 
   test("runtime persists conversational history through chat memory") {
