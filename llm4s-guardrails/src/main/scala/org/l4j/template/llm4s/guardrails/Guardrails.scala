@@ -3,7 +3,7 @@ package org.l4j.template.llm4s.guardrails
 import org.l4j.template.llm4s.core.ChatRequest
 import org.l4j.template.llm4s.core.ChatResponse
 import org.l4j.template.llm4s.core.ToolCall
-import org.l4j.template.llm4s.runtime.InvocationContext
+import org.l4j.template.llm4s.core.InvocationContext
 
 trait InputGuardrail[F[_]]:
   def check(request: ChatRequest): F[GuardrailResult[ChatRequest]]

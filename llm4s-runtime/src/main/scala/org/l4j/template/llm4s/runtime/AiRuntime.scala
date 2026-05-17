@@ -6,9 +6,7 @@ import cats.syntax.all.*
 import org.l4j.template.llm4s.core.ChatBackend
 import org.l4j.template.llm4s.core.ChatMessage
 import org.l4j.template.llm4s.core.ChatRequest
-import org.l4j.template.llm4s.core.ChatTranscript
 import org.l4j.template.llm4s.core.FinishReason
-import org.l4j.template.llm4s.memory.ChatMemory
 
 object AiRuntime:
   def apply[F[_]: MonadThrow: Parallel](
@@ -55,44 +53,23 @@ final class AiRuntime[F[_]: MonadThrow: Parallel](
       toolKit,
     )
 
-  def chatWithMemory[Id](
-      memory: ChatMemory[F, Id],
-      memoryId: Id,
-      system: Option[String],
-      userText: String,
-      toolKit: ToolKit[F] = ToolKit.empty[F],
-  ): F[String] =
-    memory.messages(memoryId).flatMap { history =>
-      val initialMessages =
-        system.map(ChatMessage.SystemMessage.from).toList ++ history ++ List(ChatMessage.UserMessage.from(userText))
-
-      run(
-        ChatRequest(
-          messages = initialMessages,
-          tools = toolKit.schemas,
-        ),
-        toolKit,
-      ).flatMap { result =>
-        val persisted = ChatTranscript.fromMessages(result.messages).turns
-        memory.replace(memoryId, persisted).as(result.text)
-      }
-    }
-
   def chatRequest(
       request: ChatRequest,
       toolKit: ToolKit[F] = ToolKit.empty[F],
   ): F[String] =
     run(request, toolKit).map(_.text)
 
-  def chatRequestWithMemory[Id](
-      memory: ChatMemory[F, Id],
-      memoryId: Id,
+  /** Drive the loop and return both the final assistant text and the full
+    * messages list (initial + assistant turns + tool messages).
+    *
+    * Exposed so that wrappers in other modules (e.g. `llm4s-memory`'s
+    * `MemoryAwareRuntime`) can persist the transcript without re-running
+    * the conversation — see PR-14 in CODE_REVIEW.md. */
+  def chatRequestWithMessages(
       request: ChatRequest,
       toolKit: ToolKit[F] = ToolKit.empty[F],
-  ): F[String] =
-    run(request, toolKit).flatMap { result =>
-      memory.replace(memoryId, ChatTranscript.fromMessages(result.messages).turns).as(result.text)
-    }
+  ): F[(String, List[ChatMessage])] =
+    run(request, toolKit).map(r => (r.text, r.messages))
 
   private def run(
       request: ChatRequest,

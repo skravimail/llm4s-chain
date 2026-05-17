@@ -36,7 +36,7 @@ lazy val llm4sCore = (project in file("llm4s-core"))
   )
 
 lazy val llm4sRuntime = (project in file("llm4s-runtime"))
-  .dependsOn(llm4sCore, llm4sMemory)
+  .dependsOn(llm4sCore)
   .settings(commonSettings)
   .settings(
     name := "llm4s-runtime",
@@ -90,7 +90,7 @@ lazy val llm4sTools = (project in file("llm4s-tools"))
   )
 
 lazy val llm4sMemory = (project in file("llm4s-memory"))
-  .dependsOn(llm4sCore)
+  .dependsOn(llm4sCore, llm4sRuntime)
   .settings(commonSettings)
   .settings(
     name := "llm4s-memory",

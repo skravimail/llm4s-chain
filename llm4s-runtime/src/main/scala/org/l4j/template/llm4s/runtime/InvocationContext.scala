@@ -1,13 +1,10 @@
 package org.l4j.template.llm4s.runtime
 
-import org.l4j.template.llm4s.core.ChatRequest
-import org.l4j.template.llm4s.core.ToolCall
-
-final case class InvocationContext(
-    turn: Int,
-    request: ChatRequest,
-    toolCall: ToolCall,
-)
+/** Re-export of `org.l4j.template.llm4s.core.InvocationContext` so existing
+  * callers that import from `runtime` continue to compile after the type was
+  * moved into `llm4s-core` in PR-14. */
+type InvocationContext = org.l4j.template.llm4s.core.InvocationContext
+val InvocationContext = org.l4j.template.llm4s.core.InvocationContext
 
 final case class RuntimeConfig(
     maxTurns: Int = 8,

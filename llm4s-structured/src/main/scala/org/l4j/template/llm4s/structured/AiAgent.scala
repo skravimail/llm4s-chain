@@ -6,6 +6,7 @@ import org.l4j.template.llm4s.core.ChatBackend
 import org.l4j.template.llm4s.core.ChatMessage
 import org.l4j.template.llm4s.core.ChatRequest
 import org.l4j.template.llm4s.memory.ChatMemory
+import org.l4j.template.llm4s.memory.MemoryAwareRuntime
 import org.l4j.template.llm4s.runtime.AiRuntime
 import org.l4j.template.llm4s.runtime.RuntimeConfig
 import org.l4j.template.llm4s.runtime.ToolKit
@@ -34,7 +35,7 @@ final class AiAgent[F[_]: MonadThrow: Parallel] private (
       system: String,
       user: String,
   ): F[String] =
-    runtime.chatWithMemory(memory, memoryId, Some(system), user, tools)
+    MemoryAwareRuntime(runtime, memory).chat(memoryId, Some(system), user, tools)
 
   def chatAsWithMemory[A, Id](
       memory: ChatMemory[F, Id],

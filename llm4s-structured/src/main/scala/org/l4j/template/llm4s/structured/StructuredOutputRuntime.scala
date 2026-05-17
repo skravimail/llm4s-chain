@@ -8,6 +8,7 @@ import org.l4j.template.llm4s.core.ChatMessage
 import org.l4j.template.llm4s.core.ChatRequest
 import org.l4j.template.llm4s.core.ResponseFormat
 import org.l4j.template.llm4s.memory.ChatMemory
+import org.l4j.template.llm4s.memory.MemoryAwareRuntime
 import org.l4j.template.llm4s.runtime.AiRuntime
 import org.l4j.template.llm4s.runtime.RuntimeConfig
 import org.l4j.template.llm4s.runtime.ToolKit
@@ -68,8 +69,8 @@ object StructuredOutputRuntime:
         ),
       )
 
-      AiRuntime[F](backend, config)
-        .chatRequestWithMemory(memory, memoryId, request, toolKit)
+      MemoryAwareRuntime(AiRuntime[F](backend, config), memory)
+        .chatRequest(memoryId, request, toolKit)
         .flatMap { raw =>
           codec.decode(raw) match
             case Right(value) => MonadThrow[F].pure(value)

@@ -6,7 +6,7 @@ import cats.syntax.all.*
 import org.l4j.template.llm4s.core.ChatRequest
 import org.l4j.template.llm4s.core.ChatResponse
 import org.l4j.template.llm4s.core.ToolCall
-import org.l4j.template.llm4s.runtime.InvocationContext
+import org.l4j.template.llm4s.core.InvocationContext
 
 final case class GuardrailChain[F[_]](
     input: List[InputGuardrail[F]] = Nil,
