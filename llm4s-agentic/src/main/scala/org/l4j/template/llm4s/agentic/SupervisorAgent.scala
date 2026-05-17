@@ -27,9 +27,7 @@ final class SupervisorAgent[F[_]: MonadThrow, In, Out](
   private def runStep(input: In, scope: AgentScope[F], index: Int)(step: PlanStep[In]): F[StepResult[In, Out]] =
     registry.get(step.agentName) match
       case None =>
-        MonadThrow[F].raiseError(
-          RuntimeException(s"SupervisorAgent '$name' could not find sub-agent '${step.agentName}'")
-        )
+        MonadThrow[F].raiseError(WorkflowError.MissingSubAgent(name, step.agentName))
       case Some(agent) =>
         agent.run(step.input.getOrElse(input), scope).flatTap { output =>
           scope.put(step.outputKey.getOrElse(s"$name.$index.${step.agentName}"), output)
@@ -46,4 +44,3 @@ object SupervisorAgent:
           registry: SubAgentRegistry[F, In, Out],
       ): F[List[PlanStep[In]]] =
         choose(input, scope, registry)
-

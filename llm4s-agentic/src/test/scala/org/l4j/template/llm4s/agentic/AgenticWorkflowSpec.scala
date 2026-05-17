@@ -93,11 +93,23 @@ class AgenticWorkflowSpec extends FunSuite:
       maxIterations = 2,
     )
 
-    val error = intercept[RuntimeException] {
+    val error = intercept[WorkflowError.MaxIterationsExceeded] {
       AgentScope.create[IO].flatMap(workflow.run(0, _)).unsafeRunSync()
     }
 
     assertEquals(error.getMessage, "LoopWorkflow exceeded maxIterations=2")
+  }
+
+  test("loop workflow remains stack-safe across many iterations") {
+    val increment = Agent.lift[IO, Int, Int]("increment")((value, _) => IO.pure(value + 1))
+    val workflow = LoopWorkflow[IO, Int](
+      body = increment.workflow,
+      continueWhile = (value, _, _) => IO.pure(value < 5000),
+      maxIterations = 6000,
+    )
+
+    val result = AgentScope.create[IO].flatMap(workflow.run(0, _)).unsafeRunSync()
+    assertEquals(result, 5000)
   }
 
   test("supervisor agent plans and invokes subagents dynamically") {
@@ -145,7 +157,7 @@ class AgenticWorkflowSpec extends FunSuite:
       aggregate = (_, results, _) => IO.pure(results.map(_.output).mkString),
     )
 
-    val error = intercept[RuntimeException] {
+    val error = intercept[WorkflowError.MissingSubAgent] {
       AgentScope.create[IO].flatMap(supervisor.run("Scala", _)).unsafeRunSync()
     }
 
