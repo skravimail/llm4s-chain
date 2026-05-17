@@ -152,6 +152,40 @@ class AiRuntimeSpec extends FunSuite:
     assert(error.getMessage.contains("finishReason=error"))
   }
 
+  test("runtime loop is stack-safe across thousands of tool-call turns") {
+    val turns = 5000
+    val toolCallResponse = ChatResponse(
+      ChatMessage.AiMessage(
+        contents = Nil,
+        toolCalls = List(ToolCall("noop", "{}", Some("c"))),
+        finishReason = Some(FinishReason.ToolCalls),
+      )
+    )
+    val finalResponse = ChatResponse(ChatMessage.AiMessage.from("done"))
+    val scripted = List.fill(turns)(toolCallResponse) :+ finalResponse
+    val backend = RecordingBackend(scripted)
+    val toolkit = ToolKit[IO](
+      schemas = List(
+        ToolSchema(
+          "noop",
+          "no-op",
+          JsonSchema.ObjectSchema(Map.empty),
+        )
+      ),
+      executors = Map(
+        "noop" -> new ToolExecutor[IO]:
+          override def execute(call: ToolCall, context: InvocationContext): IO[ToolResult] =
+            IO.pure(ToolResult.Text("ok"))
+      ),
+    )
+    val runtime = AiRuntime[IO](backend, RuntimeConfig(maxTurns = turns + 1))
+
+    val result = runtime.chat(None, "go", toolkit).unsafeRunSync()
+
+    assertEquals(result, "done")
+    assertEquals(backend.requests.length, turns + 1)
+  }
+
   test("runtime persists conversational history through chat memory") {
     val backend = RecordingBackend(
       List(

@@ -78,45 +78,57 @@ final class AiRuntime[F[_]: MonadThrow](
   ): F[ChatRunResult] =
     loop(turn = 0, request = request.copy(tools = toolKit.schemas), toolKit = toolKit)
 
+  /** Drive the chat loop in a stack-safe way via `tailRecM`.
+    *
+    * Each iteration's state is the current turn count and request. A `Right`
+    * exits the loop with a final result; a `Left` schedules another iteration.
+    * Any monad that implements `tailRecM` non-recursively (cats-effect IO,
+    * Eval, etc.) will not stack-overflow regardless of `maxTurns`.
+    */
   private def loop(
       turn: Int,
       request: ChatRequest,
       toolKit: ToolKit[F],
   ): F[ChatRunResult] =
-    if turn >= config.maxTurns then
-      MonadThrow[F].raiseError(AiRuntimeError.MaxTurnsExceeded(config.maxTurns))
-    else
-      backend.chat(request).flatMap { response =>
-        val aiMessage = response.message
-        if !aiMessage.hasToolCalls then
-          aiMessage.finishReason match
-            case Some(FinishReason.ContentFilter) =>
-              MonadThrow[F].raiseError(AiRuntimeError.ContentFiltered)
-            case Some(FinishReason.Error) =>
-              MonadThrow[F].raiseError(AiRuntimeError.ProviderError())
-            case _ =>
-              MonadThrow[F].pure(
-                ChatRunResult(
-                  text = response.text,
-                  messages = request.messages :+ aiMessage,
-                )
-              )
+    MonadThrow[F].tailRecM[(Int, ChatRequest), ChatRunResult]((turn, request)) {
+      case (currentTurn, currentRequest) =>
+        if currentTurn >= config.maxTurns then
+          MonadThrow[F].raiseError(AiRuntimeError.MaxTurnsExceeded(config.maxTurns))
         else
-          ToolLoop
-            .executeAll(
-              toolCalls = aiMessage.toolCalls,
-              toolKit = toolKit,
-              turn = turn + 1,
-              request = request,
-            )
-            .flatMap { toolMessages =>
-              val nextRequest = request.copy(
-                messages = request.messages ++ (aiMessage :: toolMessages),
-                tools = toolKit.schemas,
-              )
-              loop(turn + 1, nextRequest, toolKit)
-            }
-      }
+          backend.chat(currentRequest).flatMap { response =>
+            val aiMessage = response.message
+            if !aiMessage.hasToolCalls then
+              aiMessage.finishReason match
+                case Some(FinishReason.ContentFilter) =>
+                  MonadThrow[F].raiseError(AiRuntimeError.ContentFiltered)
+                case Some(FinishReason.Error) =>
+                  MonadThrow[F].raiseError(AiRuntimeError.ProviderError())
+                case _ =>
+                  MonadThrow[F].pure(
+                    Right(
+                      ChatRunResult(
+                        text = response.text,
+                        messages = currentRequest.messages :+ aiMessage,
+                      )
+                    )
+                  )
+            else
+              ToolLoop
+                .executeAll(
+                  toolCalls = aiMessage.toolCalls,
+                  toolKit = toolKit,
+                  turn = currentTurn + 1,
+                  request = currentRequest,
+                )
+                .map { toolMessages =>
+                  val nextRequest = currentRequest.copy(
+                    messages = currentRequest.messages ++ (aiMessage :: toolMessages),
+                    tools = toolKit.schemas,
+                  )
+                  Left((currentTurn + 1, nextRequest))
+                }
+          }
+    }
 
   private def dropLeadingSystem(messages: List[ChatMessage]): List[ChatMessage] =
     messages match
