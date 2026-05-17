@@ -15,22 +15,22 @@
 # proxy). Leave it unset to use the provider default.
 
 llm:
-  provider: gemini          # gemini | openai | ibm | ollama | omlx
-  model: gemini-2.5-flash
+  provider: omlx            # gemini | openai | ibm | ollama | omlx
+  model: gemma-4-e2b-it-8bit
 
   # response_format_mode: how to encode the `response_format` field for
   # chatAs[T]. Strict-schema servers (real OpenAI, Gemini) handle
   # json_schema fine. Older / local servers (osaurus, older LM Studio,
   # llama.cpp) need json_object or disabled. See PR-18 in CODE_REVIEW.md.
-  response_format_mode: json_schema   # json_schema | json_object | disabled
+  response_format_mode: json_object   # json_schema | json_object | disabled
 
   # request_timeout_seconds: wall-clock cap on a single provider call.
   # Bump to 300+ for slow local models generating structured output. PR-19.
-  request_timeout_seconds: 60
+  request_timeout_seconds: 300
 
   # base_url: override the provider's default endpoint. Leave commented to
   # use the default for `provider:`.
-  # base_url: http://127.0.0.1:1337
+  base_url: http://127.0.0.1:1337
 
 # SLF4J / logback configuration. Applied at startup by AppConfig.logging.apply().
 # Levels: trace | debug | info | warn | error | off.
