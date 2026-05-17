@@ -23,7 +23,7 @@ final class OpenAiCompatStreamingBackend[F[_]](
       "Authorization" -> s"Bearer ${config.apiKey}"
     ) ++ config.defaultHeaders
 
-    val body = OpenAiWire.encodeChatRequest(config.model, request)
+    val body = OpenAiWire.encodeChatRequest(config.model, request, config.responseFormatMode)
     body("stream") = ujson.Bool(true)
 
     transport

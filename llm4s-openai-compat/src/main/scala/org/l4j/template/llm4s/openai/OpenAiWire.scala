@@ -16,6 +16,7 @@ object OpenAiWire:
   def encodeChatRequest(
       model: String,
       request: ChatRequest,
+      responseFormatMode: ResponseFormatMode = ResponseFormatMode.JsonSchema,
   ): ujson.Obj =
     val fields = collection.mutable.LinkedHashMap[String, ujson.Value](
       "model" -> ujson.Str(model),
@@ -28,14 +29,25 @@ object OpenAiWire:
     request.responseFormat.foreach {
       case ResponseFormat.Text => ()
       case json: ResponseFormat.JsonSchema =>
-        fields += "response_format" -> ujson.Obj(
-          "type" -> "json_schema",
-          "json_schema" -> ujson.Obj(
-            "name" -> json.name,
-            "strict" -> json.strict,
-            "schema" -> encodeSchema(json.schema),
-          ),
-        )
+        responseFormatMode match
+          case ResponseFormatMode.JsonSchema =>
+            fields += "response_format" -> ujson.Obj(
+              "type" -> "json_schema",
+              "json_schema" -> ujson.Obj(
+                "name" -> json.name,
+                "strict" -> json.strict,
+                "schema" -> encodeSchema(json.schema),
+              ),
+            )
+          case ResponseFormatMode.JsonObject =>
+            // Older servers (osaurus, older LM Studio, llama.cpp) only
+            // support the un-schema'd json_object mode. The library's own
+            // ValueDecoder still validates the response shape after parse.
+            fields += "response_format" -> ujson.Obj("type" -> "json_object")
+          case ResponseFormatMode.Disabled =>
+            // Send no response_format field — rely on the prompt to coax
+            // JSON-shaped output. Combine with low temperature for stability.
+            ()
     }
 
     request.temperature.foreach { value =>

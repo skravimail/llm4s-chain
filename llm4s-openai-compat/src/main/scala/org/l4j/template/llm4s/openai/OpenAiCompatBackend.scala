@@ -31,7 +31,7 @@ final class OpenAiCompatBackend[F[_]: MonadThrow](
     transport
       .post(
         path = "/chat/completions",
-        body = OpenAiWire.encodeChatRequest(config.model, request),
+        body = OpenAiWire.encodeChatRequest(config.model, request, config.responseFormatMode),
         headers = headers,
         trace = trace,
       )

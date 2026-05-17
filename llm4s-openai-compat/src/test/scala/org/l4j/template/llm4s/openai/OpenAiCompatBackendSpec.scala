@@ -41,6 +41,52 @@ class OpenAiCompatBackendSpec extends FunSuite:
     assertEquals(json("metadata")("tenant").str, "test")
   }
 
+  test("response_format mode = JsonObject: emits {type: json_object} instead of strict schema") {
+    val schema = JsonSchema.ObjectSchema(Map("a" -> JsonSchema.StringSchema()), Set("a"))
+    val request = ChatRequest(
+      messages = List(ChatMessage.UserMessage.from("hi")),
+      responseFormat = Some(ResponseFormat.JsonSchema("Out", schema, strict = true)),
+    )
+
+    val json = OpenAiWire.encodeChatRequest(
+      "m",
+      request,
+      org.l4j.template.llm4s.openai.ResponseFormatMode.JsonObject,
+    )
+
+    assertEquals(json("response_format")("type").str, "json_object")
+    assert(!json("response_format").obj.contains("json_schema"))
+  }
+
+  test("response_format mode = Disabled: omits response_format entirely") {
+    val schema = JsonSchema.ObjectSchema(Map("a" -> JsonSchema.StringSchema()), Set("a"))
+    val request = ChatRequest(
+      messages = List(ChatMessage.UserMessage.from("hi")),
+      responseFormat = Some(ResponseFormat.JsonSchema("Out", schema, strict = true)),
+    )
+
+    val json = OpenAiWire.encodeChatRequest(
+      "m",
+      request,
+      org.l4j.template.llm4s.openai.ResponseFormatMode.Disabled,
+    )
+
+    assert(!json.obj.contains("response_format"))
+  }
+
+  test("response_format mode defaults to JsonSchema (existing behaviour)") {
+    val schema = JsonSchema.ObjectSchema(Map("a" -> JsonSchema.StringSchema()), Set("a"))
+    val request = ChatRequest(
+      messages = List(ChatMessage.UserMessage.from("hi")),
+      responseFormat = Some(ResponseFormat.JsonSchema("Out", schema, strict = true)),
+    )
+
+    val json = OpenAiWire.encodeChatRequest("m", request)
+
+    assertEquals(json("response_format")("type").str, "json_schema")
+    assertEquals(json("response_format")("json_schema")("name").str, "Out")
+  }
+
   test("wire encoder emits multimodal user content parts") {
     val request = ChatRequest(
       messages = List(
