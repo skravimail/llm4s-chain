@@ -3,6 +3,8 @@ package org.l4j.template.llm4s.structured
 import cats.MonadThrow
 import cats.Parallel
 import org.l4j.template.llm4s.core.ChatBackend
+import org.l4j.template.llm4s.core.ChatMessage
+import org.l4j.template.llm4s.core.ChatRequest
 import org.l4j.template.llm4s.memory.ChatMemory
 import org.l4j.template.llm4s.runtime.AiRuntime
 import org.l4j.template.llm4s.runtime.RuntimeConfig
@@ -49,6 +51,25 @@ final class AiAgent[F[_]: MonadThrow: Parallel] private (
       userText = user,
       toolKit = tools,
     )
+
+  /** The unified entry point: send any `ChatRequest` with per-call overrides
+    * via [[ChatOptions]]. Use this when the convenience `chat(system, user)`
+    * isn't expressive enough — e.g. multi-turn user input, a one-off toolkit
+    * swap, or pinning `responseFormat` for a single call.
+    */
+  def chat(request: ChatRequest, opts: ChatOptions[F]): F[String] =
+    val effectiveTools = opts.toolKit.getOrElse(tools)
+    val merged = request.copy(
+      tools = effectiveTools.schemas,
+      temperature = opts.temperature.orElse(request.temperature),
+      responseFormat = opts.responseFormat.orElse(request.responseFormat),
+      metadata = request.metadata ++ opts.metadata,
+    )
+    runtime.chatRequest(merged, effectiveTools)
+
+  /** Convenience overload taking a pre-built list of messages plus options. */
+  def chat(messages: List[ChatMessage], opts: ChatOptions[F] = ChatOptions.empty[F]): F[String] =
+    chat(ChatRequest(messages = messages), opts)
 
   /** Reuse the same underlying runtime — important so that any state the
     * runtime acquires (rate limiters, in-flight counters, listeners) is

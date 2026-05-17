@@ -114,6 +114,63 @@ class AiAgentSpec extends FunSuite:
     assertEquals(tweaked.config.maxTurns, 3)
   }
 
+  test("AiAgent.chat(request, opts) overrides toolKit, temperature, and responseFormat per-call") {
+    val backend = RecordingBackend(List(ChatResponse(ChatMessage.AiMessage.from("ok"))))
+    val baseSchema = ToolSchema("base", "b", JsonSchema.ObjectSchema(Map.empty))
+    val baseKit = ToolKit[IO](
+      List(baseSchema),
+      Map("base" -> new ToolExecutor[IO]:
+        override def execute(c: ToolCall, ctx: InvocationContext): IO[ToolResult] =
+          IO.pure(ToolResult.Text(""))),
+    )
+    val agent = AiAgent[IO](backend, baseKit)
+
+    val perCallSchema = ToolSchema("override", "o", JsonSchema.ObjectSchema(Map.empty))
+    val perCallKit = ToolKit[IO](
+      List(perCallSchema),
+      Map("override" -> new ToolExecutor[IO]:
+        override def execute(c: ToolCall, ctx: InvocationContext): IO[ToolResult] =
+          IO.pure(ToolResult.Text(""))),
+    )
+
+    val opts = ChatOptions[IO](
+      toolKit = Some(perCallKit),
+      temperature = Some(0.1),
+      metadata = Map("trace" -> "t1"),
+    )
+
+    val result = agent
+      .chat(
+        ChatRequest(messages = List(ChatMessage.UserMessage.from("hi"))),
+        opts,
+      )
+      .unsafeRunSync()
+
+    assertEquals(result, "ok")
+    val sent = backend.requests.head
+    assertEquals(sent.tools.map(_.name), List("override"))
+    assertEquals(sent.temperature, Some(0.1))
+    assertEquals(sent.metadata.get("trace"), Some("t1"))
+  }
+
+  test("AiAgent.chat(messages, opts) accepts a multi-turn message list") {
+    val backend = RecordingBackend(List(ChatResponse(ChatMessage.AiMessage.from("merged"))))
+    val agent = AiAgent[IO](backend)
+
+    val result = agent
+      .chat(
+        List(
+          ChatMessage.UserMessage.from("turn 1"),
+          ChatMessage.AiMessage.from("reply 1"),
+          ChatMessage.UserMessage.from("turn 2"),
+        )
+      )
+      .unsafeRunSync()
+
+    assertEquals(result, "merged")
+    assertEquals(backend.requests.head.messages.map(_.role), List("user", "assistant", "user"))
+  }
+
   test("AiAgent.withConfig overrides runtime config without mutating the original") {
     val infiniteToolCall = ChatResponse(
       ChatMessage.AiMessage(
