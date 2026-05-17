@@ -123,6 +123,130 @@ class AppConfigSpec extends FunSuite:
     assert(ex.getMessage.contains("positive integer"))
   }
 
+  // -- logging section -------------------------------------------------------
+
+  test("missing logging section defaults to root=info and no per-logger overrides") {
+    val yaml =
+      """llm:
+        |  provider: gemini
+        |  model: g
+        |""".stripMargin
+    val cfg = AppConfig.parse(yaml)
+    assertEquals(cfg.logging.root, "info")
+    assertEquals(cfg.logging.loggers, Map.empty[String, String])
+  }
+
+  test("logging section parses root + per-logger map") {
+    val yaml =
+      """llm:
+        |  provider: gemini
+        |  model: g
+        |logging:
+        |  root: warn
+        |  loggers:
+        |    sttp.client3: error
+        |    io.netty: off
+        |    org.l4j.template: debug
+        |""".stripMargin
+    val cfg = AppConfig.parse(yaml)
+    assertEquals(cfg.logging.root, "warn")
+    assertEquals(cfg.logging.loggers, Map(
+      "sttp.client3" -> "error",
+      "io.netty" -> "off",
+      "org.l4j.template" -> "debug",
+    ))
+  }
+
+  test("invalid log level on root rejected") {
+    val yaml =
+      """llm:
+        |  provider: gemini
+        |  model: g
+        |logging:
+        |  root: chatty
+        |""".stripMargin
+    val ex = intercept[IllegalArgumentException](AppConfig.parse(yaml))
+    assert(ex.getMessage.contains("logging.root"))
+    assert(ex.getMessage.contains("chatty"))
+  }
+
+  test("invalid per-logger level rejected with the logger name in the message") {
+    val yaml =
+      """llm:
+        |  provider: gemini
+        |  model: g
+        |logging:
+        |  loggers:
+        |    sttp.client3: shouty
+        |""".stripMargin
+    val ex = intercept[IllegalArgumentException](AppConfig.parse(yaml))
+    assert(ex.getMessage.contains("logging.loggers.sttp.client3"))
+  }
+
+  // -- tracing section -------------------------------------------------------
+
+  test("missing tracing section defaults every component to Off") {
+    val yaml =
+      """llm:
+        |  provider: gemini
+        |  model: g
+        |""".stripMargin
+    val cfg = AppConfig.parse(yaml)
+    assertEquals(cfg.tracing.runtime, TraceLevel.Off)
+    assertEquals(cfg.tracing.http, TraceLevel.Off)
+    assertEquals(cfg.tracing.guardrails, TraceLevel.Off)
+    assertEquals(cfg.tracing.workflow, TraceLevel.Off)
+  }
+
+  test("tracing section parses per-component levels") {
+    val yaml =
+      """llm:
+        |  provider: gemini
+        |  model: g
+        |tracing:
+        |  runtime: info
+        |  http: debug
+        |  guardrails: off
+        |  workflow: info
+        |""".stripMargin
+    val cfg = AppConfig.parse(yaml)
+    assertEquals(cfg.tracing.runtime, TraceLevel.Info)
+    assertEquals(cfg.tracing.http, TraceLevel.Debug)
+    assertEquals(cfg.tracing.guardrails, TraceLevel.Off)
+    assertEquals(cfg.tracing.workflow, TraceLevel.Info)
+  }
+
+  test("tracing accepts on/true/false/none aliases") {
+    val yaml =
+      """llm:
+        |  provider: gemini
+        |  model: g
+        |tracing:
+        |  runtime: on
+        |  http: true
+        |  guardrails: false
+        |  workflow: none
+        |""".stripMargin
+    val cfg = AppConfig.parse(yaml)
+    assertEquals(cfg.tracing.runtime, TraceLevel.Info)
+    assertEquals(cfg.tracing.http, TraceLevel.Info)
+    assertEquals(cfg.tracing.guardrails, TraceLevel.Off)
+    assertEquals(cfg.tracing.workflow, TraceLevel.Off)
+  }
+
+  test("unknown trace level rejected with the component name") {
+    val yaml =
+      """llm:
+        |  provider: gemini
+        |  model: g
+        |tracing:
+        |  runtime: chatty
+        |""".stripMargin
+    val ex = intercept[IllegalArgumentException](AppConfig.parse(yaml))
+    assert(ex.getMessage.contains("tracing.runtime"))
+    assert(ex.getMessage.contains("chatty"))
+  }
+
   test("response_format_mode accepts the documented aliases") {
     def parseMode(raw: String): ResponseFormatMode =
       AppConfig.parse(

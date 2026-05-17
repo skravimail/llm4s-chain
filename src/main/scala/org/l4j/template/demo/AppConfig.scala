@@ -45,7 +45,7 @@ object Provider:
       case "omlx"   => Right(Omlx)
       case other    => Left(s"unknown provider '$other'; expected one of gemini | openai | ibm | ollama | omlx")
 
-/** Parsed `config.yaml`. */
+/** Parsed `config.yaml` `llm:` section. */
 final case class LlmConfig(
     provider: Provider,
     model: String,
@@ -78,7 +78,81 @@ final case class LlmConfig(
           ),
         )
 
-final case class AppConfig(llm: LlmConfig)
+/** Per-component tracing verbosity.
+  *
+  *   - `Off`   – no listener wired (zero overhead).
+  *   - `Info`  – lifecycle events only: chat / provider / tool start+end with
+  *               timings and counts, never bodies.
+  *   - `Debug` – everything Info shows, plus request / response payloads,
+  *               full tool arguments, full tool results. */
+enum TraceLevel:
+  case Off, Info, Debug
+
+object TraceLevel:
+  def parse(raw: String): Either[String, TraceLevel] =
+    raw.trim.toLowerCase match
+      case "off" | "false" | "none" => Right(Off)
+      case "info" | "true" | "on"   => Right(Info)
+      case "debug" | "verbose"      => Right(Debug)
+      case other =>
+        Left(s"unknown trace level '$other'; expected off | info | debug")
+
+/** Per-component tracing configuration. Each field controls whether (and
+  * how loud) the matching listener is wired into the runtime. */
+final case class TracingConfig(
+    runtime: TraceLevel,
+    http: TraceLevel,
+    guardrails: TraceLevel,
+    workflow: TraceLevel,
+)
+
+object TracingConfig:
+  val default: TracingConfig =
+    TracingConfig(TraceLevel.Off, TraceLevel.Off, TraceLevel.Off, TraceLevel.Off)
+
+/** `logging:` section. `root` is the default level for unconfigured loggers
+  * (passed straight to logback's root logger). `loggers` is a name → level
+  * map for tuning specific libraries (e.g. `sttp.client3 -> warn`). Levels
+  * follow logback conventions: trace | debug | info | warn | error | off. */
+final case class LoggingConfig(
+    root: String,
+    loggers: Map[String, String],
+):
+  /** Apply these levels to the currently-installed logback context (no-op
+    * if SLF4J is bound to something other than logback). Safe to call more
+    * than once. */
+  def apply(): Unit =
+    val factory = org.slf4j.LoggerFactory.getILoggerFactory
+    factory match
+      case ctx: ch.qos.logback.classic.LoggerContext =>
+        val rootLogger = ctx.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)
+        rootLogger.setLevel(ch.qos.logback.classic.Level.toLevel(root))
+        loggers.foreach { case (name, level) =>
+          ctx.getLogger(name).setLevel(ch.qos.logback.classic.Level.toLevel(level))
+        }
+      case _ => () // not logback — silently ignore
+
+object LoggingConfig:
+  val default: LoggingConfig = LoggingConfig("info", Map.empty)
+
+  private val ValidLevels: Set[String] =
+    Set("trace", "debug", "info", "warn", "error", "off")
+
+  /** Validate a level string against logback's accepted values; throws
+    * with a clear message on garbage so misconfig surfaces at startup
+    * (logback's `Level.toLevel` defaults silently to DEBUG which is
+    * worse than failing loudly). */
+  def validateLevel(raw: String, path: String): Unit =
+    if !ValidLevels.contains(raw.trim.toLowerCase) then
+      throw IllegalArgumentException(
+        s"$path='$raw' is not a valid log level; expected one of ${ValidLevels.toList.sorted.mkString(" | ")}"
+      )
+
+final case class AppConfig(
+    llm: LlmConfig,
+    logging: LoggingConfig = LoggingConfig.default,
+    tracing: TracingConfig = TracingConfig.default,
+)
 
 object AppConfig:
 
@@ -133,14 +207,51 @@ object AppConfig:
           )
         n.seconds
 
+    val logging = Option(root.get("logging")) match
+      case None => LoggingConfig.default
+      case Some(raw) =>
+        val map = asMap(raw, "logging")
+        val rootLevel = Option(map.get("root")).map(_.toString).getOrElse("info")
+        LoggingConfig.validateLevel(rootLevel, "logging.root")
+        val loggers = Option(map.get("loggers")) match
+          case None => Map.empty[String, String]
+          case Some(lmap) =>
+            val m = asMap(lmap, "logging.loggers")
+            m.asScala.iterator.map { case (k, v) =>
+              val level = v.toString
+              LoggingConfig.validateLevel(level, s"logging.loggers.$k")
+              k -> level
+            }.toMap
+        LoggingConfig(rootLevel, loggers)
+
+    val tracing = Option(root.get("tracing")) match
+      case None => TracingConfig.default
+      case Some(raw) =>
+        val map = asMap(raw, "tracing")
+        def readLevel(key: String): TraceLevel =
+          Option(map.get(key)) match
+            case None => TraceLevel.Off
+            case Some(v) =>
+              TraceLevel.parse(v.toString) match
+                case Right(l) => l
+                case Left(m)  => throw IllegalArgumentException(s"tracing.$key: $m")
+        TracingConfig(
+          runtime = readLevel("runtime"),
+          http = readLevel("http"),
+          guardrails = readLevel("guardrails"),
+          workflow = readLevel("workflow"),
+        )
+
     AppConfig(
-      LlmConfig(
+      llm = LlmConfig(
         provider = provider,
         model = model,
         baseUrlOverride = baseUrlOverride,
         responseFormatMode = responseFormatMode,
         requestTimeout = requestTimeout,
-      )
+      ),
+      logging = logging,
+      tracing = tracing,
     )
 
   private def asMap(v: Any | Null, path: String): java.util.Map[String, Any] =

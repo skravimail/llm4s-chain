@@ -31,3 +31,34 @@ llm:
   # base_url: override the provider's default endpoint. Leave commented to
   # use the default for `provider:`.
   # base_url: http://127.0.0.1:1337
+
+# SLF4J / logback configuration. Applied at startup by AppConfig.logging.apply().
+# Levels: trace | debug | info | warn | error | off.
+#
+# Useful for muting third-party chatter (sttp, async-http-client, netty) or
+# turning on debug for our own packages without editing logback.xml.
+logging:
+  root: info
+  loggers:
+    org.l4j.template: info
+    sttp.client3: warn
+    org.asynchttpclient: warn
+    io.netty: warn
+
+# Per-component tracing verbosity. Wires the four llm4s listener traits
+# (RuntimeListener, HttpListener, GuardrailListener, WorkflowListener)
+# according to these levels.
+#
+#   off    -> listener not wired (zero overhead)
+#   info   -> lifecycle events only: chat / provider / tool start+end with
+#             timings, message/tool counts, truncated payloads
+#   debug  -> everything info shows + full request / response bodies,
+#             full tool arguments, full tool results
+#
+# Set to `off` for production unless you wire the events into a real
+# tracer (see llm4s-tracing-natchez for an OpenTelemetry adapter).
+tracing:
+  runtime: info       # off | info | debug
+  http: info          # off | info | debug
+  guardrails: off
+  workflow: off
