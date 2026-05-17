@@ -80,6 +80,13 @@ each entry pairs schema + executor and the name is held once.
 
 ## 4. No `derives` for tool schemas — boilerplate per tool
 
+> ✅ **Fixed** — 2026-05-17 in `9e01c71`.
+> Added a `ToolDef[A]` typeclass (in `llm4s-tools`) that bundles both
+> `SchemaEncoder` and `ValueDecoder` in one inline‑derived instance.
+> Tool authors now write `case class Args(...) derives ToolDef` and
+> register with `ToolDefinition.fromArgs[F, Args]`. The legacy
+> `fromProduct` keeps working unchanged.
+
 The README advertises “compile‑time tool argument decoding” and “no macros”.
 Both can be true, but in practice tool authors hand‑write a `ToolSchema` (a
 `JsonSchema` ADT) **and** a `ValueDecoder[A]` per tool. For anything beyond the
