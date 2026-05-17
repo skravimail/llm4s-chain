@@ -2,7 +2,9 @@ package org.l4j.template.llm4s.mcp
 
 import cats.effect.IO
 import cats.effect.Ref
+import cats.effect.Deferred
 import cats.effect.unsafe.implicits.global
+import cats.syntax.parallel.*
 import munit.FunSuite
 import org.l4j.template.llm4s.core.AiContent
 import org.l4j.template.llm4s.core.ChatRequest
@@ -10,6 +12,9 @@ import org.l4j.template.llm4s.core.JsonSchema
 import org.l4j.template.llm4s.core.ToolCall
 import org.l4j.template.llm4s.core.ToolResult
 import org.l4j.template.llm4s.runtime.InvocationContext
+import sttp.client3.SttpBackend
+import sttp.client3.testing.SttpBackendStub
+import sttp.monad.MonadError as SttpMonadError
 import upickle.default.*
 
 class McpClientSpec extends FunSuite:
@@ -130,6 +135,50 @@ class McpClientSpec extends FunSuite:
     assertEquals(writtenJson("method").str, "tools/list")
   }
 
+  test("stdio transport serializes concurrent requests on one shared stream") {
+    val program = for
+      writes <- Ref.of[IO, List[String]](Nil)
+      responses <- Ref.of[IO, List[String]](
+        List(
+          """{"jsonrpc":"2.0","id":1,"result":{"ok":"first"}}""",
+          """{"jsonrpc":"2.0","id":2,"result":{"ok":"second"}}""",
+        )
+      )
+      gate <- Deferred[IO, Unit]
+      transport <- StdioMcpTransport.create[IO](
+        readLine = gate.get *> responses.modify {
+          case head :: tail => tail -> head
+          case Nil          => Nil -> """{"jsonrpc":"2.0","id":999,"error":{"code":-32000,"message":"empty"}}"""
+        },
+        writeLine = line => writes.update(_ :+ line),
+      )
+      fibers <- (
+        transport.request("tools/list", None),
+        transport.request("tools/list", Some(ujson.Obj("cursor" -> "page-2"))),
+      ).parTupled.start
+      _ <- IO.sleep(scala.concurrent.duration.DurationInt(150).millis)
+      beforeRelease <- writes.get
+      _ <- gate.complete(()).void
+      _ <- fibers.joinWithNever
+    yield beforeRelease
+
+    val beforeRelease = program.unsafeRunSync()
+    assertEquals(beforeRelease.length, 1)
+  }
+
+  test("http transport rejects mismatched response ids") {
+    val program = for
+      transport <- HttpMcpTransport.create[IO](
+        sttp.model.Uri.unsafeParse("https://example.test/mcp"),
+        stubHttpBackend("""{"jsonrpc":"2.0","id":999,"result":{"ok":true}}"""),
+      )
+      result <- transport.request("tools/list", None).attempt
+    yield result
+
+    val result = program.unsafeRunSync()
+    assert(result.left.exists(_.getMessage.contains("did not match request id 1")))
+  }
+
 private def toolJson(name: String, description: String): ujson.Obj =
   ujson.Obj(
     "name" -> name,
@@ -163,3 +212,17 @@ private final class RecordingTransport(
 private object RecordingTransport:
   def create(responses: List[ujson.Value]): IO[RecordingTransport] =
     Ref.of[IO, (List[(String, Option[ujson.Value])], List[ujson.Value])]((Nil, responses)).map(new RecordingTransport(_))
+
+private def stubHttpBackend(body: String): SttpBackend[IO, Any] =
+  SttpBackendStub[IO, Any](sttpMonadError).whenAnyRequest.thenRespond(body)
+
+private val sttpMonadError: SttpMonadError[IO] =
+  new SttpMonadError[IO]:
+    override def unit[T](t: T): IO[T] = IO.pure(t)
+    override def map[T, T2](fa: IO[T])(f: T => T2): IO[T2] = fa.map(f)
+    override def flatMap[T, T2](fa: IO[T])(f: T => IO[T2]): IO[T2] = fa.flatMap(f)
+    override def error[T](t: Throwable): IO[T] = IO.raiseError(t)
+    override def handleWrappedError[T](rt: IO[T])(h: PartialFunction[Throwable, IO[T]]): IO[T] =
+      rt.handleErrorWith(error => h.applyOrElse(error, (_: Throwable) => IO.raiseError(error)))
+    override def ensure[T](f: IO[T], e: => IO[Unit]): IO[T] =
+      f.guarantee(e)

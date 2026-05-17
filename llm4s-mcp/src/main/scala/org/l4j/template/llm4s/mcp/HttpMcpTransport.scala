@@ -27,7 +27,14 @@ final class HttpMcpTransport[F[_]: MonadThrow] private (
         .body(payload)
         .send(backend)
       body <- MonadThrow[F].fromEither(response.body.left.map(RuntimeException(_)))
-      result <- MonadThrow[F].fromEither(McpProtocol.decodeResult(body))
+      decoded <- MonadThrow[F].fromEither(McpProtocol.decodeResponse(body))
+      (responseId, result) = decoded
+      _ <- MonadThrow[F].raiseWhen(responseId.exists(_ != id))(
+        McpProtocolError(
+          -32603,
+          s"MCP response id ${responseId.getOrElse(-1L)} did not match request id $id for method '$method'",
+        )
+      )
     yield result
 
 object HttpMcpTransport:
