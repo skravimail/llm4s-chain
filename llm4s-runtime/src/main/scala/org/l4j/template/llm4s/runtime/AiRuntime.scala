@@ -6,6 +6,7 @@ import cats.syntax.all.*
 import org.l4j.template.llm4s.core.ChatBackend
 import org.l4j.template.llm4s.core.ChatMessage
 import org.l4j.template.llm4s.core.ChatRequest
+import org.l4j.template.llm4s.core.ChatTranscript
 import org.l4j.template.llm4s.core.FinishReason
 import org.l4j.template.llm4s.memory.ChatMemory
 
@@ -72,7 +73,7 @@ final class AiRuntime[F[_]: MonadThrow: Parallel](
         ),
         toolKit,
       ).flatMap { result =>
-        val persisted = dropLeadingSystem(result.messages)
+        val persisted = ChatTranscript.fromMessages(result.messages).turns
         memory.replace(memoryId, persisted).as(result.text)
       }
     }
@@ -90,7 +91,7 @@ final class AiRuntime[F[_]: MonadThrow: Parallel](
       toolKit: ToolKit[F] = ToolKit.empty[F],
   ): F[String] =
     run(request, toolKit).flatMap { result =>
-      memory.replace(memoryId, dropLeadingSystem(result.messages)).as(result.text)
+      memory.replace(memoryId, ChatTranscript.fromMessages(result.messages).turns).as(result.text)
     }
 
   private def run(
@@ -158,7 +159,3 @@ final class AiRuntime[F[_]: MonadThrow: Parallel](
           }
     }
 
-  private def dropLeadingSystem(messages: List[ChatMessage]): List[ChatMessage] =
-    messages match
-      case (_: ChatMessage.SystemMessage) :: tail => tail
-      case other                                  => other
