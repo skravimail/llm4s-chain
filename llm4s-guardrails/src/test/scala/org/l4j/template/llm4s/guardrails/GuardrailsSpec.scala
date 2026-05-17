@@ -8,8 +8,10 @@ import org.l4j.template.llm4s.core.ChatBackend
 import org.l4j.template.llm4s.core.ChatMessage
 import org.l4j.template.llm4s.core.ChatRequest
 import org.l4j.template.llm4s.core.ChatResponse
+import org.l4j.template.llm4s.core.JsonSchema
 import org.l4j.template.llm4s.core.ToolCall
 import org.l4j.template.llm4s.core.ToolResult
+import org.l4j.template.llm4s.core.ToolSchema
 import org.l4j.template.llm4s.runtime.InvocationContext
 import org.l4j.template.llm4s.runtime.ToolExecutor
 import org.l4j.template.llm4s.runtime.ToolKit
@@ -61,7 +63,7 @@ class GuardrailsSpec extends FunSuite:
 
   test("guarded tool kit returns an error result when a tool call is blocked") {
     val base = ToolKit[IO](
-      schemas = Nil,
+      schemas = List(ToolSchema("lookup", "lookup", JsonSchema.ObjectSchema(Map.empty))),
       executors = Map(
         "lookup" -> new ToolExecutor[IO]:
           override def execute(call: ToolCall, context: InvocationContext): IO[ToolResult] =
