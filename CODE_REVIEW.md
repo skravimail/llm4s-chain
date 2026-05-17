@@ -185,6 +185,20 @@ fork.
 
 ## 9. Thin tests for the provider‑neutral surface area
 
+> ✅ **Fixed** — 2026-05-17 in `9492f30`.
+> Added three layers:
+> 1. `ChatBackendLaws` in `llm4s-core` exposes reusable response /
+>    ordering / tool‑round‑trip checks; `OpenAiBackendLawsSpec` is
+>    the template suite.
+> 2. `OpenAiStreamDecoderCorpusSpec` walks the decoder through a
+>    corpus of representative SSE chunks (text deltas, tool‑call
+>    deltas split across chunks, keepalive `: ping`, `[DONE]`,
+>    `content_filter`, malformed JSON). While writing this, hardened
+>    the decoder to skip SSE comment lines and to swallow `ujson`
+>    parse errors on partial chunks.
+> 3. `JsonSchemaWireRoundTripSpec` covers every `JsonSchema` variant
+>    survives the wire encoder.
+
 90 source files; the test files visible are one per module (`AiRuntimeSpec`,
 `AgenticWorkflowSpec`, `RagSpec`, etc.). For a library that promises
 “provider‑neutral,” there should also be:
