@@ -182,6 +182,15 @@ error blob just trains it to keep doing it.
 > applied via `agent.instrumented(listener)` — which composes inside
 > Sequence/Parallel/Conditional/Loop/Supervisor without further changes.
 >
+> PR-8f (`506e4f7`) closed the last loose end PR-8e left open:
+> `TraceContext` now flows through the transport interface so the
+> plain `HttpListener` (non-natchez) gets the same correlation
+> guarantee. `ChatBackend.chat(request, trace)`,
+> `OpenAiTransport.post(... , trace)`, and the streaming sibling all
+> gained trace-aware overloads (defaults preserve source compat). End-
+> to-end test asserts a single `traceId` appears on both `onChatStarted`
+> and `onHttpRequest` / `onHttpResponse`.
+>
 > PR-8e (`8f15647`) closed the final tracing gap: HTTP-level events.
 > Added `HttpListener[F]` (in `llm4s-openai-compat`) with
 > `onHttpRequest` / `onHttpResponse` / `onHttpFailure`, and a
