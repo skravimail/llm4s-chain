@@ -11,8 +11,8 @@ memory, RAG, agentic workflows, MCP tools, guardrails, and multimodals.
 
 Features
 --------
-- Provider-neutral core ADTs in `llm4s-core` and an OpenAI-compatible HTTP
-  backend in `llm4s-openai-compat`, plus a streaming facade/decoder layer.
+- Provider-neutral core ADTs in `llm4s-core` and an OpenAI-compatible HTTP/SSE
+  backend in `llm4s-openai-compat`.
 - `AiRuntime` chat-and-tool loop with compile-time tool argument decoding.
 - `AiAgent[F]` builder over the runtime for plain chat, typed structured
   output, and tool-using chat without macros, `unsafeRunSync`, or
@@ -71,7 +71,7 @@ Layout
 ------
 ```
 llm4s-core/             provider-neutral protocol ADTs
-llm4s-openai-compat/    OpenAI-compatible HTTP backend + streaming decoder
+llm4s-openai-compat/    OpenAI-compatible HTTP/SSE backend
 llm4s-runtime/          chat loop, tool loop, runtime config
 llm4s-tools/            tool schema + argument decoding derivation
 llm4s-structured/       typed structured outputs + AiAgent builder

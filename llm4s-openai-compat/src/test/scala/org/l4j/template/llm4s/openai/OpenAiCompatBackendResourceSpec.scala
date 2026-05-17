@@ -5,9 +5,13 @@ import cats.effect.Ref
 import cats.effect.Resource
 import cats.effect.unsafe.implicits.global
 import fs2.Stream
+import java.net.InetSocketAddress
+import java.nio.charset.StandardCharsets
 import munit.FunSuite
 import org.l4j.template.llm4s.core.ChatMessage
 import org.l4j.template.llm4s.core.ChatRequest
+import org.l4j.template.llm4s.core.FinishReason
+import org.l4j.template.llm4s.streaming.StreamEvent
 import sttp.capabilities.Effect
 import sttp.client3.Request
 import sttp.client3.Response
@@ -87,6 +91,58 @@ class OpenAiCompatBackendResourceSpec extends FunSuite:
     assertEquals(program.unsafeRunSync(), 1)
   }
 
+  test("OpenAiCompatStreamingBackend.resource streams real SSE lines over HTTP") {
+    val program =
+      localHttpServer { exchange =>
+        exchange.getResponseHeaders.add("Content-Type", "text/event-stream")
+        exchange.sendResponseHeaders(200, 0)
+        val out = exchange.getResponseBody
+        try
+          writeUtf8(out, """data: {"choices":[{"delta":{"content":"Hel""")
+          writeUtf8(out, """lo"},"finish_reason":null}]}""")
+          writeUtf8(out, "\n\n")
+          writeUtf8(out, """data: {"choices":[{"delta":{},"finish_reason":"stop"}]}""")
+          writeUtf8(out, "\n\n")
+          writeUtf8(out, "data: [DONE]\n\n")
+        finally out.close()
+      }.use { baseUrl =>
+        OpenAiCompatStreamingBackend.resource[IO](
+          OpenAiCompatConfig(baseUrl, "k", "m")
+        ).use { backend =>
+          backend
+            .stream(ChatRequest(List(ChatMessage.UserMessage.from("?"))))
+            .compile
+            .toList
+        }
+      }
+
+    val events = program.unsafeRunSync()
+    assertEquals(events.collect { case StreamEvent.TextDelta(value) => value }, List("Hello"))
+    assertEquals(events.collect { case StreamEvent.Completed(r) => r.finishReason }, List(Some(FinishReason.Stop)))
+  }
+
+  test("OpenAiCompatStreamingBackend.resource surfaces non-success HTTP statuses") {
+    val program =
+      localHttpServer { exchange =>
+        exchange.sendResponseHeaders(401, 12)
+        val out = exchange.getResponseBody
+        try writeUtf8(out, "unauthorized")
+        finally out.close()
+      }.use { baseUrl =>
+        OpenAiCompatStreamingBackend.resource[IO](
+          OpenAiCompatConfig(baseUrl, "k", "m")
+        ).use { backend =>
+          backend.stream(ChatRequest(List(ChatMessage.UserMessage.from("?")))).compile.drain.attempt
+        }
+      }
+
+    val result = program.unsafeRunSync()
+    assert(result.left.exists {
+      case OpenAiHttpError.Unauthorized(body) => body == "unauthorized"
+      case _                                  => false
+    })
+  }
+
   private def stubSttpBackend(body: String): SttpBackend[IO, Any] =
     new SttpBackend[IO, Any]:
       override def send[T, R >: Any & Effect[IO]](request: Request[T, R]): IO[Response[T]] =
@@ -104,3 +160,21 @@ class OpenAiCompatBackendResourceSpec extends FunSuite:
           headers: Map[String, String],
       ): Stream[IO, String] =
         Stream.empty
+
+  private def localHttpServer(
+      handle: com.sun.net.httpserver.HttpExchange => Unit
+  ): Resource[IO, String] =
+    Resource.make {
+      IO.blocking {
+        val server = com.sun.net.httpserver.HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0)
+        server.createContext("/v1/chat/completions", exchange => handle(exchange))
+        server.start()
+        server
+      }
+    }(server => IO.blocking(server.stop(0))).map { server =>
+      s"http://127.0.0.1:${server.getAddress.getPort}/v1"
+    }
+
+  private def writeUtf8(out: java.io.OutputStream, text: String): Unit =
+    out.write(text.getBytes(StandardCharsets.UTF_8))
+    out.flush()

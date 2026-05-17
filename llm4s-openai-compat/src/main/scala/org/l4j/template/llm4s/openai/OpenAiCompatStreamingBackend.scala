@@ -28,6 +28,22 @@ final class OpenAiCompatStreamingBackend[F[_]](
 
 object OpenAiCompatStreamingBackend:
 
+  /** Build a streaming backend with the bundled async-http-client SSE
+    * transport. This is the production counterpart to
+    * [[OpenAiCompatBackend.resource]] for callers that want an owned
+    * OpenAI-compatible streaming backend without wiring the transport
+    * manually.
+    */
+  def resource[F[_]: cats.effect.kernel.Async](
+      config: OpenAiCompatConfig,
+  ): Resource[F, StreamingChatBackend[F]] =
+    AhcOpenAiStreamingTransport
+      .resource[F](
+        baseUri = sttp.model.Uri.unsafeParse(config.baseUrl),
+        readTimeout = config.requestTimeout,
+      )
+      .map(t => new OpenAiCompatStreamingBackend[F](config, t))
+
   /** Build a streaming backend whose underlying transport is owned by the
     * returned `Resource`. Provider-specific SSE transports must be supplied
     * as a `Resource` so any threads / connections they hold are released on

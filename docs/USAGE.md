@@ -61,7 +61,7 @@ flowchart TB
 ## Module Map
 
 - `llm4s-core`: provider-neutral messages, content, tools, schemas, response formats, usage, finish reasons, and model capabilities.
-- `llm4s-openai-compat`: OpenAI-compatible HTTP support plus a streaming facade/decoder layer.
+- `llm4s-openai-compat`: OpenAI-compatible HTTP and SSE support.
 - `llm4s-runtime`: chat execution and tool-call loop.
 - `llm4s-tools`: Scala 3 derivation for tool schemas and argument decoding.
 - `llm4s-structured`: typed output decoding with JSON Schema response format, plus `AiAgent[F]`, a small builder over the runtime for plain chat, typed chat, and tool-using chat.
@@ -228,53 +228,37 @@ val review: IO[Summary] =
 
 ## Streaming
 
-Use `StreamingAiRuntime` with a `StreamingChatBackend`.
-
-The repository currently provides:
-
-- the provider-neutral streaming runtime in `llm4s-streaming`
-- the OpenAI-compatible line decoder in `OpenAiStreamDecoder`
-- `OpenAiCompatStreamingBackend`, which adapts an `OpenAiStreamingTransport`
-
-It does not currently ship a concrete provider-facing SSE transport implementation, so applications must supply the `OpenAiStreamingTransport[F]` themselves.
+Use `StreamingAiRuntime` with a `StreamingChatBackend`. For OpenAI-compatible
+providers, `OpenAiCompatStreamingBackend.resource` builds an owned backend with
+the bundled async-http-client SSE transport.
 
 ```scala
 import cats.effect.IO
-import fs2.Stream
-import org.l4j.template.llm4s.core.ChatRequest
 import org.l4j.template.llm4s.openai.OpenAiCompatConfig
 import org.l4j.template.llm4s.openai.OpenAiCompatStreamingBackend
-import org.l4j.template.llm4s.openai.OpenAiStreamingTransport
 import org.l4j.template.llm4s.streaming.StreamingAiRuntime
 import org.l4j.template.llm4s.streaming.StreamEvent
 
-val streamingBackend =
-  OpenAiCompatStreamingBackend[IO](
+val program =
+  OpenAiCompatStreamingBackend.resource[IO](
     OpenAiCompatConfig(
       baseUrl = "https://api.openai.com/v1",
       apiKey = sys.env("OPENAI_API_KEY"),
       model = "gpt-4.1-mini",
-    ),
-    new OpenAiStreamingTransport[IO]:
-      override def stream(
-          path: String,
-          body: ujson.Value,
-          headers: Map[String, String],
-      ): Stream[IO, String] =
-        Stream.raiseError(new NotImplementedError("Supply a real SSE transport"))
-  )
+    )
+  ).use { streamingBackend =>
+    val stream = StreamingAiRuntime[IO](streamingBackend).stream(
+      system = Some("Be concise."),
+      userText = "Stream a short explanation of effect types.",
+    )
 
-val stream = StreamingAiRuntime[IO](streamingBackend).stream(
-  system = Some("Be concise."),
-  userText = "Stream a short explanation of effect types.",
-)
+    val printEvents = stream.events.evalMap {
+      case StreamEvent.TextDelta(value) => IO.println(value)
+      case other                        => IO.println(other.toString)
+    }.compile.drain
 
-val text: IO[String] = stream.collectText
-
-val events = stream.events.evalMap {
-  case StreamEvent.TextDelta(value) => IO.println(value)
-  case other                        => IO.println(other.toString)
-}
+    printEvents *> stream.collectText.void
+  }
 ```
 
 The native event model currently surfaces text deltas, thinking deltas, tool-call deltas, and final completion.
