@@ -26,6 +26,7 @@ count grew from 51 → **120** across all modules; all green under
 | PR-18 | `c720ac7`  | `ResponseFormatMode { JsonSchema \| JsonObject \| Disabled }` on `OpenAiCompatConfig` — older servers (osaurus, older LM Studio, llama.cpp) that don't implement strict json_schema now usable |
 | PR-19 | `09831f1`  | `OpenAiCompatConfig.requestTimeout` (default 60s) wired into `AsyncHttpClientCatsBackend.resourceUsingConfigBuilder`; `LLM4S_REQUEST_TIMEOUT_SECONDS` env knob — local models generating structured output over long prompts no longer hit the sttp 60s default |
 | PR-20 | `b6ff757`  | `JsonExtractor` pulls JSON out of markdown fences / prose preludes / prose suffixes; `DerivedStructuredCodec.decode` now routes through it — `chatAs[T]` survives chatty models that wrap their output |
+| PR-21 | `4c6cd5a` + `d4785af` | Multi-turn tool-call wire compat: include `name` on tool-result messages AND `tool_calls` on assistant messages. Was a latent bug that real OpenAI tolerated; Gemini's compat layer surfaced it. Demo now runs end‑to‑end against Gemini 2.5 flash. |
 | PR-9  | `9492f30`  | `ChatBackendLaws` + SSE corpus + `JsonSchema` wire round-trip coverage    |
 | PR-10 | `abf793d`  | `GuardedToolExecutor` builds error JSON via `ujson.Obj`                   |
 | PR-11 | `6ca04c2`  | `ChatTranscript(system, turns)` replaces the `dropLeadingSystem` hack     |
