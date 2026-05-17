@@ -328,6 +328,23 @@ feature request without becoming 2×2×N.
 
 ## 15. Build hygiene
 
+> ✅ **Mostly fixed** — 2026-05-17 in `2d5f767`.
+> - Versions and grouped bundles moved into
+>   `project/Dependencies.scala`. Sub‑projects now reference
+>   `standardModuleDeps` / `catsEffectFs2Deps` / `sttpDeps` instead of
+>   re‑declaring versions.
+> - `commonSettings` now sets `-Wvalue-discard` and `-Wnonunit-statement`
+>   (fixed the one warning that surfaced). `-Xfatal-warnings` is
+>   intentionally *not* on yet because Scala 3's inline‑derivation
+>   `E197` warnings would block unrelated PRs; documented in
+>   `build.sbt`.
+> - `Test / classLoaderLayeringStrategy := Flat` moved from nine
+>   per‑module copies into `commonSettings` with a comment.
+> - New `all` aggregate project lets CI run `sbt all/test` to build
+>   every module without dragging in the demo runner's deps.
+> - `scalafmtOnCompile` left as documented; can flip on its own PR if
+>   desired.
+
 - Versions are scattered as `val sttpVersion = "..."` at the top of
   `build.sbt` but never centralised into a `project/Dependencies.scala`.
   Eleven sub‑projects each repeat `cats-effect`, `upickle`, `testDeps` —
