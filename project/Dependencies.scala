@@ -20,6 +20,7 @@ object Dependencies {
     val catsEffect   = "3.5.4"
     val fs2          = "3.10.2"
     val sttp         = "3.10.3"
+    val natchez      = "0.3.7"
   }
 
   // Single-library aliases.
@@ -31,6 +32,8 @@ object Dependencies {
   val fs2Core       = "co.fs2" %% "fs2-core"              % V.fs2
   val sttpCore      = "com.softwaremill.sttp.client3" %% "core" % V.sttp
   val sttpCatsAsync = "com.softwaremill.sttp.client3" %% "async-http-client-backend-cats" % V.sttp
+  val natchezCore   = "org.tpolecat" %% "natchez-core" % V.natchez
+  val natchezInMem  = "org.tpolecat" %% "natchez-mock" % V.natchez % Test
 
   // Grouped bundles.
   val testDeps: Seq[ModuleID]            = Seq(munit)

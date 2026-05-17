@@ -127,6 +127,15 @@ lazy val llm4sStructured = (project in file("llm4s-structured"))
     libraryDependencies ++= standardModuleDeps,
   )
 
+lazy val llm4sTracingNatchez = (project in file("llm4s-tracing-natchez"))
+  .dependsOn(llm4sCore, llm4sRuntime, llm4sGuardrails, llm4sAgentic)
+  .settings(commonSettings)
+  .settings(
+    name := "llm4s-tracing-natchez",
+    exportJars := true,
+    libraryDependencies ++= testDeps ++ catsEffectDeps ++ Seq(natchezCore),
+  )
+
 /** Pseudo-aggregate that lets CI compile/test everything with a single task
   * (`sbt all/test`) without dragging the demo runner's runtime deps in. */
 lazy val all = (project in file(".all"))
@@ -138,7 +147,7 @@ lazy val all = (project in file(".all"))
   .aggregate(
     llm4sCore, llm4sRuntime, llm4sStreaming, llm4sOpenAiCompat,
     llm4sTools, llm4sMemory, llm4sRag, llm4sAgentic, llm4sMcp,
-    llm4sGuardrails, llm4sStructured,
+    llm4sGuardrails, llm4sStructured, llm4sTracingNatchez,
   )
 
 lazy val root = (project in file("."))
