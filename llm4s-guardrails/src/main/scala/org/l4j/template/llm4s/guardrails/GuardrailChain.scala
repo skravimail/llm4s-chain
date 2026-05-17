@@ -28,17 +28,42 @@ final case class GuardrailChain[F[_]](
   def checkInput(
       request: ChatRequest
   )(using F: MonadThrow[F], P: Parallel[F]): F[ChatRequest] =
+    checkInputSequential(request)
+
+  def checkOutput(
+      request: ChatRequest,
+      response: ChatResponse,
+  )(using F: MonadThrow[F], P: Parallel[F]): F[ChatResponse] =
+    checkOutputSequential(request, response)
+
+  def checkTool(
+      call: ToolCall,
+      context: InvocationContext,
+  )(using F: MonadThrow[F], P: Parallel[F]): F[ToolCall] =
+    checkToolSequential(call, context)
+
+  /** Parallel validator-only variant.
+    *
+    * Use this when each guardrail is an independent check and any transformed
+    * `Allow(value)` result can be ignored. The default [[checkInput]] path is
+    * sequential so transformation-style guardrails compose correctly.
+    */
+  def checkInputParallel(
+      request: ChatRequest
+  )(using F: MonadThrow[F], P: Parallel[F]): F[ChatRequest] =
     parCheck(input)(_.check(request))(v => fireInput(request, v))
       .as(request)
 
-  def checkOutput(
+  /** Parallel validator-only variant; see [[checkInputParallel]]. */
+  def checkOutputParallel(
       request: ChatRequest,
       response: ChatResponse,
   )(using F: MonadThrow[F], P: Parallel[F]): F[ChatResponse] =
     parCheck(output)(_.check(request, response))(v => fireOutput(request, response, v))
       .as(response)
 
-  def checkTool(
+  /** Parallel validator-only variant; see [[checkInputParallel]]. */
+  def checkToolParallel(
       call: ToolCall,
       context: InvocationContext,
   )(using F: MonadThrow[F], P: Parallel[F]): F[ToolCall] =
