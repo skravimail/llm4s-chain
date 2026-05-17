@@ -168,6 +168,14 @@ error blob just trains it to keep doing it.
 
 ## 8. No telemetry / tracing seams
 
+> ✅ **Fixed** — 2026-05-17 in `d818a07`.
+> Added `RuntimeListener[F]` with `onChatStarted`, `onChatCompleted`,
+> `onToolCalled`, `onToolSucceeded`, `onToolFailed`. Wired through
+> `AiRuntime` and `ToolLoop` (including the `RetryOnce` retry leg).
+> `RuntimeListener.noop` is the default so existing code is
+> unaffected; adopters pass their own to instrument metrics, logs, or
+> traces. Tests assert events fire in the expected order.
+
 For a library aimed at agentic workflows there is no `Trace[F]` typeclass, no
 hook to emit per‑turn / per‑tool events, no metric counters. People will write
 production agents with this and immediately need to bolt observability on. A
