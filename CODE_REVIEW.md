@@ -366,6 +366,13 @@ feature request without becoming 2×2×N.
 
 ## 16. Documentation is split awkwardly
 
+> ✅ **Fixed** — 2026-05-17 in `d54adb8`.
+> `Readme_PR_plan.md` → `CHANGELOG.md`. `Usage_Readme.md` → `docs/USAGE.md`.
+> `README.md` rewritten as a short pitch that points at the three
+> canonical docs (USAGE, CHANGELOG, CODE_REVIEW). `git mv` was used so
+> blame follows; `DocsLayoutSpec` locks the filenames so future
+> renamers get a test failure instead of dead links.
+
 `README.md`, `Usage_Readme.md`, `Readme_PR_plan.md` — three READMEs at root
 with overlapping content. The PR plan is delivery history (belongs in
 `CHANGELOG.md` or PR descriptions), the usage doc is per‑module API help
