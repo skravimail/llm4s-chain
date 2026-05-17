@@ -182,6 +182,15 @@ error blob just trains it to keep doing it.
 > applied via `agent.instrumented(listener)` — which composes inside
 > Sequence/Parallel/Conditional/Loop/Supervisor without further changes.
 >
+> PR-8e (`8f15647`) closed the final tracing gap: HTTP-level events.
+> Added `HttpListener[F]` (in `llm4s-openai-compat`) with
+> `onHttpRequest` / `onHttpResponse` / `onHttpFailure`, and a
+> `TracedSttpBackend[F, P]` wrapper that fires the listener around each
+> `send`. `NatchezHttpListener` adapter ships in `llm4s-tracing-natchez`.
+> Adopters using natchez get auto-correlation with chat events because
+> the ambient `IOLocal`-based span propagates down through the sttp
+> call.
+>
 > PR-8d (`76dbc95`) shipped a natchez adapter module
 > (`llm4s-tracing-natchez`) with `NatchezRuntimeListener` /
 > `NatchezGuardrailListener` / `NatchezWorkflowListener`. The adapters

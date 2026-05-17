@@ -21,6 +21,7 @@ count grew from 51 → **120** across all modules; all green under
 | PR-8b | `3c96525`  | `RuntimeListener` v2: `TraceContext`, per-call timing, per-provider-call visibility, retry visibility, memory I/O hooks, sibling `GuardrailListener` |
 | PR-8c | `a128965`  | Streaming + workflow listeners — `onStreamStarted/Completed/Failed`, `WorkflowListener` with `agent.instrumented(...)` |
 | PR-8d | `76dbc95`  | natchez adapter module — `NatchezRuntimeListener` / `NatchezGuardrailListener` / `NatchezWorkflowListener` |
+| PR-8e | `8f15647`  | HTTP-level listener: `HttpListener[F]` + `TracedSttpBackend[F, P]` + `NatchezHttpListener` |
 | PR-9  | `9492f30`  | `ChatBackendLaws` + SSE corpus + `JsonSchema` wire round-trip coverage    |
 | PR-10 | `abf793d`  | `GuardedToolExecutor` builds error JSON via `ujson.Obj`                   |
 | PR-11 | `6ca04c2`  | `ChatTranscript(system, turns)` replaces the `dropLeadingSystem` hack     |
