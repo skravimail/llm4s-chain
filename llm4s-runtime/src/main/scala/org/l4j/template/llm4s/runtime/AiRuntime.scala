@@ -120,6 +120,7 @@ final class AiRuntime[F[_]: MonadThrow: Parallel](
                   toolKit = toolKit,
                   turn = currentTurn + 1,
                   request = currentRequest,
+                  config = config,
                 )
                 .map { toolMessages =>
                   val nextRequest = currentRequest.copy(
