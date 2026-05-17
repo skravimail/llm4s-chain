@@ -141,6 +141,16 @@ the other way around.
 
 ## 7. `ToolLoop` swallows tool failures and silently continues
 
+> ✅ **Fixed** — 2026-05-17 in `cb9b1e1`.
+> Added `RuntimeConfig.toolFailurePolicy` and
+> `RuntimeConfig.unknownToolPolicy`, each accepting
+> `ToolErrorPolicy.SurfaceToModel | FailFast | RetryOnce`. Tool
+> failures default to `SurfaceToModel` (so the model can recover);
+> unknown tools default to `FailFast` (typed `AiRuntimeError.ToolMissing`)
+> — the model asking for a non‑existent tool is almost always a
+> schema bug worth surfacing loudly. `ToolLoop.executeAll` dispatches
+> per policy and is covered by five new tests.
+
 ```scala
 executor.execute(toolCall, context).handleErrorWith(errorResult)   // returns isError=true
 ```
