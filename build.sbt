@@ -162,6 +162,7 @@ lazy val root = (project in file("."))
       catsEffect,
       sttpCore,
       sttpCatsAsync,
+      snakeYaml,
     ),
     Compile / mainClass := Some("org.l4j.template.demo.AgentDemoMain"),
     Compile / scalafmtOnCompile := false,

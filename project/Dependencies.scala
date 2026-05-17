@@ -21,6 +21,7 @@ object Dependencies {
     val fs2          = "3.10.2"
     val sttp         = "3.10.3"
     val natchez      = "0.3.7"
+    val snakeYamlEng = "2.9"
   }
 
   // Single-library aliases.
@@ -34,6 +35,7 @@ object Dependencies {
   val sttpCatsAsync = "com.softwaremill.sttp.client3" %% "async-http-client-backend-cats" % V.sttp
   val natchezCore   = "org.tpolecat" %% "natchez-core" % V.natchez
   val natchezInMem  = "org.tpolecat" %% "natchez-mock" % V.natchez % Test
+  val snakeYaml     = "org.snakeyaml" % "snakeyaml-engine" % V.snakeYamlEng
 
   // Grouped bundles.
   val testDeps: Seq[ModuleID]            = Seq(munit)
