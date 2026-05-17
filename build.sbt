@@ -128,7 +128,7 @@ lazy val llm4sStructured = (project in file("llm4s-structured"))
   )
 
 lazy val llm4sTracingNatchez = (project in file("llm4s-tracing-natchez"))
-  .dependsOn(llm4sCore, llm4sRuntime, llm4sGuardrails, llm4sAgentic)
+  .dependsOn(llm4sCore, llm4sRuntime, llm4sGuardrails, llm4sAgentic, llm4sOpenAiCompat)
   .settings(commonSettings)
   .settings(
     name := "llm4s-tracing-natchez",

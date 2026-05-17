@@ -16,7 +16,7 @@ import cats.syntax.all.*
   * expected to serve agents with heterogeneous payload types. Adopters that
   * need types can downcast on `name`.
   */
-trait WorkflowListener[F[_]]:
+trait WorkflowListener[F[_]]  :
   def onAgentStarted(name: String, input: Any): F[Unit]
   def onAgentSucceeded(name: String, output: Any, durationNanos: Long): F[Unit]
   def onAgentFailed(name: String, error: Throwable, durationNanos: Long): F[Unit]

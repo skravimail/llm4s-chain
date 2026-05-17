@@ -103,6 +103,39 @@ class NatchezAdapterSpec extends FunSuite:
     assert(fields.contains(("ai.guardrail.message", TraceValue.StringValue("no go"))))
   }
 
+  test("http listener: response attaches method, url, status, duration") {
+    val program = for
+      buf <- Ref.of[IO, Vector[(String, TraceValue)]](Vector.empty)
+      given Trace[IO] = recordingTrace(buf)
+      listener = NatchezHttpListener[IO]
+      uri = sttp.model.Uri.unsafeParse("http://example/test")
+      _ <- listener.onHttpResponse(sttp.model.Method.POST, uri, 200, 5000L)
+      fields <- buf.get
+    yield fields
+
+    val fields = program.unsafeRunSync()
+    assert(fields.contains(("ai.event", TraceValue.StringValue("http.response"))))
+    assert(fields.contains(("http.method", TraceValue.StringValue("POST"))))
+    assert(fields.contains(("http.status_code", TraceValue.NumberValue(200))))
+    assert(fields.contains(("ai.duration.ns", TraceValue.NumberValue(5000L))))
+  }
+
+  test("http listener: failure attaches error and re-raises via attachError") {
+    val program = for
+      buf <- Ref.of[IO, Vector[(String, TraceValue)]](Vector.empty)
+      errors <- Ref.of[IO, Vector[Throwable]](Vector.empty)
+      given Trace[IO] = recordingTrace(buf, errors)
+      listener = NatchezHttpListener[IO]
+      uri = sttp.model.Uri.unsafeParse("http://example/x")
+      _ <- listener.onHttpFailure(sttp.model.Method.GET, uri, new RuntimeException("dns nx"), 1L)
+      errs <- errors.get
+    yield errs
+
+    val errs = program.unsafeRunSync()
+    assertEquals(errs.length, 1)
+    assertEquals(errs.head.getMessage, "dns nx")
+  }
+
   test("workflow listener: agent succeeded attaches name + duration") {
     val program = for
       buf <- Ref.of[IO, Vector[(String, TraceValue)]](Vector.empty)
