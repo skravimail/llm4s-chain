@@ -175,6 +175,21 @@ error blob just trains it to keep doing it.
 > unaffected; adopters pass their own to instrument metrics, logs, or
 > traces. Tests assert events fire in the expected order.
 >
+> PR-8c (`a128965`) closed the two coverage gaps PR-8b left open:
+> streaming events (`onStreamStarted/Completed/Failed`) wired into
+> `StreamingAiRuntime` via `Stream.onFinalizeCase`, and a sibling
+> `WorkflowListener` in `llm4s-agentic` with `onAgentStarted/Succeeded/Failed`
+> applied via `agent.instrumented(listener)` — which composes inside
+> Sequence/Parallel/Conditional/Loop/Supervisor without further changes.
+>
+> PR-8d (`76dbc95`) shipped a natchez adapter module
+> (`llm4s-tracing-natchez`) with `NatchezRuntimeListener` /
+> `NatchezGuardrailListener` / `NatchezWorkflowListener`. The adapters
+> attach every event as fields on the ambient natchez span
+> (`Trace[F].put`) and call `Trace[F].attachError` on failure events.
+> Adopters wrap their `AiRuntime` call in `Trace[F].span("ai.chat")` and
+> get a fully-attributed span without writing boilerplate.
+>
 > PR-8b extended the seam for true end-to-end tracking:
 > - Added `TraceContext` (with `TraceId` / `SpanId`) in `llm4s-core`;
 >   threaded through `InvocationContext` and every chat-level event.
