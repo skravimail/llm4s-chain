@@ -80,6 +80,7 @@ Use an OpenAI-compatible backend when calling a live model. The simplest product
 import cats.effect.IO
 import org.l4j.template.llm4s.openai.OpenAiCompatBackend
 import org.l4j.template.llm4s.openai.OpenAiCompatConfig
+import org.l4j.template.llm4s.openai.ResponseFormatMode
 
 val backendResource =
   OpenAiCompatBackend.resource[IO](
@@ -87,11 +88,13 @@ val backendResource =
       baseUrl = "https://api.openai.com/v1",
       apiKey = sys.env("OPENAI_API_KEY"),
       model = "gpt-4.1-mini",
+      responseFormatMode = ResponseFormatMode.JsonSchema,
     )
   )
 ```
 
 The same backend contract works with any OpenAI-compatible endpoint by changing `baseUrl`, `apiKey`, and `model`.
+Use `ResponseFormatMode.JsonObject` for older OpenAI-compatible servers that only support JSON mode, or `ResponseFormatMode.Disabled` when the server rejects `response_format` entirely.
 
 ## Plain Chat
 
@@ -332,6 +335,18 @@ val scopedResults =
   )
 ```
 
+`EmbeddingContentRetriever` can also apply the same constraints for normal query-to-embedding retrieval:
+
+```scala
+val retriever = EmbeddingContentRetriever[IO](
+  embeddingModel = embeddingModel,
+  embeddingStore = store,
+  maxResults = 5,
+  namespace = Some("docs"),
+  filter = Some(MetadataFilter.Eq("kind", "guide")),
+)
+```
+
 Use `AdvancedContentRetriever` when you need query transformation, multi-retriever routing, de-duplication, reranking, and result limiting.
 
 ```scala
@@ -350,17 +365,17 @@ val advanced = AdvancedContentRetriever[IO](
 
 ## Agentic Workflows
 
-Use `Agent` and `Workflow` for deterministic orchestration. Workflows share an `AgentScope`.
+Use `WorkflowAgent` and `Workflow` for deterministic orchestration. Workflows share an `AgentScope`. The older `Agent` name still exists as a compatibility alias, but new code should prefer `WorkflowAgent` to avoid confusion with `AiAgent`.
 
 ```scala
 import cats.effect.IO
 import org.l4j.template.llm4s.agentic.*
 
-val writer = Agent.liftScoped[IO, String, String]("writer") { (topic, _) =>
+val writer = WorkflowAgent.liftScoped[IO, String, String]("writer") { (topic, _) =>
   IO.pure(s"Story about $topic")
 }
 
-val editor = Agent.liftScoped[IO, String, String]("editor") { (story, _) =>
+val editor = WorkflowAgent.liftScoped[IO, String, String]("editor") { (story, _) =>
   IO.pure(story.toUpperCase)
 }
 
