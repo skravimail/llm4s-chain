@@ -8,9 +8,13 @@ import org.l4j.template.llm4s.core.ChatBackend
 import org.l4j.template.llm4s.core.ChatMessage
 import org.l4j.template.llm4s.core.ChatRequest
 import org.l4j.template.llm4s.core.ChatResponse
+import org.l4j.template.llm4s.core.ResponseFormat
 import org.l4j.template.llm4s.core.TraceContext
 import org.l4j.template.llm4s.runtime.RuntimeConfig
 import org.l4j.template.llm4s.runtime.RuntimeListener
+import org.l4j.template.llm4s.runtime.ToolKit
+import org.l4j.template.llm4s.structured.AiAgent
+import org.l4j.template.llm4s.structured.ChatOptions
 import org.l4j.template.llm4s.structured.StructuredCodec
 import org.l4j.template.llm4s.tools.SchemaEncoder.given
 import org.l4j.template.llm4s.tools.ValueDecoder.given
@@ -86,6 +90,80 @@ class ChatModelSpec extends FunSuite:
     assert(response.text.startsWith(s"${trace.traceId}:"))
     assertEquals(seenRequests, List((trace, 0, "hello")))
     assertEquals(seenResponses.map { case (actualTrace, turn, text) => (actualTrace, turn, text.startsWith(s"${trace.traceId}:")) }, List((trace, 0, true)))
+  }
+
+  test("AiAgent runnable adapts an existing agent") {
+    val program = for
+      recorded <- Ref.of[IO, Option[ChatRequest]](None)
+      backend = new ChatBackend[IO]:
+        override def chat(request: ChatRequest, trace: TraceContext): IO[ChatResponse] =
+          recorded.set(Some(request)) *> IO.pure(ChatResponse(ChatMessage.AiMessage.from("from-agent")))
+        override def chat(request: ChatRequest): IO[ChatResponse] =
+          recorded.set(Some(request)) *> IO.pure(ChatResponse(ChatMessage.AiMessage.from("from-agent")))
+      agent = AiAgent[IO](backend, ToolKit.empty[IO], RuntimeConfig(), RuntimeListener.noop[IO])
+      runnable = AiAgentRunnable[IO](
+        agent,
+        ChatOptions[IO](metadata = Map("origin" -> "dsl")),
+      )
+      output <- runnable.run(
+        ChatRequest(messages = List(ChatMessage.UserMessage.from("hello"))),
+        RunContext[IO](backend, RuntimeConfig(), RuntimeListener.noop[IO]),
+      )
+      request <- recorded.get
+    yield (output, request)
+
+    val (output, request) = program.unsafeRunSync()
+
+    assertEquals(output, "from-agent")
+    assertEquals(request.map(_.metadata), Some(Map("origin" -> "dsl")))
+  }
+
+  test("AiAgent runnable can build an agent from context for an end-to-end chain") {
+    final case class Summary(title: String, bullets: List[String])
+    given StructuredCodec[Summary] = StructuredCodec.derived[Summary]
+
+    val chain =
+      PromptTemplate.user[IO, String](
+        system = Some("Return JSON only."),
+        responseFormat = Some(
+          ResponseFormat.JsonSchema(
+            name = "Summary",
+            schema = summon[StructuredCodec[Summary]].schema,
+            strict = true,
+          )
+        ),
+      )(topic => s"Summarize $topic") andThen
+        AiAgentRunnable.fromContext[IO]() andThen
+        StructuredParser[IO, Summary]
+
+    val backend = new ChatBackend[IO]:
+      override def chat(request: ChatRequest, trace: TraceContext): IO[ChatResponse] =
+        IO.pure(
+          ChatResponse(
+            ChatMessage.AiMessage.from(
+              s"""{"title":"${request.messages.last.text}","bullets":["opaque types","givens"]}"""
+            )
+          )
+        )
+      override def chat(request: ChatRequest): IO[ChatResponse] =
+        IO.pure(
+          ChatResponse(
+            ChatMessage.AiMessage.from(
+              s"""{"title":"${request.messages.last.text}","bullets":["opaque types","givens"]}"""
+            )
+          )
+        )
+
+    val context = RunContext[IO](
+      backend0 = backend,
+      runtimeConfig0 = RuntimeConfig(),
+      runtimeListener0 = RuntimeListener.noop[IO],
+    )
+
+    val result = chain.run("Scala 3", context).unsafeRunSync()
+
+    assertEquals(result.title, "Summarize Scala 3")
+    assertEquals(result.bullets, List("opaque types", "givens"))
   }
 
   private def textContext: IO[RunContext[IO]] =
