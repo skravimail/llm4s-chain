@@ -180,6 +180,85 @@ That keeps the current API stable while allowing a new composition surface to em
 - Should parallel composition fail fast or collect typed branch failures?
 - Is streaming a sibling abstraction or part of the same one?
 
+## Must-Resolve Before Implementation
+
+The following design decisions should be locked before phases 1-5 begin. If these drift mid-implementation, the DSL will likely grow overlapping abstractions or inconsistent composition semantics.
+
+### 1. Canonical `Runnable` Shape
+
+Decide whether the base abstraction is strictly:
+
+```scala
+trait Runnable[F[_], -In, +Out]:
+  def run(input: In, ctx: RunContext[F]): F[Out]
+```
+
+or whether naming, metadata, or introspection hooks are part of the base trait. The default recommendation is to keep the base trait minimal and layer naming/introspection on top.
+
+### 2. Explicit Typed Dataflow vs Dynamic Value Bag
+
+Decide whether the DSL is fundamentally:
+
+- explicit typed `In => Out` composition
+- or a more dynamic context/value-map model
+
+The recommended direction is explicit typed dataflow. A dynamic bag-of-values model would be more flexible at first, but it would weaken one of the repo's main strengths: type-directed composition.
+
+### 3. `RunContext` Boundary
+
+Keep `RunContext` capability-only and do not let it turn into a hidden mutable scratchpad. If shared intermediate state becomes necessary, it should be modeled as a separate typed facility.
+
+### 4. Parallel Failure And Cancellation Semantics
+
+Define what `par` means when one branch fails:
+
+- fail fast and cancel siblings
+- wait for all branches
+- collect typed branch failures
+
+This should be decided early because it affects laws, user expectations, and interop with existing `cats.Parallel` behavior.
+
+### 5. Model Node Input/Output Shape
+
+Decide what the canonical model-facing node consumes and emits:
+
+- `String`
+- prompt/template value
+- `ChatRequest`
+- `ChatResponse`
+- plain assistant text
+
+The cleanest design is usually to keep model invocation close to the existing `ChatRequest` / response model internally, while offering thinner convenience wrappers on top.
+
+### 6. Structured Parsing Placement
+
+Decide whether structured output parsing is:
+
+- a separate terminal node
+- or part of a model wrapper
+
+The recommended direction is a separate node so plain text generation and typed decoding stay orthogonal.
+
+### 7. Workflow Interop Boundary
+
+Decide whether:
+
+- the DSL compiles down to `Workflow`
+- `Workflow` is simply one adapter into the DSL
+- or both abstractions coexist with distinct responsibilities
+
+This matters because `llm4s-agentic` already has orchestration semantics, `AgentScope`, and listener behavior. The DSL should not accidentally create a second orchestration model with unclear ownership.
+
+### 8. RAG Composition Contract
+
+Decide how retrieval outputs move through the chain:
+
+- strongly typed values such as `List[RetrievedSource]`
+- explicit prompt-builder nodes
+- optional assignment/merge nodes
+
+This should be resolved before phase 3 so RAG support does not push the DSL toward an untyped scratch-map design.
+
 ## Risks
 
 - Overlapping too much with `Workflow` could create two orchestration systems with unclear boundaries.
