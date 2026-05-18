@@ -128,7 +128,7 @@ lazy val llm4sStructured = (project in file("llm4s-structured"))
   )
 
 lazy val llm4sDsl = (project in file("llm4s-dsl"))
-  .dependsOn(llm4sCore, llm4sRuntime, llm4sStructured, llm4sRag)
+  .dependsOn(llm4sCore, llm4sRuntime, llm4sStructured, llm4sRag, llm4sAgentic)
   .settings(commonSettings)
   .settings(
     name := "llm4s-dsl",

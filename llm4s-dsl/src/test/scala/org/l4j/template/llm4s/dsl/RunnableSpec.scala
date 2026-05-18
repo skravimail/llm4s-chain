@@ -4,12 +4,6 @@ import cats.effect.IO
 import cats.effect.Ref
 import cats.effect.unsafe.implicits.global
 import munit.FunSuite
-import org.l4j.template.llm4s.core.ChatBackend
-import org.l4j.template.llm4s.core.ChatRequest
-import org.l4j.template.llm4s.core.ChatResponse
-import org.l4j.template.llm4s.core.TraceContext
-import org.l4j.template.llm4s.runtime.RuntimeConfig
-import org.l4j.template.llm4s.runtime.RuntimeListener
 
 class RunnableSpec extends FunSuite:
 
@@ -20,7 +14,7 @@ class RunnableSpec extends FunSuite:
         .map(_.length)
         .contramap[Int](_ + 1)
 
-    val result = chain.run(9, stubContext).unsafeRunSync()
+    val result = chain.run(9, RunnableSpecSupport.stubContext).unsafeRunSync()
 
     assertEquals(result, 4)
   }
@@ -29,7 +23,7 @@ class RunnableSpec extends FunSuite:
     val named = Runnable.fromFunction[IO, Int, Int](_ + 2).named("increment")
 
     assertEquals(named.label, "increment")
-    assertEquals(named.run(3, stubContext).unsafeRunSync(), 5)
+    assertEquals(named.run(3, RunnableSpecSupport.stubContext).unsafeRunSync(), 5)
   }
 
   test("zipPar fails fast and cancels the sibling branch") {
@@ -41,7 +35,7 @@ class RunnableSpec extends FunSuite:
       right = Runnable.eval[IO, Unit, String] { (_, _) =>
         IO.never.onCancel(canceled.set(true))
       }
-      attempt <- left.zipPar(right).run((), stubContext).attempt
+      attempt <- left.zipPar(right).run((), RunnableSpecSupport.stubContext).attempt
       wasCanceled <- canceled.get
     yield (attempt, wasCanceled)
 
@@ -51,15 +45,3 @@ class RunnableSpec extends FunSuite:
     assertEquals(attempt.swap.toOption.map(_.getMessage), Some("boom"))
     assert(wasCanceled)
   }
-
-  private def stubContext: RunContext[IO] =
-    val backend = new ChatBackend[IO]:
-      override def chat(request: ChatRequest): IO[ChatResponse] =
-        IO.raiseError(RuntimeException(s"unexpected backend call: ${request.messages.length}"))
-
-    RunContext[IO](
-      backend0 = backend,
-      runtimeConfig0 = RuntimeConfig(),
-      runtimeListener0 = RuntimeListener.noop[IO],
-      traceContext0 = TraceContext.fresh(),
-    )

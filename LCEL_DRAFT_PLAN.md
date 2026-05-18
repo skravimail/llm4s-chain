@@ -1,10 +1,10 @@
 # LCEL-Style DSL Draft Plan
 
-Status: draft plan plus initial scaffold for the first six core design decisions
+Status: draft plan plus scaffold for the first six core design decisions, RAG adapters, and workflow interop
 
 Branch: `llm4s-lcel`
 
-This document sketches a possible LCEL-style composition DSL for this repository. The branch now includes an initial `llm4s-dsl` scaffold that implements the first six core design decisions plus `AiAgent` and RAG adapters, while leaving workflow interop and streaming for later phases.
+This document sketches a possible LCEL-style composition DSL for this repository. The branch now includes an initial `llm4s-dsl` scaffold that implements the first six core design decisions plus `AiAgent`, RAG, and workflow adapters, while leaving streaming for a later phase.
 
 ## Goal
 
@@ -155,7 +155,7 @@ That keeps the current API stable while allowing a new composition surface to em
 ### Phase 4: Workflow Interop
 
 - add `WorkflowAgent` and `Workflow` adapters
-- define how `AgentScope` and capability-only `RunContext` interact
+- keep `AgentScope` outside `RunContext`; default adapters allocate a fresh scope per DSL run, while an explicit escape hatch can reuse a caller-provided scope
 - avoid duplicating orchestration semantics already present in `llm4s-agentic`
 
 ### Phase 5: Observability and Introspection
@@ -314,7 +314,7 @@ The first implementation should be deliberately narrow:
 7. typed parser node
 8. one end-to-end example in docs/tests
 
-This branch now implements that narrower core plus `AiAgent` and RAG adapters. Workflow interop is still intentionally deferred until the execution model settles.
+This branch now implements that narrower core plus `AiAgent`, RAG, and workflow adapters. Streaming interop is still intentionally deferred until the execution model settles.
 
 ## Acceptance Criteria For A Future Implementation
 
