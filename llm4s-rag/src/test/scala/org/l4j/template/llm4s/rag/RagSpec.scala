@@ -47,6 +47,97 @@ class RagSpec extends FunSuite:
     assertEquals(program.unsafeRunSync().map(_.id), List("weather"))
   }
 
+  test("retrieval query supports namespace and metadata filtering") {
+    val program = for
+      store <- InMemoryEmbeddingStore.create[IO]
+      _ <- store.add(
+        List(
+          EmbeddingRecord(
+            "scala-guide",
+            "Scala 3 guide",
+            EmbeddingVector.of(1.0, 0.0),
+            metadata = Map("kind" -> "guide", "lang" -> "scala"),
+            namespace = Some("docs"),
+          ),
+          EmbeddingRecord(
+            "scala-api",
+            "Scala API notes",
+            EmbeddingVector.of(0.9, 0.1),
+            metadata = Map("kind" -> "api", "lang" -> "scala"),
+            namespace = Some("docs"),
+          ),
+          EmbeddingRecord(
+            "java-guide",
+            "Java guide",
+            EmbeddingVector.of(0.95, 0.05),
+            metadata = Map("kind" -> "guide", "lang" -> "java"),
+            namespace = Some("code"),
+          ),
+        )
+      )
+      results <- store.search(
+        RetrievalQuery(
+          vector = EmbeddingVector.of(1.0, 0.0),
+          maxResults = 3,
+          namespace = Some("docs"),
+          filter = Some(
+            MetadataFilter.And(
+              List(
+                MetadataFilter.Eq("kind", "guide"),
+                MetadataFilter.In("lang", Set("scala", "kotlin")),
+              )
+            )
+          ),
+        )
+      )
+    yield results
+
+    val results = program.unsafeRunSync()
+
+    assertEquals(results.map(source => source.id -> source.namespace), List("scala-guide" -> Some("docs")))
+  }
+
+  test("embedding content retriever can scope retrieval by namespace and filter") {
+    val program = for
+      store <- InMemoryEmbeddingStore.create[IO]
+      _ <- store.add(
+        List(
+          EmbeddingRecord(
+            "scala-guide",
+            "Scala guide",
+            EmbeddingVector.of(1.0, 0.0),
+            metadata = Map("kind" -> "guide"),
+            namespace = Some("docs"),
+          ),
+          EmbeddingRecord(
+            "scala-api",
+            "Scala API",
+            EmbeddingVector.of(0.99, 0.01),
+            metadata = Map("kind" -> "api"),
+            namespace = Some("docs"),
+          ),
+          EmbeddingRecord(
+            "scala-guide-code",
+            "Scala code guide",
+            EmbeddingVector.of(0.98, 0.02),
+            metadata = Map("kind" -> "guide"),
+            namespace = Some("code"),
+          ),
+        )
+      )
+      retriever = EmbeddingContentRetriever[IO](
+        embeddingModel = StaticEmbeddingModel(Map("scala" -> EmbeddingVector.of(1.0, 0.0))),
+        embeddingStore = store,
+        maxResults = 5,
+        namespace = Some("docs"),
+        filter = Some(MetadataFilter.Eq("kind", "guide")),
+      )
+      results <- retriever.retrieve("scala")
+    yield results
+
+    assertEquals(program.unsafeRunSync().map(_.id), List("scala-guide"))
+  }
+
   test("retrieval augmentor rewrites the last user message and returns sources") {
     val retriever = new ContentRetriever[IO]:
       override def retrieve(query: String): IO[List[RetrievedSource]] =
@@ -74,6 +165,7 @@ class RagSpec extends FunSuite:
     assertEquals(PgVectorConfig("public.embeddings").validated, Right(PgVectorConfig("public.embeddings")))
     assert(PgVectorConfig("embeddings; drop table users").validated.isLeft)
     assert(PgVectorConfig("embeddings", idColumn = "id or 1=1").validated.isLeft)
+    assert(PgVectorConfig("embeddings", namespaceColumn = "namespace; drop table users").validated.isLeft)
   }
 
   test("content aggregator deduplicates sources by id and keeps the best score") {

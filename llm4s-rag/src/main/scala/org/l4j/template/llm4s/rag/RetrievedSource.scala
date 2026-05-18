@@ -5,6 +5,7 @@ final case class EmbeddingRecord(
     text: String,
     embedding: EmbeddingVector,
     metadata: Map[String, String] = Map.empty,
+    namespace: Option[String] = None,
 )
 
 final case class RetrievedSource(
@@ -12,5 +13,5 @@ final case class RetrievedSource(
     text: String,
     score: Double,
     metadata: Map[String, String] = Map.empty,
+    namespace: Option[String] = None,
 )
-

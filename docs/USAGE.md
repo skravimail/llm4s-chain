@@ -318,6 +318,20 @@ val program =
   yield answer -> augmented.sources
 ```
 
+For richer VectorDB-style retrieval, build a `RetrievalQuery` directly with namespace and metadata filters:
+
+```scala
+val scopedResults =
+  store.search(
+    RetrievalQuery(
+      vector = EmbeddingVector.of(1.0, 0.0),
+      maxResults = 5,
+      namespace = Some("docs"),
+      filter = Some(MetadataFilter.Eq("kind", "guide")),
+    )
+  )
+```
+
 Use `AdvancedContentRetriever` when you need query transformation, multi-retriever routing, de-duplication, reranking, and result limiting.
 
 ```scala

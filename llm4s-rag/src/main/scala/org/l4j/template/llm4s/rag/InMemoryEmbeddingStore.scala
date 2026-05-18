@@ -2,41 +2,40 @@ package org.l4j.template.llm4s.rag
 
 import cats.effect.Ref
 import cats.effect.Sync
-import cats.syntax.all.*
 
 final class InMemoryEmbeddingStore[F[_]: Sync] private (
-    state: Ref[F, Map[String, EmbeddingRecord]]
+    state: Ref[F, Map[(Option[String], String), EmbeddingRecord]]
 ) extends EmbeddingStore[F]:
 
   override def add(records: List[EmbeddingRecord]): F[Unit] =
     val normalized = records.map(record => record.copy(embedding = record.embedding.normalize))
-    state.update(existing => existing ++ normalized.map(record => record.id -> record).toMap)
+    state.update { existing =>
+      existing ++ normalized.map(record => (record.namespace, record.id) -> record).toMap
+    }
 
-  override def search(
-      query: EmbeddingVector,
-      maxResults: Int,
-      minScore: Option[Double] = None,
-  ): F[List[RetrievedSource]] =
-    val normalizedQuery = query.normalize
-    state.get.map { records =>
+  override def search(query: RetrievalQuery): F[List[RetrievedSource]] =
+    val normalizedQuery = query.vector.normalize
+    Sync[F].map(state.get) { records =>
       records.values.toList
+        .filter(record => query.namespace.forall(namespace => record.namespace.contains(namespace)))
+        .filter(record => query.filter.forall(_.matches(record.metadata)))
         .map { record =>
           RetrievedSource(
             id = record.id,
             text = record.text,
-            score = record.embedding.cosineSimilarity(normalizedQuery),
             metadata = record.metadata,
+            namespace = record.namespace,
+            score = record.embedding.cosineSimilarity(normalizedQuery),
           )
         }
-        .filter(source => minScore.forall(source.score >= _))
+        .filter(source => query.minScore.forall(source.score >= _))
         .sortBy(source => -source.score)
-        .take(maxResults.max(0))
+        .take(query.maxResults.max(0))
     }
 
   override def remove(ids: Set[String]): F[Unit] =
-    state.update(existing => existing -- ids)
+    state.update(_.filterNot { case ((_, id), _) => ids.contains(id) })
 
 object InMemoryEmbeddingStore:
   def create[F[_]: Sync]: F[InMemoryEmbeddingStore[F]] =
-    Ref.of[F, Map[String, EmbeddingRecord]](Map.empty).map(new InMemoryEmbeddingStore[F](_))
-
+    Sync[F].map(Ref.of[F, Map[(Option[String], String), EmbeddingRecord]](Map.empty))(new InMemoryEmbeddingStore[F](_))
