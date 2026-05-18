@@ -4,7 +4,7 @@ Status: draft plan plus initial scaffold for the first six core design decisions
 
 Branch: `llm4s-lcel`
 
-This document sketches a possible LCEL-style composition DSL for this repository. The branch now includes an initial `llm4s-dsl` scaffold that implements the first six core design decisions plus an `AiAgent` adapter, while leaving workflow interop, RAG interop, and streaming for later phases.
+This document sketches a possible LCEL-style composition DSL for this repository. The branch now includes an initial `llm4s-dsl` scaffold that implements the first six core design decisions plus `AiAgent` and RAG adapters, while leaving workflow interop and streaming for later phases.
 
 ## Goal
 
@@ -314,7 +314,7 @@ The first implementation should be deliberately narrow:
 7. typed parser node
 8. one end-to-end example in docs/tests
 
-This branch now implements that narrower core plus an `AiAgent` adapter. Workflow and RAG adapters are still intentionally deferred until the execution model settles.
+This branch now implements that narrower core plus `AiAgent` and RAG adapters. Workflow interop is still intentionally deferred until the execution model settles.
 
 ## Acceptance Criteria For A Future Implementation
 
