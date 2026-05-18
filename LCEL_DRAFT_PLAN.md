@@ -1,10 +1,10 @@
 # LCEL-Style DSL Draft Plan
 
-Status: draft only
+Status: draft plan plus initial scaffold for the first six core design decisions
 
 Branch: `llm4s-lcel`
 
-This document sketches a possible LCEL-style composition DSL for this repository. It is intentionally a design and planning artifact only. No implementation is included in this branch beyond this draft plan.
+This document sketches a possible LCEL-style composition DSL for this repository. The branch now includes an initial `llm4s-dsl` scaffold that implements the first six core design decisions, while leaving workflow interop, RAG interop, and streaming for later phases.
 
 ## Goal
 
@@ -41,7 +41,7 @@ What is missing is a single universal composition protocol that can wrap all of 
 Introduce a new module, likely `llm4s-dsl` or `llm4s-runnable`, centered on a single typed abstraction:
 
 ```scala
-trait Runnable[F[_], -In, +Out]:
+trait Runnable[F[_], In, Out]:
   def run(input: In, ctx: RunContext[F]): F[Out]
 ```
 
@@ -180,64 +180,99 @@ That keeps the current API stable while allowing a new composition surface to em
 - Should parallel composition fail fast or collect typed branch failures?
 - Is streaming a sibling abstraction or part of the same one?
 
-## Must-Resolve Before Implementation
+## Core Decisions Implemented
 
-The following design decisions should be locked before phases 1-5 begin. If these drift mid-implementation, the DSL will likely grow overlapping abstractions or inconsistent composition semantics.
+The first six design decisions are now fixed in the initial scaffold. They are documented here so later phases build on the same assumptions instead of reopening foundational questions.
 
 ### 1. Canonical `Runnable` Shape
 
-Decide whether the base abstraction is strictly:
+Decision:
 
 ```scala
-trait Runnable[F[_], -In, +Out]:
+trait Runnable[F[_], In, Out]:
   def run(input: In, ctx: RunContext[F]): F[Out]
 ```
 
-or whether naming, metadata, or introspection hooks are part of the base trait. The default recommendation is to keep the base trait minimal and layer naming/introspection on top.
+Why:
+
+- keeps the base trait small and unsurprising
+- makes composition easy to test
+- avoids baking graph metadata into the execution contract
+- leaves room to layer naming/introspection on top, which the scaffold does through a `named(...)` wrapper rather than trait-level metadata
+
+Note:
+
+- The implemented type is invariant in `In` and `Out`. A more aggressively variant encoding is possible in theory, but it complicates Scala 3 significantly once `F[Out]` and higher-order combinators are involved. The invariant form preserves the important part of the design: explicit typed composition.
 
 ### 2. Explicit Typed Dataflow vs Dynamic Value Bag
 
-Decide whether the DSL is fundamentally:
+Decision:
 
-- explicit typed `In => Out` composition
-- or a more dynamic context/value-map model
+- use explicit typed `In => Out` composition
+- do not make context a dynamic bag of values
 
-The recommended direction is explicit typed dataflow. A dynamic bag-of-values model would be more flexible at first, but it would weaken one of the repo's main strengths: type-directed composition.
+Why:
+
+- aligns with the repo's existing strengths around typed composition
+- keeps intermediate values visible in the type signature
+- avoids hidden dependencies between nodes
+- makes refactors and local reasoning easier than a stringly scratch-map model
 
 ### 3. `RunContext` Boundary
 
-Keep `RunContext` capability-only and do not let it turn into a hidden mutable scratchpad. If shared intermediate state becomes necessary, it should be modeled as a separate typed facility.
+Decision:
+
+- keep `RunContext` capability-only
+- do not treat it as mutable shared pipeline state
+- if shared state becomes necessary later, model it as a separate typed facility
+
+Why:
+
+- prevents context from becoming an unstructured junk drawer
+- keeps pipeline data flowing through the graph, not through hidden side channels
+- preserves testability and determinism
+- keeps future stateful features optional rather than infecting every node from day one
 
 ### 4. Parallel Failure And Cancellation Semantics
 
-Define what `par` means when one branch fails:
+Decision:
 
-- fail fast and cancel siblings
-- wait for all branches
-- collect typed branch failures
+- `par` should fail fast and cancel sibling branches
 
-This should be decided early because it affects laws, user expectations, and interop with existing `cats.Parallel` behavior.
+Why:
+
+- matches user expectations from `cats.Parallel` and `IO.parTupled`
+- avoids leaving useless work running after one branch has already made the whole result invalid
+- keeps the implementation simple and efficient in the first cut
+
+The new tests explicitly lock this in by verifying sibling cancellation on failure.
 
 ### 5. Model Node Input/Output Shape
 
-Decide what the canonical model-facing node consumes and emits:
+Decision:
 
-- `String`
-- prompt/template value
-- `ChatRequest`
-- `ChatResponse`
-- plain assistant text
+- keep the canonical model-facing node at `ChatRequest => ChatResponse`
+- provide thinner helper nodes around it, such as prompt builders and text extractors
 
-The cleanest design is usually to keep model invocation close to the existing `ChatRequest` / response model internally, while offering thinner convenience wrappers on top.
+Why:
+
+- reuses the repo's existing provider-neutral protocol instead of inventing a second one
+- keeps model invocation close to the current backend contract
+- makes advanced features like response formats, tools, and metadata naturally expressible
+- allows ergonomics to come from surrounding nodes instead of shrinking the core protocol too early
 
 ### 6. Structured Parsing Placement
 
-Decide whether structured output parsing is:
+Decision:
 
-- a separate terminal node
-- or part of a model wrapper
+- keep structured parsing as a separate terminal node
 
-The recommended direction is a separate node so plain text generation and typed decoding stay orthogonal.
+Why:
+
+- keeps plain text generation and typed decoding orthogonal
+- allows the same model node to support both unstructured and structured flows
+- avoids turning the model node into a grab bag of output policies
+- keeps parser errors clearly attributable to decoding rather than transport or model invocation
 
 ### 7. Workflow Interop Boundary
 
@@ -274,12 +309,12 @@ The first implementation should be deliberately narrow:
 2. `Runnable[F, In, Out]`
 3. capability-only `RunContext[F]`
 4. sequential + parallel composition
-5. `AiAgent` adapter
+5. `ChatRequest => ChatResponse` model node
 6. prompt/template node
 7. typed parser node
 8. one end-to-end example in docs/tests
 
-If that works cleanly, RAG and workflow interop should come next.
+This branch now implements that narrower core except for `AiAgent`/workflow/RAG adapters, which are intentionally deferred until the execution model settles.
 
 ## Acceptance Criteria For A Future Implementation
 

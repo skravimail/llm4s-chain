@@ -127,6 +127,15 @@ lazy val llm4sStructured = (project in file("llm4s-structured"))
     libraryDependencies ++= standardModuleDeps,
   )
 
+lazy val llm4sDsl = (project in file("llm4s-dsl"))
+  .dependsOn(llm4sCore, llm4sRuntime, llm4sStructured)
+  .settings(commonSettings)
+  .settings(
+    name := "llm4s-dsl",
+    exportJars := true,
+    libraryDependencies ++= standardModuleDeps,
+  )
+
 lazy val llm4sTracingNatchez = (project in file("llm4s-tracing-natchez"))
   .dependsOn(llm4sCore, llm4sRuntime, llm4sGuardrails, llm4sAgentic, llm4sOpenAiCompat)
   .settings(commonSettings)
@@ -148,10 +157,11 @@ lazy val all = (project in file(".all"))
     llm4sCore, llm4sRuntime, llm4sStreaming, llm4sOpenAiCompat,
     llm4sTools, llm4sMemory, llm4sRag, llm4sAgentic, llm4sMcp,
     llm4sGuardrails, llm4sStructured, llm4sTracingNatchez,
+    llm4sDsl,
   )
 
 lazy val root = (project in file("."))
-  .dependsOn(llm4sCore, llm4sMemory, llm4sRag, llm4sAgentic, llm4sMcp, llm4sGuardrails, llm4sRuntime, llm4sStreaming, llm4sOpenAiCompat, llm4sTools, llm4sStructured)
+  .dependsOn(llm4sCore, llm4sMemory, llm4sRag, llm4sAgentic, llm4sMcp, llm4sGuardrails, llm4sRuntime, llm4sStreaming, llm4sOpenAiCompat, llm4sTools, llm4sStructured, llm4sDsl)
   .settings(commonSettings)
   .settings(
     name := "l4j-template",
