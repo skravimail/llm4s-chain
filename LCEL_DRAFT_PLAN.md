@@ -51,7 +51,22 @@ Supporting context:
 trait RunContext[F[_]]
 ```
 
-The first version of `RunContext` should stay small and only hold what composition actually needs. It can grow later to carry tracing, memory/session ids, runtime config, and shared scratch state.
+The first version of `RunContext` should stay small and only hold what composition actually needs. The recommended direction is to keep it as a pure capability carrier, not a mutable scratchpad. It should carry execution services such as tracing, runtime config, backend access, listeners, and policy handles, while pipeline data continues to flow explicitly through `In => Out`.
+
+If shared intermediate state is needed later, add it as a separate typed facility rather than overloading `RunContext`. A split like `RunContext[F]` plus `RunState[F]` or `Scratchpad[F]` keeps the core model easier to reason about and avoids turning context into a generic bag of hidden mutable values.
+
+Illustrative shape:
+
+```scala
+trait RunContext[F[_]]:
+  def backend: ChatBackend[F]
+  def config: RuntimeConfig
+  def listener: RuntimeListener[F]
+
+trait RunState[F[_]]:
+  def put[A](key: Key[A], value: A): F[Unit]
+  def get[A](key: Key[A]): F[Option[A]]
+```
 
 ## Proposed First-Class Nodes
 
@@ -119,6 +134,7 @@ That keeps the current API stable while allowing a new composition surface to em
 - create the new module
 - add `Runnable[F, In, Out]`
 - add `RunContext[F]`
+- keep `RunContext` capability-only in the initial cut
 - add basic sequential and parallel combinators
 - add unit tests for composition laws and type-safe chaining
 
@@ -139,7 +155,7 @@ That keeps the current API stable while allowing a new composition surface to em
 ### Phase 4: Workflow Interop
 
 - add `WorkflowAgent` and `Workflow` adapters
-- define how `AgentScope` and `RunContext` interact
+- define how `AgentScope` and capability-only `RunContext` interact
 - avoid duplicating orchestration semantics already present in `llm4s-agentic`
 
 ### Phase 5: Observability and Introspection
@@ -157,7 +173,7 @@ That keeps the current API stable while allowing a new composition surface to em
 
 ## Open Design Questions
 
-- Should `RunContext` be a pure capability carrier or also a mutable scratchpad?
+- If a scratch store is needed, should it be a separate typed `RunState` or a narrower scoped facility?
 - Should structured output parsing be a normal terminal node or part of the model node?
 - Should prompt templates operate on `Map[String, Any]`, typed input records, or both?
 - How much symbolic syntax is desirable in Scala 3 before readability suffers?
@@ -168,7 +184,7 @@ That keeps the current API stable while allowing a new composition surface to em
 
 - Overlapping too much with `Workflow` could create two orchestration systems with unclear boundaries.
 - A too-dynamic value model would weaken the type safety that is currently a strength of the repo.
-- A too-abstract context object could become a dumping ground for unrelated state.
+- A too-abstract context object could become a dumping ground for unrelated state; this is why `RunContext` should start as capabilities only.
 - Streaming can distort the design if included too early.
 
 ## Recommended First Deliverable
@@ -177,11 +193,12 @@ The first implementation should be deliberately narrow:
 
 1. new `llm4s-dsl` module
 2. `Runnable[F, In, Out]`
-3. sequential + parallel composition
-4. `AiAgent` adapter
-5. prompt/template node
-6. typed parser node
-7. one end-to-end example in docs/tests
+3. capability-only `RunContext[F]`
+4. sequential + parallel composition
+5. `AiAgent` adapter
+6. prompt/template node
+7. typed parser node
+8. one end-to-end example in docs/tests
 
 If that works cleanly, RAG and workflow interop should come next.
 
