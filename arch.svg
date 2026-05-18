@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1060" viewBox="0 0 1800 1060" role="img" aria-labelledby="title desc">
+  <title id="title">llm4s Architecture</title>
+  <desc id="desc">Architecture diagram derived from docs/USAGE.md, showing module relationships, provider integration, MCP servers, and embedding stores.</desc>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5f6773"/>
+    </marker>
+    <style>
+      .bg { fill: #f6f8fb; }
+      .panel { fill: #ffffff; stroke: #cfd7e3; stroke-width: 2; rx: 16; ry: 16; }
+      .accent-app { fill: #e7f0ff; stroke: #5f8dd3; }
+      .accent-provider { fill: #eaf8ec; stroke: #5ea86b; }
+      .accent-external { fill: #fff5df; stroke: #c79a2f; }
+      .edge { stroke: #5f6773; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+      .title { font-family: Arial, Helvetica, sans-serif; font-size: 16px; font-weight: 700; fill: #203040; }
+      .line { font-family: Arial, Helvetica, sans-serif; font-size: 13px; fill: #364152; }
+      .caption { font-family: Arial, Helvetica, sans-serif; font-size: 28px; font-weight: 700; fill: #203040; }
+      .subcaption { font-family: Arial, Helvetica, sans-serif; font-size: 15px; fill: #526071; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1800" height="1060"/>
+
+  <text class="caption" x="900" y="52" text-anchor="middle">llm4s Architecture</text>
+  <text class="subcaption" x="900" y="80" text-anchor="middle">Standalone SVG generated from the architecture section in docs/USAGE.md</text>
+
+  <rect class="panel accent-app" x="760" y="110" width="280" height="72" rx="16" ry="16"/>
+  <text class="title" x="900" y="145" text-anchor="middle">Application code / examples</text>
+
+  <rect class="panel" x="90" y="250" width="230" height="120"/>
+  <text class="title" x="205" y="282" text-anchor="middle">llm4s-structured</text>
+  <text class="line" x="205" y="310" text-anchor="middle">Typed structured outputs</text>
+  <text class="line" x="205" y="332" text-anchor="middle">JSON Schema + decoding</text>
+  <text class="line" x="205" y="354" text-anchor="middle">AiAgent builder</text>
+
+  <rect class="panel" x="350" y="250" width="230" height="120"/>
+  <text class="title" x="465" y="282" text-anchor="middle">llm4s-runtime</text>
+  <text class="line" x="465" y="310" text-anchor="middle">Chat loop</text>
+  <text class="line" x="465" y="332" text-anchor="middle">Tool loop</text>
+  <text class="line" x="465" y="354" text-anchor="middle">InvocationContext</text>
+
+  <rect class="panel" x="610" y="250" width="230" height="120"/>
+  <text class="title" x="725" y="282" text-anchor="middle">llm4s-streaming</text>
+  <text class="line" x="725" y="310" text-anchor="middle">Stream events</text>
+  <text class="line" x="725" y="332" text-anchor="middle">Streaming runtime</text>
+
+  <rect class="panel" x="870" y="250" width="230" height="120"/>
+  <text class="title" x="985" y="282" text-anchor="middle">llm4s-rag</text>
+  <text class="line" x="985" y="310" text-anchor="middle">Embeddings</text>
+  <text class="line" x="985" y="332" text-anchor="middle">Retrieval</text>
+  <text class="line" x="985" y="354" text-anchor="middle">Augmentation / reranking</text>
+
+  <rect class="panel" x="1130" y="250" width="230" height="120"/>
+  <text class="title" x="1245" y="282" text-anchor="middle">llm4s-agentic</text>
+  <text class="line" x="1245" y="310" text-anchor="middle">Sequence / parallel</text>
+  <text class="line" x="1245" y="332" text-anchor="middle">Conditional / loop</text>
+  <text class="line" x="1245" y="354" text-anchor="middle">Supervisor orchestration</text>
+
+  <rect class="panel" x="1390" y="250" width="230" height="120"/>
+  <text class="title" x="1505" y="282" text-anchor="middle">llm4s-mcp</text>
+  <text class="line" x="1505" y="310" text-anchor="middle">MCP JSON-RPC client</text>
+  <text class="line" x="1505" y="332" text-anchor="middle">stdio / HTTP transports</text>
+  <text class="line" x="1505" y="354" text-anchor="middle">MCP ToolKit adapter</text>
+
+  <rect class="panel" x="700" y="410" width="230" height="120"/>
+  <text class="title" x="815" y="442" text-anchor="middle">llm4s-tools</text>
+  <text class="line" x="815" y="470" text-anchor="middle">Tool schema derivation</text>
+  <text class="line" x="815" y="492" text-anchor="middle">Argument decoding</text>
+
+  <rect class="panel" x="960" y="410" width="230" height="120"/>
+  <text class="title" x="1075" y="442" text-anchor="middle">llm4s-memory</text>
+  <text class="line" x="1075" y="470" text-anchor="middle">Session memory</text>
+  <text class="line" x="1075" y="492" text-anchor="middle">Window memory</text>
+
+  <rect class="panel" x="1220" y="410" width="230" height="120"/>
+  <text class="title" x="1335" y="442" text-anchor="middle">llm4s-guardrails</text>
+  <text class="line" x="1335" y="470" text-anchor="middle">Input / output / tool guardrails</text>
+  <text class="line" x="1335" y="492" text-anchor="middle">Moderation hooks</text>
+  <text class="line" x="1335" y="514" text-anchor="middle">Retry policy</text>
+
+  <rect class="panel" x="770" y="600" width="260" height="150"/>
+  <text class="title" x="900" y="632" text-anchor="middle">llm4s-core</text>
+  <text class="line" x="900" y="660" text-anchor="middle">Provider-neutral ADTs</text>
+  <text class="line" x="900" y="682" text-anchor="middle">Messages / content / tools</text>
+  <text class="line" x="900" y="704" text-anchor="middle">Schemas / capabilities</text>
+
+  <rect class="panel" x="360" y="600" width="270" height="120"/>
+  <text class="title" x="495" y="632" text-anchor="middle">llm4s-openai-compat</text>
+  <text class="line" x="495" y="660" text-anchor="middle">OpenAI-compatible HTTP / SSE backend</text>
+
+  <rect class="panel accent-provider" x="360" y="850" width="270" height="80" rx="16" ry="16"/>
+  <text class="title" x="495" y="892" text-anchor="middle">OpenAI-compatible provider</text>
+
+  <rect class="panel accent-external" x="1360" y="850" width="220" height="80" rx="16" ry="16"/>
+  <text class="title" x="1470" y="892" text-anchor="middle">MCP servers</text>
+
+  <rect class="panel accent-external" x="1000" y="850" width="250" height="80" rx="16" ry="16"/>
+  <text class="title" x="1125" y="892" text-anchor="middle">Embedding stores</text>
+  <text class="line" x="1125" y="914" text-anchor="middle">In-memory / pgvector boundary</text>
+
+  <path class="edge" d="M 900 182 L 205 250"/>
+  <path class="edge" d="M 900 182 L 465 250"/>
+  <path class="edge" d="M 900 182 L 725 250"/>
+  <path class="edge" d="M 900 182 L 985 250"/>
+  <path class="edge" d="M 900 182 L 1245 250"/>
+  <path class="edge" d="M 900 182 L 1505 250"/>
+  <path class="edge" d="M 900 182 L 1335 410"/>
+
+  <path class="edge" d="M 320 310 L 350 310"/>
+  <path class="edge" d="M 205 370 L 205 470 L 700 470"/>
+  <path class="edge" d="M 205 370 L 205 490 L 960 490"/>
+
+  <path class="edge" d="M 610 310 L 580 310"/>
+  <path class="edge" d="M 725 370 L 725 340 L 580 340"/>
+  <path class="edge" d="M 1335 410 L 1335 340 L 580 340"/>
+  <path class="edge" d="M 1505 370 L 1505 320 L 580 320"/>
+  <path class="edge" d="M 815 410 L 815 340 L 580 340"/>
+
+  <path class="edge" d="M 205 370 L 205 675 L 770 675"/>
+  <path class="edge" d="M 465 370 L 465 650 L 770 650"/>
+  <path class="edge" d="M 725 370 L 725 625 L 770 625"/>
+  <path class="edge" d="M 985 370 L 985 600"/>
+  <path class="edge" d="M 1245 370 L 950 600"/>
+  <path class="edge" d="M 1505 370 L 1030 680"/>
+  <path class="edge" d="M 815 530 L 815 600"/>
+  <path class="edge" d="M 1075 530 L 1030 650"/>
+  <path class="edge" d="M 1335 530 L 950 720"/>
+  <path class="edge" d="M 630 660 L 770 660"/>
+
+  <path class="edge" d="M 580 640 L 495 640"/>
+  <path class="edge" d="M 840 340 L 495 340 L 495 600"/>
+  <path class="edge" d="M 495 720 L 495 850"/>
+
+  <path class="edge" d="M 985 370 L 985 800 L 1125 800 L 1125 850"/>
+  <path class="edge" d="M 1505 370 L 1505 850"/>
+</svg>
