@@ -1,6 +1,9 @@
 package org.l4j.template.demo
 
 import cats.Applicative
+import java.time.Instant
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 import org.l4j.template.llm4s.agentic.WorkflowListener
 import org.l4j.template.llm4s.core.ChatRequest
 import org.l4j.template.llm4s.core.ChatResponse
@@ -53,22 +56,25 @@ object TracingWiring:
   // -- formatting helpers --------------------------------------------------
 
   private val MaxInline = 60
+  private val TimeFormat =
+    DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSS'Z'").withZone(ZoneOffset.UTC)
 
   private def trunc(s: String, n: Int = MaxInline): String =
     val flat = s.replace("\n", " ").replace("\r", " ")
     if flat.length <= n then flat else flat.take(n) + "…"
 
   private def shortId(t: TraceContext): String = t.traceId.value.take(8)
+  private def nowStamp: String = TimeFormat.format(Instant.now())
 
-  /** `[trace 12345678] label                  extras` */
+  /** `[13:58:12.123] [trace 12345678] label                  extras` */
   private def fmtTrace(t: TraceContext, label: String, extras: String): String =
-    f"[trace ${shortId(t)}] $label%-22s $extras"
+    f"[${nowStamp}] [trace ${shortId(t)}] $label%-22s $extras"
 
-  /** `[guardrail ] label                  extras` — keeps columns aligned
+  /** `[13:58:12.123] [guardrail     ] label                  extras` — keeps columns aligned
     * with trace-prefixed lines so the output reads cleanly when both
     * are interleaved. */
   private def fmtScope(scope: String, label: String, extras: String): String =
-    f"[$scope%-14s] $label%-22s $extras"
+    f"[${nowStamp}] [$scope%-14s] $label%-22s $extras"
 
   private def ms(nanos: Long): String = f"${nanos / 1_000_000L}%dms"
 

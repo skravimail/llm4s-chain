@@ -9,6 +9,6 @@ object RetrievalAugmentorRunnable:
   def apply[F[_]: Functor](
       augmentor: RetrievalAugmentor[F],
   ): Runnable[F, ChatRequest, AugmentedChatRequest] =
-    Runnable.eval { (request, _) =>
+    Runnable.leaf("retrieval-augmentor") { (request, _) =>
       augmentor.augment(request)
     }

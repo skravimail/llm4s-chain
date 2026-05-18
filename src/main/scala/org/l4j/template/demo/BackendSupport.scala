@@ -30,39 +30,44 @@ object BackendSupport:
   def fromEnv: Resource[IO, ChatBackend[IO]] =
     fromConfig.map(_._1)
 
+  /** Backend + listener bundle + already-resolved config. Useful for demos
+    * that want to reuse the normal logging / tracing / transport plumbing
+    * while overriding provider or model selection in code. */
+  def fromAppConfig(app: AppConfig): Resource[IO, (ChatBackend[IO], ListenerBundle[IO], AppConfig)] =
+    Resource.eval(IO {
+      app.logging.apply()
+      val bundle = TracingWiring.buildListeners[IO](app.tracing, IO.println(_))
+      (app, bundle)
+    }).flatMap { case (resolved, bundle) =>
+      AsyncHttpClientCatsBackend
+        .resourceUsingConfigBuilder[IO](updateConfig = _
+          .setRequestTimeout(resolved.llm.requestTimeout.toMillis.toInt)
+          .setReadTimeout(resolved.llm.requestTimeout.toMillis.toInt))
+        .map { sttpBackend =>
+          val transport = SttpOpenAiTransport[IO](
+            Uri.unsafeParse(resolved.llm.baseUrl),
+            sttpBackend,
+            bundle.http,
+            resolved.llm.requestTimeout,
+          )
+          val backend = OpenAiCompatBackend[IO](
+            OpenAiCompatConfig(
+              baseUrl = resolved.llm.baseUrl,
+              apiKey = resolved.llm.apiKey,
+              model = resolved.llm.model,
+              responseFormatMode = resolved.llm.responseFormatMode,
+              requestTimeout = resolved.llm.requestTimeout,
+            ),
+            transport,
+          )
+          (backend, bundle, resolved)
+        }
+    }
+
   /** Backend + listener bundle + parsed config. The bundle's HTTP listener
     * is already wired into the transport; the caller is responsible for
     * threading `bundle.runtime` into their `AiAgent` (and
     * `bundle.guardrails` / `bundle.workflow` if applicable) so the rest of
     * the tracing config takes effect. */
   def fromConfig: Resource[IO, (ChatBackend[IO], ListenerBundle[IO], AppConfig)] =
-    Resource.eval(IO {
-      val app = AppConfig.load()
-      app.logging.apply()
-      val bundle = TracingWiring.buildListeners[IO](app.tracing, IO.println(_))
-      (app, bundle)
-    }).flatMap { case (app, bundle) =>
-      AsyncHttpClientCatsBackend
-        .resourceUsingConfigBuilder[IO](updateConfig = _
-          .setRequestTimeout(app.llm.requestTimeout.toMillis.toInt)
-          .setReadTimeout(app.llm.requestTimeout.toMillis.toInt))
-        .map { sttpBackend =>
-          val transport = SttpOpenAiTransport[IO](
-            Uri.unsafeParse(app.llm.baseUrl),
-            sttpBackend,
-            bundle.http,
-            app.llm.requestTimeout,
-          )
-          val backend = OpenAiCompatBackend[IO](
-            OpenAiCompatConfig(
-              baseUrl = app.llm.baseUrl,
-              apiKey = app.llm.apiKey,
-              model = app.llm.model,
-              responseFormatMode = app.llm.responseFormatMode,
-              requestTimeout = app.llm.requestTimeout,
-            ),
-            transport,
-          )
-          (backend, bundle, app)
-        }
-    }
+    fromAppConfig(AppConfig.load())

@@ -6,7 +6,7 @@ import org.l4j.template.llm4s.core.ChatResponse
 
 object ChatModel:
   def apply[F[_]: MonadThrow]: Runnable[F, ChatRequest, ChatResponse] =
-    Runnable.eval { (request, ctx) =>
+    Runnable.leaf("chat-model") { (request, ctx) =>
       MonadThrow[F].flatMap(
         ctx.runtimeListener.onProviderRequest(ctx.traceContext, turn = 0, request = request)
       ) { _ =>

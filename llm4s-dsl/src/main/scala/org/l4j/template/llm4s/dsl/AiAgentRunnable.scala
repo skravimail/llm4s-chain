@@ -12,7 +12,7 @@ object AiAgentRunnable:
       agent: AiAgent[F],
       opts: ChatOptions[F] = ChatOptions.empty[F],
   ): Runnable[F, ChatRequest, String] =
-    Runnable.eval { (request, _) =>
+    Runnable.leaf("ai-agent") { (request, _) =>
       agent.chat(request, opts)
     }
 
@@ -20,7 +20,7 @@ object AiAgentRunnable:
       tools: ToolKit[F] = ToolKit.empty[F],
       opts: ChatOptions[F] = ChatOptions.empty[F],
   ): Runnable[F, ChatRequest, String] =
-    Runnable.eval { (request, ctx) =>
+    Runnable.leaf("ai-agent-from-context") { (request, ctx) =>
       AiAgent[F](
         backend = ctx.backend,
         tools = tools,

@@ -57,8 +57,13 @@ class RagDslSpec extends FunSuite:
     val augmentor: RetrievalAugmentor[IO] = DefaultRetrievalAugmentor[IO](retriever)
 
     val chain =
-      PromptTemplate.user[IO, String](system = Some("Answer using retrieved context when relevant."))(identity) andThen
-        RetrievalAugmentorRunnable[IO](augmentor).map(_.request) andThen
+      Input[IO, String]
+        .par(ContentRetrieverRunnable[IO](retriever))
+        .andThen(
+          PromptTemplate.retrievalAugmentedUser[IO, (String, List[RetrievedSource])](
+            system = Some("Answer using retrieved context when relevant.")
+          )(_._1, _._2)
+        ) andThen
         AiAgentRunnable.fromContext[IO]()
 
     val backend = new ChatBackend[IO]:
@@ -76,6 +81,23 @@ class RagDslSpec extends FunSuite:
     assert(result.contains("[source:doc-1 score:0.9100]"))
     assert(result.contains("facts for opaque types"))
     assert(result.contains("User request:\nopaque types"))
+  }
+
+  test("assign keeps the original typed input alongside retrieved sources") {
+    val retriever = new ContentRetriever[IO]:
+      override def retrieve(query: String): IO[List[RetrievedSource]] =
+        IO.pure(List(RetrievedSource("doc-1", s"context:$query", score = 0.9)))
+
+    val chain =
+      Input
+        .pick[IO, String, String]("query")(identity)
+        .andThen(ContentRetrieverRunnable[IO](retriever))
+        .assign
+
+    val assigned = chain.run("scala", stubContext).unsafeRunSync()
+
+    assertEquals(assigned.input, "scala")
+    assertEquals(assigned.value.map(_.id), List("doc-1"))
   }
 
   private def stubContext: RunContext[IO] =

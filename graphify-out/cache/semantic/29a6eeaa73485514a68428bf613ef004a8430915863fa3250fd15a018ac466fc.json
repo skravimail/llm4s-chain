@@ -1,0 +1,1 @@
+{"nodes": [{"id": "pg_vector_embedding_store", "label": "PgVectorEmbeddingStore", "file_type": "code", "source_file": "llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/PgVectorEmbeddingStore.scala"}], "edges": [], "hyperedges": []}

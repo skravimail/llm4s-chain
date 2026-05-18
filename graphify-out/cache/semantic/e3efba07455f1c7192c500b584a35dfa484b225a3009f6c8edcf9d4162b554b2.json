@@ -1,0 +1,1 @@
+{"nodes": [{"id": "chatbackend_chatbackend", "label": "ChatBackend", "file_type": "code", "source_file": "llm4s-core/src/main/scala/org/l4j/template/llm4s/core/ChatBackend.scala", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [], "hyperedges": []}

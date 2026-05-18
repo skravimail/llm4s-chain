@@ -22,6 +22,7 @@ lazy val commonSettings = Seq(
     // a few benign anonymous-class-at-inline-site warnings; turning them
     // fatal would block useful PRs. See CODE_REVIEW.md PR-15.
   ),
+  Compile / run / fork := true,
   Test / fork := false,
   // Flat layering avoids sbt's hierarchical classloader splitting cats-effect
   // / fs2 classes across loaders inside test runs, which otherwise produces
@@ -128,7 +129,7 @@ lazy val llm4sStructured = (project in file("llm4s-structured"))
   )
 
 lazy val llm4sDsl = (project in file("llm4s-dsl"))
-  .dependsOn(llm4sCore, llm4sRuntime, llm4sStructured, llm4sRag, llm4sAgentic)
+  .dependsOn(llm4sCore, llm4sRuntime, llm4sStructured, llm4sRag, llm4sAgentic, llm4sStreaming)
   .settings(commonSettings)
   .settings(
     name := "llm4s-dsl",

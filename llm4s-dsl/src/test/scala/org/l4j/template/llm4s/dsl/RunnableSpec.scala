@@ -4,6 +4,7 @@ import cats.effect.IO
 import cats.effect.Ref
 import cats.effect.unsafe.implicits.global
 import munit.FunSuite
+import scala.concurrent.duration.*
 
 class RunnableSpec extends FunSuite:
 
@@ -36,6 +37,7 @@ class RunnableSpec extends FunSuite:
         IO.never.onCancel(canceled.set(true))
       }
       attempt <- left.zipPar(right).run((), RunnableSpecSupport.stubContext).attempt
+      _ <- IO.sleep(50.millis)
       wasCanceled <- canceled.get
     yield (attempt, wasCanceled)
 
@@ -44,4 +46,38 @@ class RunnableSpec extends FunSuite:
     assert(attempt.isLeft)
     assertEquals(attempt.swap.toOption.map(_.getMessage), Some("boom"))
     assert(wasCanceled)
+  }
+
+  test("mermaid rendering includes composition structure and labels") {
+    val chain =
+      PromptTemplate
+        .user[IO, String](system = Some("system"))(identity)
+        .andThen(ChatModel[IO])
+        .andThen(TextOutput[IO])
+        .named("answer-chain")
+
+    val mermaid = chain.toMermaid
+
+    assert(mermaid.startsWith("graph TD"))
+    assert(mermaid.contains("answer-chain"))
+    assert(mermaid.contains("andThen"))
+    assert(mermaid.contains("prompt-template"))
+    assert(mermaid.contains("chat-model"))
+    assert(mermaid.contains("text-output"))
+  }
+
+  test("graph description preserves parallel branch labels") {
+    val left = Runnable.fromFunction[IO, Int, Int](_ + 1).named("left")
+    val right = Runnable.fromFunction[IO, Int, String](_.toString).named("right")
+
+    val graph = left.zipPar(right).describeGraph
+
+    assertEquals(
+      graph,
+      RunnableGraph.Node.Binary(
+        "zipPar",
+        RunnableGraph.Node.Unary("left", RunnableGraph.Node.Leaf("function")),
+        RunnableGraph.Node.Unary("right", RunnableGraph.Node.Leaf("function")),
+      )
+    )
   }

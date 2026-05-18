@@ -1,6 +1,6 @@
 # LCEL-Style DSL Draft Plan
 
-Status: draft plan plus scaffold for the first six core design decisions, RAG adapters, and workflow interop
+Status: draft plan plus scaffold for the first six core design decisions, RAG adapters, workflow interop, and initial Mermaid graph introspection
 
 Branch: `llm4s-lcel`
 
@@ -276,13 +276,17 @@ Why:
 
 ### 7. Workflow Interop Boundary
 
-Decide whether:
+Decision:
 
-- the DSL compiles down to `Workflow`
-- `Workflow` is simply one adapter into the DSL
-- or both abstractions coexist with distinct responsibilities
+- `Runnable` and `Workflow` coexist with distinct responsibilities
+- the DSL does not compile generic runnable graphs down to `Workflow`
+- `Workflow` is adapted into the DSL at the boundary via `WorkflowRunnable`
 
-This matters because `llm4s-agentic` already has orchestration semantics, `AgentScope`, and listener behavior. The DSL should not accidentally create a second orchestration model with unclear ownership.
+Why:
+
+- `Workflow` already owns stateful orchestration semantics through `AgentScope`
+- keeping `Workflow` as the agentic abstraction avoids creating two subtly different orchestration systems
+- the DSL stays focused on typed dataflow and provider/runtime composition, while still allowing workflows to participate as nodes
 
 ### 8. RAG Composition Contract
 

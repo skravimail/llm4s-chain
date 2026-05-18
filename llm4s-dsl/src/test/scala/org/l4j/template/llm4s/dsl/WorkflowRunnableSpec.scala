@@ -2,7 +2,6 @@ package org.l4j.template.llm4s.dsl
 
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
-import cats.syntax.functor.*
 import munit.FunSuite
 import org.l4j.template.llm4s.agentic.AgentScope
 import org.l4j.template.llm4s.agentic.WorkflowAgent
@@ -15,7 +14,7 @@ class WorkflowRunnableSpec extends FunSuite:
         .lift[IO, Unit, Int]("counter") { (_, scope) =>
           scope.get[Int]("count").flatMap { previous =>
             val next = previous.getOrElse(0) + 1
-            scope.put("count", next).as(next)
+            scope.put("count", next).map(_ => next)
           }
         }
         .workflow
@@ -35,7 +34,7 @@ class WorkflowRunnableSpec extends FunSuite:
         .lift[IO, Unit, Int]("counter") { (_, scope) =>
           scope.get[Int]("count").flatMap { previous =>
             val next = previous.getOrElse(0) + 1
-            scope.put("count", next).as(next)
+            scope.put("count", next).map(_ => next)
           }
         }
         .workflow

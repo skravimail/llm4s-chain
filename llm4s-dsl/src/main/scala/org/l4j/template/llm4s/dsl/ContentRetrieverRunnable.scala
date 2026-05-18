@@ -8,6 +8,6 @@ object ContentRetrieverRunnable:
   def apply[F[_]: Functor](
       retriever: ContentRetriever[F],
   ): Runnable[F, String, List[RetrievedSource]] =
-    Runnable.eval { (query, _) =>
+    Runnable.leaf("content-retriever") { (query, _) =>
       retriever.retrieve(query)
     }
