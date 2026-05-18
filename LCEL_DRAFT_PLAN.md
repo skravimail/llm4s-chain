@@ -202,7 +202,7 @@ Why:
 
 Note:
 
-- The implemented type is invariant in `In` and `Out`. A more aggressively variant encoding is possible in theory, but it complicates Scala 3 significantly once `F[Out]` and higher-order combinators are involved. The invariant form preserves the important part of the design: explicit typed composition.
+- The public API is now variant in `In` and `Out`, but the implementation uses a small hidden `RunValue` wrapper internally rather than exposing raw `F[Out]` directly on the base trait. That keeps the public composition surface expressive while staying within Scala 3's variance rules for invariant effect types.
 
 ### 2. Explicit Typed Dataflow vs Dynamic Value Bag
 
