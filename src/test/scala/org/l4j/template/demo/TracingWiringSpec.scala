@@ -90,11 +90,85 @@ class TracingWiringSpec extends FunSuite:
         b.runtime.onToolSucceeded(argCall, invocation, ToolResult.Text(longResult), 1_000_000L) *>
         b.runtime.onChatCompleted(trace, request, longText, 1, 1_000_000L)
     }
-    // Info truncates with an ellipsis; Debug shows the whole thing.
-    assert(infoLines.forall(_.contains("…")), s"info lines should be truncated, got: $infoLines")
+    // Info: tool payloads are truncated with ellipsis; chat.completed omits response text entirely.
+    assert(infoLines.exists(l => l.contains("tool.called") && l.contains("…")), "info tool.called should be truncated")
+    assert(infoLines.exists(l => l.contains("tool.succeeded") && l.contains("…")), "info tool.succeeded should be truncated")
+    assert(!infoLines.exists(_.contains(longText)), "info should not include the full response text")
+    // Debug: all payloads shown in full, response on its own indented line.
     assert(debugLines.exists(_.contains(longArgs)), "debug should contain the full args")
     assert(debugLines.exists(_.contains(longResult)), "debug should contain the full result")
     assert(debugLines.exists(_.contains(longText)), "debug should contain the full chat text")
+  }
+
+  // -- span brackets --------------------------------------------------------
+
+  private val infoRuntime = TracingConfig(TraceLevel.Info, TraceLevel.Off, TraceLevel.Off, TraceLevel.Off)
+
+  test("spanChat success emits ┌ open then └ close") {
+    val lines = collect(infoRuntime) { b =>
+      b.runtime.spanChat(trace, request)(IO.unit)
+    }
+    assert(lines.exists(_.contains("┌")), s"expected ┌ in $lines")
+    assert(lines.exists(_.contains("└")), s"expected └ in $lines")
+    assert(!lines.exists(_.contains("✗")), s"unexpected ✗ in $lines")
+    assert(lines.indexWhere(_.contains("┌")) < lines.indexWhere(_.contains("└")))
+  }
+
+  test("spanChat failure emits ┌ open then ✗ close, not └") {
+    val lines = collect(infoRuntime) { b =>
+      b.runtime.spanChat(trace, request)(IO.raiseError(RuntimeException("boom"))).attempt.void
+    }
+    assert(lines.exists(_.contains("┌")), s"expected ┌ in $lines")
+    assert(lines.exists(_.contains("✗")), s"expected ✗ in $lines")
+    assert(lines.exists(_.contains("boom")), s"expected error message in $lines")
+    assert(!lines.exists(_.contains("└")), s"unexpected └ in $lines")
+  }
+
+  test("spanChat failure restores depth so next span is at correct indent") {
+    val lines = collect(infoRuntime) { b =>
+      b.runtime.spanChat(trace, request)(IO.raiseError(RuntimeException("boom"))).attempt.void *>
+        b.runtime.spanChat(trace, request)(IO.unit)
+    }
+    val opens = lines.filter(_.contains("┌"))
+    assertEquals(opens.length, 2, s"expected 2 open lines in $lines")
+    // Both spans are at depth 0 — extract and compare the indentation prefix
+    def indent(line: String): String =
+      val first = line.indexOf(']'); val second = line.indexOf(']', first + 1)
+      line.drop(second + 2).takeWhile(_ == ' ')
+    assertEquals(indent(opens(0)), indent(opens(1)), "depth should be equal after error recovery")
+  }
+
+  test("spanProviderCall nested inside spanChat produces one extra indent level") {
+    val lines = collect(infoRuntime) { b =>
+      b.runtime.spanChat(trace, request) {
+        b.runtime.spanProviderCall(trace, 0, request)(IO.unit)
+      }
+    }
+    val chatOpen     = lines.find(l => l.contains("┌") && l.contains("ai.chat")).get
+    val providerOpen = lines.find(l => l.contains("┌") && l.contains("ai.provider")).get
+    def indent(line: String): String =
+      val first = line.indexOf(']'); val second = line.indexOf(']', first + 1)
+      line.drop(second + 2).takeWhile(_ == ' ')
+    assert(
+      indent(providerOpen).length > indent(chatOpen).length,
+      s"provider span should be indented deeper than chat span\nchat:     $chatOpen\nprovider: $providerOpen",
+    )
+  }
+
+  test("spanToolCall failure emits ✗ and depth is restored for sibling spans") {
+    val lines = collect(infoRuntime) { b =>
+      b.runtime.spanChat(trace, request) {
+        b.runtime.spanToolCall(toolCall, invocation)(IO.raiseError(RuntimeException("tool-boom"))).attempt.void *>
+          b.runtime.spanToolCall(toolCall, invocation)(IO.unit)
+      }
+    }
+    val toolOpens = lines.filter(l => l.contains("┌") && l.contains("ai.tool"))
+    assertEquals(toolOpens.length, 2, s"expected 2 tool open lines in $lines")
+    def indent(line: String): String =
+      val first = line.indexOf(']'); val second = line.indexOf(']', first + 1)
+      line.drop(second + 2).takeWhile(_ == ' ')
+    assertEquals(indent(toolOpens(0)), indent(toolOpens(1)), "sibling tool spans should share the same indent")
+    assert(lines.exists(l => l.contains("✗") && l.contains("tool-boom")))
   }
 
   // -- http listener ---------------------------------------------------------
