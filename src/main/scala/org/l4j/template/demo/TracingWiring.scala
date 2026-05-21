@@ -2,7 +2,9 @@ package org.l4j.template.demo
 
 import cats.Applicative
 import cats.Monad
+import cats.effect.kernel.Outcome
 import cats.effect.kernel.Sync
+import cats.effect.syntax.all.*
 import cats.syntax.all.*
 import java.time.Instant
 import java.time.ZoneOffset
@@ -100,8 +102,13 @@ object TracingWiring:
       def openSpan[A](t: TraceContext, name: String)(use: F[A]): F[A] =
         fmt(t, "┌ " + name, "") >>
           Sync[F].delay(depth.incrementAndGet()).void >>
-          use.flatTap { _ =>
-            Sync[F].delay(depth.decrementAndGet()).void >> fmt(t, "└ " + name, "")
+          use.guaranteeCase {
+            case Outcome.Succeeded(_) =>
+              Sync[F].delay(depth.decrementAndGet()).void >> fmt(t, "└ " + name, "")
+            case Outcome.Errored(e) =>
+              Sync[F].delay(depth.decrementAndGet()).void >> fmt(t, "✗ " + name, Option(e.getMessage).getOrElse(e.getClass.getSimpleName))
+            case Outcome.Canceled() =>
+              Sync[F].delay(depth.decrementAndGet()).void >> fmt(t, "⊘ " + name, "canceled")
           }
 
       new RuntimeListener.Default[F]:
