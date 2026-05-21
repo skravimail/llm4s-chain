@@ -91,22 +91,23 @@ final class AiRuntime[F[_]: MonadThrow: Parallel](
   ): F[ChatRunResult] =
     val trace = TraceContext.fresh()
     val initial = request.copy(tools = toolKit.schemas)
-    val started = MonadThrow[F].pure(System.nanoTime())
 
-    for
-      startNanos <- started
-      _ <- listener.onChatStarted(trace, initial)
-      result <- loop(trace, turn = 0, request = initial, toolKit = toolKit)
-        .onError { case t => listener.onChatFailed(trace, initial, t) }
-      durationNs = System.nanoTime() - startNanos
-      _ <- listener.onChatCompleted(
-        trace,
-        initial,
-        result.text,
-        result.messages.length - initial.messages.length,
-        durationNs,
-      )
-    yield result.copy(trace = trace)
+    listener.spanChat(trace, initial) {
+      for
+        startNanos <- MonadThrow[F].pure(System.nanoTime())
+        _ <- listener.onChatStarted(trace, initial)
+        result <- loop(trace, turn = 0, request = initial, toolKit = toolKit)
+          .onError { case t => listener.onChatFailed(trace, initial, t) }
+        durationNs = System.nanoTime() - startNanos
+        _ <- listener.onChatCompleted(
+          trace,
+          initial,
+          result.text,
+          result.messages.length - initial.messages.length,
+          durationNs,
+        )
+      yield result.copy(trace = trace)
+    }
 
   /** Drive the chat loop in a stack-safe way via `tailRecM`.
     *
@@ -127,11 +128,15 @@ final class AiRuntime[F[_]: MonadThrow: Parallel](
           MonadThrow[F].raiseError(AiRuntimeError.MaxTurnsExceeded(config.maxTurns))
         else
           for
-            _ <- listener.onProviderRequest(trace, currentTurn, currentRequest)
-            providerStart = System.nanoTime()
-            response <- backend.chat(currentRequest, trace)
-            providerDuration = System.nanoTime() - providerStart
-            _ <- listener.onProviderResponse(trace, currentTurn, response, providerDuration)
+            response <- listener.spanProviderCall(trace, currentTurn, currentRequest) {
+              for
+                _ <- listener.onProviderRequest(trace, currentTurn, currentRequest)
+                providerStart = System.nanoTime()
+                resp <- backend.chat(currentRequest, trace)
+                providerDuration = System.nanoTime() - providerStart
+                _ <- listener.onProviderResponse(trace, currentTurn, resp, providerDuration)
+              yield resp
+            }
             stepped <- {
               val aiMessage = response.message
               if !aiMessage.hasToolCalls then

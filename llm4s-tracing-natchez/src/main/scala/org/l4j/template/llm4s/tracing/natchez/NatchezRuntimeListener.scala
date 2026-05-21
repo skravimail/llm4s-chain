@@ -34,6 +34,15 @@ import org.l4j.template.llm4s.runtime.RuntimeListener
   */
 final class NatchezRuntimeListener[F[_]: Monad: Trace] extends RuntimeListener[F]:
 
+  override def spanChat[A](trace: TraceContext, request: ChatRequest)(use: F[A]): F[A] =
+    Trace[F].span("ai.chat")(use)
+
+  override def spanProviderCall[A](trace: TraceContext, turn: Int, request: ChatRequest)(use: F[A]): F[A] =
+    Trace[F].span("ai.provider.request")(use)
+
+  override def spanToolCall[A](call: ToolCall, context: InvocationContext)(use: F[A]): F[A] =
+    Trace[F].span(s"ai.tool.${call.name}")(use)
+
   override def onChatStarted(trace: TraceContext, request: ChatRequest): F[Unit] =
     Trace[F].put(
       "ai.event"            -> StringValue("chat.started"),

@@ -63,8 +63,10 @@ object ToolLoop:
 
       val effect = toolKit.executors.get(toolCall.name) match
         case Some(executor) =>
-          listener.onToolCalled(toolCall, context) >>
-            runWithPolicy(executor, toolCall, context, config.toolFailurePolicy, listener)
+          listener.spanToolCall(toolCall, context) {
+            listener.onToolCalled(toolCall, context) >>
+              runWithPolicy(executor, toolCall, context, config.toolFailurePolicy, listener)
+          }
         case None =>
           val missing = AiRuntimeError.ToolMissing(toolCall.name)
           listener.onToolFailed(toolCall, context, missing, attempt = 1, willRetry = false) >>

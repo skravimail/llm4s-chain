@@ -96,6 +96,21 @@ trait RuntimeListener[F[_]]:
   def onMemoryRead(trace: TraceContext, memoryId: String, messageCount: Int): F[Unit]
   def onMemoryWritten(trace: TraceContext, memoryId: String, messageCount: Int): F[Unit]
 
+  // -- Span bracket methods --------------------------------------------------
+
+  /** Wraps the entire multi-turn chat execution in a logical span.
+    * Default: run `use` unchanged (no span opened).
+    * Override to open a child span around the full chat loop. */
+  def spanChat[A](trace: TraceContext, request: ChatRequest)(use: F[A]): F[A] = use
+
+  /** Wraps each individual `backend.chat(...)` call.
+    * Default: run `use` unchanged. */
+  def spanProviderCall[A](trace: TraceContext, turn: Int, request: ChatRequest)(use: F[A]): F[A] = use
+
+  /** Wraps each tool execution (including retry attempts).
+    * Default: run `use` unchanged. */
+  def spanToolCall[A](call: ToolCall, context: InvocationContext)(use: F[A]): F[A] = use
+
   // -- Streaming scope ------------------------------------------------------
 
   /** Fired when a `StreamingAiRuntime.stream(...)` consumer subscribes (i.e.
@@ -127,11 +142,14 @@ object RuntimeListener:
     override def onChatStarted(trace: TraceContext, request: ChatRequest): F[Unit] = F.unit
     override def onChatCompleted(t: TraceContext, r: ChatRequest, x: String, n: Int, d: Long): F[Unit] = F.unit
     override def onChatFailed(t: TraceContext, r: ChatRequest, e: Throwable): F[Unit] = F.unit
+    override def spanChat[A](t: TraceContext, r: ChatRequest)(use: F[A]): F[A] = use
     override def onProviderRequest(t: TraceContext, turn: Int, r: ChatRequest): F[Unit] = F.unit
     override def onProviderResponse(t: TraceContext, turn: Int, r: ChatResponse, d: Long): F[Unit] = F.unit
+    override def spanProviderCall[A](t: TraceContext, turn: Int, r: ChatRequest)(use: F[A]): F[A] = use
     override def onToolCalled(c: ToolCall, ctx: InvocationContext): F[Unit] = F.unit
     override def onToolSucceeded(c: ToolCall, ctx: InvocationContext, r: ToolResult, d: Long): F[Unit] = F.unit
     override def onToolFailed(c: ToolCall, ctx: InvocationContext, e: Throwable, a: Int, w: Boolean): F[Unit] = F.unit
+    override def spanToolCall[A](c: ToolCall, ctx: InvocationContext)(use: F[A]): F[A] = use
     override def onMemoryRead(t: TraceContext, id: String, n: Int): F[Unit] = F.unit
     override def onMemoryWritten(t: TraceContext, id: String, n: Int): F[Unit] = F.unit
     override def onStreamStarted(t: TraceContext, r: ChatRequest): F[Unit] = F.unit
