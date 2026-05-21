@@ -83,6 +83,7 @@ object OpenAiWire:
       usage = decodeUsage(json.obj.get("usage")),
       finishReason = finishReason,
       responseId = json.obj.get("id").collect { case ujson.Str(value) => value },
+      model = json.obj.get("model").collect { case ujson.Str(value) => value },
     )
 
   private def encodeMessage(message: ChatMessage): ujson.Obj =

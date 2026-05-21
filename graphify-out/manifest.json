@@ -312,7 +312,7 @@
   "/Users/alpha/AI_ML/llm4s-template/.claude/settings.local.json": {
     "mtime": 1779127366.827859,
     "ast_hash": "bdafdd642fa3a43747032e5a4eff5a11",
-    "semantic_hash": ""
+    "semantic_hash": "bdafdd642fa3a43747032e5a4eff5a11"
   },
   "/Users/alpha/AI_ML/llm4s-template/project/Dependencies.scala": {
     "mtime": 1779047821.7060006,
@@ -342,7 +342,7 @@
   "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/test/scala/org/l4j/template/llm4s/dsl/RagDslSpec.scala": {
     "mtime": 1779128302.4778905,
     "ast_hash": "5270e6841f8be671ed6556ea2a29f4ef",
-    "semantic_hash": ""
+    "semantic_hash": "5270e6841f8be671ed6556ea2a29f4ef"
   },
   "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/StructuredParser.scala": {
     "mtime": 1779115549.1438348,
@@ -372,12 +372,12 @@
   "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/PromptTemplate.scala": {
     "mtime": 1779128253.4333375,
     "ast_hash": "6e418f1abe704bedf0f961261ce2142d",
-    "semantic_hash": ""
+    "semantic_hash": "6e418f1abe704bedf0f961261ce2142d"
   },
   "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/RunContext.scala": {
     "mtime": 1779128253.0967953,
     "ast_hash": "e85d5dfa9a5f9dfb7431fbfc49b7e19e",
-    "semantic_hash": ""
+    "semantic_hash": "e85d5dfa9a5f9dfb7431fbfc49b7e19e"
   },
   "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/RetrievalAugmentorRunnable.scala": {
     "mtime": 1779115549.4848018,
@@ -387,12 +387,12 @@
   "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/WorkflowRunnable.scala": {
     "mtime": 1779128253.5141387,
     "ast_hash": "3740bcefd3913ac75ada9d5631fe8890",
-    "semantic_hash": ""
+    "semantic_hash": "3740bcefd3913ac75ada9d5631fe8890"
   },
   "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/Runnable.scala": {
     "mtime": 1779129579.8277137,
     "ast_hash": "666eab22226d051ff69216991cba3f12",
-    "semantic_hash": ""
+    "semantic_hash": "666eab22226d051ff69216991cba3f12"
   },
   "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/ContentRetrieverRunnable.scala": {
     "mtime": 1779115549.3988693,
@@ -712,12 +712,12 @@
   "/Users/alpha/AI_ML/llm4s-template/src/main/scala/org/l4j/template/demo/BackendSupport.scala": {
     "mtime": 1779130082.8324096,
     "ast_hash": "97463e566e0d9eda2858c4b1f123c872",
-    "semantic_hash": ""
+    "semantic_hash": "97463e566e0d9eda2858c4b1f123c872"
   },
   "/Users/alpha/AI_ML/llm4s-template/src/main/scala/org/l4j/template/demo/TracingWiring.scala": {
     "mtime": 1779130829.4351904,
     "ast_hash": "0ebbd44ed42d507a72f57fe5c46738bb",
-    "semantic_hash": ""
+    "semantic_hash": "0ebbd44ed42d507a72f57fe5c46738bb"
   },
   "/Users/alpha/AI_ML/llm4s-template/src/main/scala/org/l4j/template/demo/AgentDemoMain.scala": {
     "mtime": 1779055334.4943974,
@@ -757,7 +757,7 @@
   "/Users/alpha/AI_ML/llm4s-template/LCEL_DRAFT_PLAN.md": {
     "mtime": 1779128253.75577,
     "ast_hash": "358178b78ccd0a028089c4da114bd5b6",
-    "semantic_hash": ""
+    "semantic_hash": "358178b78ccd0a028089c4da114bd5b6"
   },
   "/Users/alpha/AI_ML/llm4s-template/CHANGELOG.md": {
     "mtime": 1779048007.7569504,
@@ -775,9 +775,9 @@
     "semantic_hash": "3a6b3d8011648841050a7d9466a5ab71"
   },
   "/Users/alpha/AI_ML/llm4s-template/config.yaml": {
-    "mtime": 1779130553.2272644,
-    "ast_hash": "adb677073a16ed7bc753fbb845a99fee",
-    "semantic_hash": ""
+    "mtime": 1779130845.7601724,
+    "ast_hash": "f601bfb2326cf0c2633a8cc3562517e2",
+    "semantic_hash": "f601bfb2326cf0c2633a8cc3562517e2"
   },
   "/Users/alpha/AI_ML/llm4s-template/readme_2026-05-17.md": {
     "mtime": 1779058539.0014696,
@@ -812,51 +812,51 @@
   "/Users/alpha/AI_ML/llm4s-template/.codex/hooks.json": {
     "mtime": 1779127291.116508,
     "ast_hash": "ad5029b57dd8e01bb5da0598b8fa349f",
-    "semantic_hash": ""
+    "semantic_hash": "ad5029b57dd8e01bb5da0598b8fa349f"
   },
   "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/test/scala/org/l4j/template/llm4s/dsl/StreamingRunnableSpec.scala": {
     "mtime": 1779128311.3932035,
     "ast_hash": "a3a9f9f94d9a4f639a02c7f5a3e7d222",
-    "semantic_hash": ""
+    "semantic_hash": "a3a9f9f94d9a4f639a02c7f5a3e7d222"
   },
   "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/Assigned.scala": {
     "mtime": 1779128253.2670233,
     "ast_hash": "76797f0e5e7b701c0ffc762d554b1873",
-    "semantic_hash": ""
+    "semantic_hash": "76797f0e5e7b701c0ffc762d554b1873"
   },
   "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/Input.scala": {
     "mtime": 1779128253.1827645,
     "ast_hash": "df1e41f22115acc4a6d67b49923c2221",
-    "semantic_hash": ""
+    "semantic_hash": "df1e41f22115acc4a6d67b49923c2221"
   },
   "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/StreamingChatModel.scala": {
     "mtime": 1779128414.701892,
     "ast_hash": "2139e058553eafadd122d50bad4652af",
-    "semantic_hash": ""
+    "semantic_hash": "2139e058553eafadd122d50bad4652af"
   },
   "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/StreamingRunnable.scala": {
     "mtime": 1779128414.616776,
     "ast_hash": "623e366eb7b49629e289031a9678323e",
-    "semantic_hash": ""
+    "semantic_hash": "623e366eb7b49629e289031a9678323e"
   },
   "/Users/alpha/AI_ML/llm4s-template/AGENTS.md": {
     "mtime": 1779127291.11602,
     "ast_hash": "62c05a2bf20bf036a0b2633478663e64",
-    "semantic_hash": ""
+    "semantic_hash": "62c05a2bf20bf036a0b2633478663e64"
   },
   "/Users/alpha/AI_ML/llm4s-template/src/main/scala/org/l4j/template/demo/LCEL_DEMO.scala": {
     "mtime": 1779129579.9133894,
     "ast_hash": "00df924afe35782a6dfaf681005e445d",
-    "semantic_hash": ""
+    "semantic_hash": "00df924afe35782a6dfaf681005e445d"
   },
   "/Users/alpha/AI_ML/llm4s-template/src/main/scala/org/l4j/template/demo/LCEL_OPERATOR_DEMO.scala": {
     "mtime": 1779129631.2967906,
     "ast_hash": "598969fdf1ba27204c632eac1d06b803",
-    "semantic_hash": ""
+    "semantic_hash": "598969fdf1ba27204c632eac1d06b803"
   },
   "/Users/alpha/AI_ML/llm4s-template/src/main/scala/org/l4j/template/demo/GeminiFlashTraceLcelDemoMain.scala": {
     "mtime": 1779130689.275672,
     "ast_hash": "7e2fcf99d5f1a683250d10c8728c418e",
-    "semantic_hash": ""
+    "semantic_hash": "7e2fcf99d5f1a683250d10c8728c418e"
   }
 }

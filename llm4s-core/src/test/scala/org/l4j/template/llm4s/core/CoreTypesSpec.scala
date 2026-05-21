@@ -93,3 +93,14 @@ class CoreTypesSpec extends FunSuite:
     assertEquals(request.tools.head.parameters.propertyNames, Set("city"))
     assertEquals(response.text, "Sunny")
   }
+
+  test("model pricing cost calculator calculates correct costs") {
+    val cost = ModelPricing.calculateCost("gpt-4o-2024-05-13", 10000, 5000)
+    assertEquals(cost, 0.125)
+
+    val costGemini = ModelPricing.calculateCost("gemini-1.5-flash", 1000000, 2000000)
+    assertEquals(costGemini, 0.675)
+
+    val costUnknown = ModelPricing.calculateCost("unknown-model", 100, 100)
+    assertEquals(costUnknown, 0.0)
+  }

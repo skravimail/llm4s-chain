@@ -97,12 +97,20 @@ final class NatchezRuntimeListener[F[_]: Monad: Trace] extends RuntimeListener[F
       response: ChatResponse,
       durationNanos: Long,
   ): F[Unit] =
+    val usage = response.usage
+    val inputTokens = usage.map(_.inputTokens).getOrElse(0)
+    val outputTokens = usage.map(_.outputTokens).getOrElse(0)
+    val cost = response.model.flatMap(m => response.usage.map(u => org.l4j.template.llm4s.core.ModelPricing.calculateCost(m, u.inputTokens, u.outputTokens))).getOrElse(0.0)
+
     Trace[F].put(
-      "ai.event"             -> StringValue("provider.response"),
-      "ai.trace.id"          -> StringValue(trace.traceId.value),
-      "ai.provider.turn"     -> NumberValue(turn),
-      "ai.provider.tokens"   -> NumberValue(response.usage.map(_.totalTokens).getOrElse(0)),
-      "ai.duration.ns"       -> NumberValue(durationNanos),
+      "ai.event"                -> StringValue("provider.response"),
+      "ai.trace.id"             -> StringValue(trace.traceId.value),
+      "ai.provider.turn"        -> NumberValue(turn),
+      "ai.provider.tokens"      -> NumberValue(inputTokens + outputTokens),
+      "ai.usage.input_tokens"   -> NumberValue(inputTokens),
+      "ai.usage.output_tokens"  -> NumberValue(outputTokens),
+      "ai.usage.cost_usd"       -> StringValue(f"$cost%.8f"),
+      "ai.duration.ns"          -> NumberValue(durationNanos),
     )
 
   override def onToolCalled(call: ToolCall, context: InvocationContext): F[Unit] =

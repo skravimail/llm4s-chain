@@ -23,10 +23,11 @@ object OpenAiStreamDecoder:
       Nil
 
   private def decodeJson(json: ujson.Value): List[StreamEvent] =
+    val model = json.obj.get("model").collect { case ujson.Str(value) => value }
     val choices = json.obj.get("choices").flatMap(_.arrOpt).map(_.toList).getOrElse(Nil)
-    choices.headOption.toList.flatMap(decodeChoice)
+    choices.headOption.toList.flatMap(choice => decodeChoice(choice, model))
 
-  private def decodeChoice(choice: ujson.Value): List[StreamEvent] =
+  private def decodeChoice(choice: ujson.Value, model: Option[String]): List[StreamEvent] =
     val delta = choice.obj.get("delta").flatMap(_.objOpt)
     val finishReason = choice.obj.get("finish_reason").flatMap {
       case ujson.Str("stop")           => Some(FinishReason.Stop)
@@ -64,6 +65,7 @@ object OpenAiStreamDecoder:
               finishReason = Some(reason),
             ),
             finishReason = Some(reason),
+            model = model,
           )
         )
       }

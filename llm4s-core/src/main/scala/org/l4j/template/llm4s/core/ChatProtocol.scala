@@ -77,6 +77,7 @@ final case class ChatResponse(
     usage: Option[Usage] = None,
     finishReason: Option[FinishReason] = None,
     responseId: Option[String] = None,
+    model: Option[String] = None,
     metadata: Map[String, String] = Map.empty,
 ):
   def text: String = message.text
