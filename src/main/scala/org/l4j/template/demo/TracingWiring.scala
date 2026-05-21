@@ -1,6 +1,9 @@
 package org.l4j.template.demo
 
 import cats.Applicative
+import cats.Monad
+import cats.effect.kernel.Sync
+import cats.syntax.all.*
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
@@ -42,7 +45,7 @@ object TracingWiring:
 
   /** Build a [[ListenerBundle]] for the given config, with each event
     * rendered as one line and passed to `emit`. */
-  def buildListeners[F[_]: Applicative](
+  def buildListeners[F[_]: Sync](
       config: TracingConfig,
       emit: String => F[Unit],
   ): ListenerBundle[F] =
@@ -80,75 +83,95 @@ object TracingWiring:
 
   // -- runtime listener ----------------------------------------------------
 
-  private def runtimeListener[F[_]: Applicative](
+  private def runtimeListener[F[_]: Sync](
       level: TraceLevel,
       emit: String => F[Unit],
   ): RuntimeListener[F] = level match
     case TraceLevel.Off => RuntimeListener.noop[F]
     case lvl =>
       val verbose = lvl == TraceLevel.Debug
+      val depth = new java.util.concurrent.atomic.AtomicInteger(0)
+
+      // All formatting is wrapped in Sync[F].delay so depth.get() and
+      // Instant.now() are evaluated at execution time, not assembly time.
+      def fmt(t: TraceContext, label: String, extras: String): F[Unit] =
+        Sync[F].delay(fmtTrace(t, "  " * depth.get() + label, extras)).flatMap(emit)
+
+      def openSpan[A](t: TraceContext, name: String)(use: F[A]): F[A] =
+        fmt(t, "┌ " + name, "") >>
+          Sync[F].delay(depth.incrementAndGet()).void >>
+          use.flatTap { _ =>
+            Sync[F].delay(depth.decrementAndGet()).void >> fmt(t, "└ " + name, "")
+          }
+
       new RuntimeListener.Default[F]:
+
+        override def spanChat[A](t: TraceContext, r: ChatRequest)(use: F[A]): F[A] =
+          openSpan(t, "ai.chat")(use)
+
+        override def spanProviderCall[A](t: TraceContext, turn: Int, r: ChatRequest)(use: F[A]): F[A] =
+          openSpan(t, s"ai.provider turn=$turn")(use)
+
+        override def spanToolCall[A](c: ToolCall, ctx: InvocationContext)(use: F[A]): F[A] =
+          openSpan(ctx.trace, s"ai.tool.${c.name}")(use)
+
         override def onChatStarted(t: TraceContext, r: ChatRequest): F[Unit] =
-          val base = s"messages=${r.messages.length} tools=${r.tools.length}"
-          val extra =
-            if verbose then
-              val last = r.messages.lastOption.map(m => s" last=${trunc(m.text)}").getOrElse("")
-              base + last
-            else base
-          emit(fmtTrace(t, "chat.started", extra))
+          fmt(t, "chat.started", s"messages=${r.messages.length} tools=${r.tools.length}")
 
         override def onChatCompleted(
             t: TraceContext, r: ChatRequest, text: String, turns: Int, d: Long,
         ): F[Unit] =
-          val body = if verbose then text else trunc(text)
-          emit(fmtTrace(t, "chat.completed", s"turns=$turns duration=${ms(d)} text=$body"))
+          fmt(t, "chat.completed", s"turns=$turns duration=${ms(d)}") >>
+            (if verbose then fmt(t, "  response:", text) else Monad[F].unit)
 
         override def onChatFailed(t: TraceContext, r: ChatRequest, e: Throwable): F[Unit] =
-          emit(fmtTrace(t, "chat.failed", s"error=${e.getClass.getSimpleName}: ${e.getMessage}"))
+          fmt(t, "chat.failed", s"${e.getClass.getSimpleName}: ${e.getMessage}")
 
         override def onProviderRequest(t: TraceContext, turn: Int, r: ChatRequest): F[Unit] =
-          val base = s"turn=$turn messages=${r.messages.length}"
-          val extra =
-            if verbose then s"$base last=${r.messages.lastOption.map(m => trunc(m.text)).getOrElse("")}"
-            else base
-          emit(fmtTrace(t, "provider.request", extra))
+          fmt(t, "provider.request", s"turn=$turn messages=${r.messages.length}") >>
+            (if verbose then
+              r.messages.traverse_ { m =>
+                val role = m.getClass.getSimpleName.replace("Message", "").toLowerCase
+                fmt(t, s"  [$role]", trunc(m.text, 120))
+              }
+            else Monad[F].unit)
 
         override def onProviderResponse(
             t: TraceContext, turn: Int, r: ChatResponse, d: Long,
         ): F[Unit] =
-          val base = s"turn=$turn duration=${ms(d)} toolCalls=${r.message.toolCalls.length}"
-          val msgText = r.message.text
-          val extra =
-            if verbose && msgText.nonEmpty then s"$base text=${trunc(msgText)}"
-            else base
-          emit(fmtTrace(t, "provider.response", extra))
+          val toolInfo =
+            if r.message.toolCalls.nonEmpty then
+              s"toolCalls=${r.message.toolCalls.map(_.name).mkString("[", ",", "]")} "
+            else ""
+          fmt(t, "provider.response", s"turn=$turn ${toolInfo}duration=${ms(d)}") >>
+            (if verbose && r.message.text.nonEmpty then
+              fmt(t, "  [assistant]", trunc(r.message.text, 120))
+            else Monad[F].unit)
 
         override def onToolCalled(c: ToolCall, ctx: InvocationContext): F[Unit] =
-          val args = if verbose then c.argumentsJson else trunc(c.argumentsJson)
-          emit(fmtTrace(ctx.trace, "tool.called", s"name=${c.name} args=$args"))
+          fmt(ctx.trace, "tool.called",
+            s"name=${c.name} args=${if verbose then c.argumentsJson else trunc(c.argumentsJson)}")
 
         override def onToolSucceeded(
             c: ToolCall, ctx: InvocationContext, r: ToolResult, d: Long,
         ): F[Unit] =
-          val res = if verbose then r.text else trunc(r.text)
-          emit(fmtTrace(ctx.trace, "tool.succeeded", s"name=${c.name} duration=${ms(d)} result=$res"))
+          fmt(ctx.trace, "tool.succeeded",
+            s"name=${c.name} duration=${ms(d)} result=${if verbose then r.text else trunc(r.text)}")
 
         override def onToolFailed(
             c: ToolCall, ctx: InvocationContext, e: Throwable, attempt: Int, willRetry: Boolean,
         ): F[Unit] =
-          emit(fmtTrace(
-            ctx.trace, "tool.failed",
-            s"name=${c.name} attempt=$attempt willRetry=$willRetry msg=${e.getMessage}",
-          ))
+          fmt(ctx.trace, "tool.failed",
+            s"name=${c.name} attempt=$attempt willRetry=$willRetry msg=${e.getMessage}")
 
         override def onMemoryRead(t: TraceContext, memoryId: String, count: Int): F[Unit] =
-          emit(fmtTrace(t, "memory.read", s"id=$memoryId messages=$count"))
+          fmt(t, "memory.read", s"id=$memoryId messages=$count")
 
         override def onMemoryWritten(t: TraceContext, memoryId: String, count: Int): F[Unit] =
-          emit(fmtTrace(t, "memory.written", s"id=$memoryId messages=$count"))
+          fmt(t, "memory.written", s"id=$memoryId messages=$count")
 
         override def onStreamStarted(t: TraceContext, r: ChatRequest): F[Unit] =
-          emit(fmtTrace(t, "stream.started", s"messages=${r.messages.length}"))
+          fmt(t, "stream.started", s"messages=${r.messages.length}")
 
         override def onStreamCompleted(
             t: TraceContext, r: ChatRequest, events: Long, d: Long,

@@ -58,7 +58,7 @@ logging:
 # Set to `off` for production unless you wire the events into a real
 # tracer (see llm4s-tracing-natchez for an OpenTelemetry adapter).
 tracing:
-  runtime: info       # off | info | debug
-  http: info         # off | info | debug
+  runtime: debug      # off | info | debug
+  http: debug        # off | info | debug
   guardrails: off
   workflow: off
