@@ -1,4 +1,4 @@
-name: CI for pre-configured project llm4s-template using llm4s
+name: CI for pre-configured project llm4s-chain using llm4s
 
 on:
   push:
@@ -14,7 +14,7 @@ on:
 
 jobs:
   lint-compile-and-test:
-    name: Build, format, compile, test for llm4s-template scala project using llm4s
+    name: Build, format, compile, test for llm4s-chain scala project using llm4s
     runs-on: ubuntu-latest
 
     strategy:
@@ -28,7 +28,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Java ${{ matrix.java }}
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: ${{ matrix.java }}
@@ -38,7 +38,7 @@ jobs:
         uses: sbt/setup-sbt@v1
 
       - name: Cache Ivy2 and Coursier
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/.ivy2/cache
@@ -48,8 +48,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-sbt
 
+      - name: Set up Python (pre-commit)
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
       - name: Run pre-commit hooks
-        uses: pre-commit/action@v3
+        uses: pre-commit/action@v3.0.1
         with:
           extra_args: --all-files
 
@@ -59,10 +64,11 @@ jobs:
 
       - name: Upload Test Results (JUnit XML)
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: target/test-reports/
+          if-no-files-found: ignore
 
       - name: Code Coverage Report (scoverage)
         run: |
