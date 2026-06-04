@@ -1,4 +1,4 @@
-# llm4s-template — Code Review
+# llm4s-chain — Code Review
 
 A prioritised list of improvements identified during a walk‑through of the
 codebase (90 Scala sources across 11 modules). Ordered by impact: items at the

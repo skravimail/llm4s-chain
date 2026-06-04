@@ -70,7 +70,7 @@ The target does not require replicating every provider, vector store, reranker, 
 ## Working Branch
 
 - Branch: `l4jOnly_codex`
-- Workspace: `/Users/alpha/AI_ML/llm4s-template`
+- Workspace: `/Users/alpha/AI_ML/llm4s-chain`
 - Scala: `3.3.4`
 - Build: SBT multi-project
 - Test framework: `munit`
@@ -108,7 +108,7 @@ Each PR should be committed separately after its unit tests pass.
 Preferred PR gate:
 
 ```bash
-env SBT_OPTS=-Dsbt.boot.directory=/Users/alpha/AI_ML/llm4s-template/.sbt-boot\ -Dsbt.ivy.home=/Users/alpha/AI_ML/llm4s-template/.ivy2 COURSIER_CACHE=/Users/alpha/AI_ML/llm4s-template/.coursier sbt 'llm4sCore/test' 'llm4sMemory/test' 'llm4sRag/test' 'llm4sAgentic/test' 'llm4sMcp/test' 'llm4sRuntime/test' 'llm4sStreaming/test' 'llm4sOpenAiCompat/test' 'llm4sTools/test' 'llm4sStructured/test'
+env SBT_OPTS=-Dsbt.boot.directory=/Users/alpha/AI_ML/llm4s-chain/.sbt-boot\ -Dsbt.ivy.home=/Users/alpha/AI_ML/llm4s-chain/.ivy2 COURSIER_CACHE=/Users/alpha/AI_ML/llm4s-chain/.coursier sbt 'llm4sCore/test' 'llm4sMemory/test' 'llm4sRag/test' 'llm4sAgentic/test' 'llm4sMcp/test' 'llm4sRuntime/test' 'llm4sStreaming/test' 'llm4sOpenAiCompat/test' 'llm4sTools/test' 'llm4sStructured/test'
 ```
 
 Focused PR gates should also run the touched modules directly, for example:
@@ -120,7 +120,7 @@ sbt 'llm4sMcp/test'
 Known environment note:
 
 - SBT may need repo-local cache settings because global SBT state can load unrelated plugins or fail to bind local IPC sockets inside the sandbox.
-- The repo uses local cache paths under `/Users/alpha/AI_ML/llm4s-template`.
+- The repo uses local cache paths under `/Users/alpha/AI_ML/llm4s-chain`.
 
 ## Completed PRs
 

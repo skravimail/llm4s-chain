@@ -165,7 +165,7 @@ lazy val root = (project in file("."))
   .dependsOn(llm4sCore, llm4sMemory, llm4sRag, llm4sAgentic, llm4sMcp, llm4sGuardrails, llm4sRuntime, llm4sStreaming, llm4sOpenAiCompat, llm4sTools, llm4sStructured, llm4sDsl)
   .settings(commonSettings)
   .settings(
-    name := "l4j-template",
+    name := "llm4s-chain",
     libraryDependencies ++= testDeps ++ Seq(
       logback,
       scalaLogging,

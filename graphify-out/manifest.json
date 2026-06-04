@@ -1,860 +1,860 @@
 {
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-mcp/src/test/scala/org/l4j/template/llm4s/mcp/McpClientSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-mcp/src/test/scala/org/l4j/template/llm4s/mcp/McpClientSpec.scala": {
     "mtime": 1779060243.8875709,
     "ast_hash": "c2439ceec4a22d0525ce598545ddcc64",
     "semantic_hash": "c2439ceec4a22d0525ce598545ddcc64"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-mcp/src/main/scala/org/l4j/template/llm4s/mcp/McpTransport.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-mcp/src/main/scala/org/l4j/template/llm4s/mcp/McpTransport.scala": {
     "mtime": 1778602972.2113788,
     "ast_hash": "5cbfe3cadef5b049723775b145d333a8",
     "semantic_hash": "5cbfe3cadef5b049723775b145d333a8"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-mcp/src/main/scala/org/l4j/template/llm4s/mcp/HttpMcpTransport.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-mcp/src/main/scala/org/l4j/template/llm4s/mcp/HttpMcpTransport.scala": {
     "mtime": 1779060126.6559145,
     "ast_hash": "5ea20780dc215429d21bbf87f67570cb",
     "semantic_hash": "5ea20780dc215429d21bbf87f67570cb"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-mcp/src/main/scala/org/l4j/template/llm4s/mcp/McpSchemaConverter.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-mcp/src/main/scala/org/l4j/template/llm4s/mcp/McpSchemaConverter.scala": {
     "mtime": 1778603168.1498263,
     "ast_hash": "783c2999a042f44908d3e6043f04bd14",
     "semantic_hash": "783c2999a042f44908d3e6043f04bd14"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-mcp/src/main/scala/org/l4j/template/llm4s/mcp/McpProtocol.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-mcp/src/main/scala/org/l4j/template/llm4s/mcp/McpProtocol.scala": {
     "mtime": 1778624524.4849043,
     "ast_hash": "42596931e85340bbb3be3fdf5cedb456",
     "semantic_hash": "42596931e85340bbb3be3fdf5cedb456"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-mcp/src/main/scala/org/l4j/template/llm4s/mcp/McpClient.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-mcp/src/main/scala/org/l4j/template/llm4s/mcp/McpClient.scala": {
     "mtime": 1778624482.613017,
     "ast_hash": "cc7bab28c5ba3e0d2e1b22167b525342",
     "semantic_hash": "cc7bab28c5ba3e0d2e1b22167b525342"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-mcp/src/main/scala/org/l4j/template/llm4s/mcp/StdioMcpTransport.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-mcp/src/main/scala/org/l4j/template/llm4s/mcp/StdioMcpTransport.scala": {
     "mtime": 1779060119.390682,
     "ast_hash": "80ef4b0c7cdfa508e6f951608ae99d17",
     "semantic_hash": "80ef4b0c7cdfa508e6f951608ae99d17"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-mcp/src/main/scala/org/l4j/template/llm4s/mcp/McpToolProvider.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-mcp/src/main/scala/org/l4j/template/llm4s/mcp/McpToolProvider.scala": {
     "mtime": 1778602973.058409,
     "ast_hash": "4c419fbcd4d11ab27ee2ff2ae51736f7",
     "semantic_hash": "4c419fbcd4d11ab27ee2ff2ae51736f7"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-tools/src/test/scala/org/l4j/template/llm4s/tools/ToolDefinitionSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-tools/src/test/scala/org/l4j/template/llm4s/tools/ToolDefinitionSpec.scala": {
     "mtime": 1779037358.8743677,
     "ast_hash": "b916b26a6fc6a9acf29489367fd4539d",
     "semantic_hash": "b916b26a6fc6a9acf29489367fd4539d"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-tools/src/main/scala/org/l4j/template/llm4s/tools/SchemaEncoder.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-tools/src/main/scala/org/l4j/template/llm4s/tools/SchemaEncoder.scala": {
     "mtime": 1778626729.6281745,
     "ast_hash": "2b59f0e52a430622e8515066cfac54f6",
     "semantic_hash": "2b59f0e52a430622e8515066cfac54f6"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-tools/src/main/scala/org/l4j/template/llm4s/tools/ToolDefinition.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-tools/src/main/scala/org/l4j/template/llm4s/tools/ToolDefinition.scala": {
     "mtime": 1779037340.575037,
     "ast_hash": "89690da80d8d39b18f0c7d7fc62b63d6",
     "semantic_hash": "89690da80d8d39b18f0c7d7fc62b63d6"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-tools/src/main/scala/org/l4j/template/llm4s/tools/ToolDef.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-tools/src/main/scala/org/l4j/template/llm4s/tools/ToolDef.scala": {
     "mtime": 1779037414.4174967,
     "ast_hash": "98c061b4166d81e304a8d1b714f27404",
     "semantic_hash": "98c061b4166d81e304a8d1b714f27404"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-tools/src/main/scala/org/l4j/template/llm4s/tools/ValueDecoder.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-tools/src/main/scala/org/l4j/template/llm4s/tools/ValueDecoder.scala": {
     "mtime": 1778626729.6287718,
     "ast_hash": "1e4f6ff472637fbe3b89e0af03795950",
     "semantic_hash": "1e4f6ff472637fbe3b89e0af03795950"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-rag/src/test/scala/org/l4j/template/llm4s/rag/RagSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-rag/src/test/scala/org/l4j/template/llm4s/rag/RagSpec.scala": {
     "mtime": 1779062946.3092575,
     "ast_hash": "ee17b7c064a5ad90a0a494699c4a0258",
     "semantic_hash": "ee17b7c064a5ad90a0a494699c4a0258"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/PgVectorEmbeddingStore.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/PgVectorEmbeddingStore.scala": {
     "mtime": 1779063023.0511742,
     "ast_hash": "be1c52555a1aa7a9a10180f9c39001a5",
     "semantic_hash": "be1c52555a1aa7a9a10180f9c39001a5"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/ContentAggregator.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/ContentAggregator.scala": {
     "mtime": 1778622191.8302267,
     "ast_hash": "551ca9eaaaabe32260c4217bbcfd57cb",
     "semantic_hash": "551ca9eaaaabe32260c4217bbcfd57cb"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/InMemoryEmbeddingStore.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/InMemoryEmbeddingStore.scala": {
     "mtime": 1779063022.9179256,
     "ast_hash": "e8e14645c19868ab969490f7076e5e30",
     "semantic_hash": "e8e14645c19868ab969490f7076e5e30"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/QueryTransformer.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/QueryTransformer.scala": {
     "mtime": 1778601958.7435555,
     "ast_hash": "233fd90428a03cf58fff205474693cd9",
     "semantic_hash": "233fd90428a03cf58fff205474693cd9"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/AdvancedContentRetriever.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/AdvancedContentRetriever.scala": {
     "mtime": 1778602160.1204324,
     "ast_hash": "cbf321ac40aa97da626be6204ed1e527",
     "semantic_hash": "cbf321ac40aa97da626be6204ed1e527"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/EmbeddingModel.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/EmbeddingModel.scala": {
     "mtime": 1778601605.9477851,
     "ast_hash": "9c8d7b675747acd781a2f9fc82318d8f",
     "semantic_hash": "9c8d7b675747acd781a2f9fc82318d8f"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/ContentRetriever.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/ContentRetriever.scala": {
     "mtime": 1779063022.601124,
     "ast_hash": "3d31f1028077a0e60eaa09071cbc6574",
     "semantic_hash": "3d31f1028077a0e60eaa09071cbc6574"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/EmbeddingVector.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/EmbeddingVector.scala": {
     "mtime": 1778624311.7993135,
     "ast_hash": "97f78e8eb562ccb391df23df7157129b",
     "semantic_hash": "97f78e8eb562ccb391df23df7157129b"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/ReRanker.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/ReRanker.scala": {
     "mtime": 1778601959.2527587,
     "ast_hash": "d8a37e128bd022c3eb5950afb40f8783",
     "semantic_hash": "d8a37e128bd022c3eb5950afb40f8783"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/QueryRouter.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/QueryRouter.scala": {
     "mtime": 1778601958.8634136,
     "ast_hash": "d092e96edb5f201f991bb256901bf9c7",
     "semantic_hash": "d092e96edb5f201f991bb256901bf9c7"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/RetrievedSource.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/RetrievedSource.scala": {
     "mtime": 1779062899.1112416,
     "ast_hash": "fbb660ebf046322e0a95aa962366079b",
     "semantic_hash": "fbb660ebf046322e0a95aa962366079b"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/EmbeddingStore.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/EmbeddingStore.scala": {
     "mtime": 1779062898.9335206,
     "ast_hash": "b64e0c49fc2345a6584a9384746e6370",
     "semantic_hash": "b64e0c49fc2345a6584a9384746e6370"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/RetrievalQuery.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/RetrievalQuery.scala": {
     "mtime": 1779062899.0196478,
     "ast_hash": "3d67aaad081a7306dba6f887e23f0c53",
     "semantic_hash": "3d67aaad081a7306dba6f887e23f0c53"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/RetrievalAugmentor.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/RetrievalAugmentor.scala": {
     "mtime": 1778601734.1255012,
     "ast_hash": "24fd80f441e741687addae6ef414e139",
     "semantic_hash": "24fd80f441e741687addae6ef414e139"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-agentic/src/test/scala/org/l4j/template/llm4s/agentic/WorkflowListenerSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-agentic/src/test/scala/org/l4j/template/llm4s/agentic/WorkflowListenerSpec.scala": {
     "mtime": 1779043797.0441253,
     "ast_hash": "ff200fe5f754c47191d726df0d87efc3",
     "semantic_hash": "ff200fe5f754c47191d726df0d87efc3"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-agentic/src/test/scala/org/l4j/template/llm4s/agentic/WorkflowAgentRenameSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-agentic/src/test/scala/org/l4j/template/llm4s/agentic/WorkflowAgentRenameSpec.scala": {
     "mtime": 1779042560.9038012,
     "ast_hash": "e08c1041ed84af323921fe6136483583",
     "semantic_hash": "e08c1041ed84af323921fe6136483583"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-agentic/src/test/scala/org/l4j/template/llm4s/agentic/AgenticWorkflowSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-agentic/src/test/scala/org/l4j/template/llm4s/agentic/AgenticWorkflowSpec.scala": {
     "mtime": 1779060337.6209848,
     "ast_hash": "41ea50b0dd505e90df8fd07b4f9ef527",
     "semantic_hash": "41ea50b0dd505e90df8fd07b4f9ef527"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/PlanStep.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/PlanStep.scala": {
     "mtime": 1778602676.9767437,
     "ast_hash": "2e97872b0eb079f5dfcd958c0fd3838f",
     "semantic_hash": "2e97872b0eb079f5dfcd958c0fd3838f"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/LoopWorkflow.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/LoopWorkflow.scala": {
     "mtime": 1779060320.3698833,
     "ast_hash": "d6ffc044d566bffd55525e17cc28585a",
     "semantic_hash": "d6ffc044d566bffd55525e17cc28585a"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/SequenceWorkflow.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/SequenceWorkflow.scala": {
     "mtime": 1778602391.6160429,
     "ast_hash": "61f8310ece5b65579941ada864731cd7",
     "semantic_hash": "61f8310ece5b65579941ada864731cd7"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/SupervisorAgent.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/SupervisorAgent.scala": {
     "mtime": 1779060326.2293591,
     "ast_hash": "2344910ea0cd7aac7f598045f990b7e9",
     "semantic_hash": "2344910ea0cd7aac7f598045f990b7e9"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/ParallelWorkflow.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/ParallelWorkflow.scala": {
     "mtime": 1778602528.0198214,
     "ast_hash": "1a9d7b8c0c539d456eb26f5e8331d376",
     "semantic_hash": "1a9d7b8c0c539d456eb26f5e8331d376"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/AgentScope.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/AgentScope.scala": {
     "mtime": 1778602527.942684,
     "ast_hash": "671063c8e791c344bd5c8ad276801d35",
     "semantic_hash": "671063c8e791c344bd5c8ad276801d35"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/Workflow.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/Workflow.scala": {
     "mtime": 1778602391.2252848,
     "ast_hash": "c489e215e0c7ae13a39b7dc3fec30e89",
     "semantic_hash": "c489e215e0c7ae13a39b7dc3fec30e89"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/Agent.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/Agent.scala": {
     "mtime": 1779042534.645531,
     "ast_hash": "5683f9137c28c0eb6f235a9d2e62861f",
     "semantic_hash": "5683f9137c28c0eb6f235a9d2e62861f"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/SubAgentRegistry.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/SubAgentRegistry.scala": {
     "mtime": 1778602677.1015172,
     "ast_hash": "0c83f9ef38e04e92a39fb41263e48c79",
     "semantic_hash": "0c83f9ef38e04e92a39fb41263e48c79"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/ConditionalWorkflow.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/ConditionalWorkflow.scala": {
     "mtime": 1778602391.877012,
     "ast_hash": "ab205b9d98717c0e6bc0ddb4beb34394",
     "semantic_hash": "ab205b9d98717c0e6bc0ddb4beb34394"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/WorkflowError.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/WorkflowError.scala": {
     "mtime": 1779060311.6094854,
     "ast_hash": "3b003cc7722f1f3aed01bec08af0f4e4",
     "semantic_hash": "3b003cc7722f1f3aed01bec08af0f4e4"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/WorkflowListener.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/WorkflowListener.scala": {
     "mtime": 1779044186.9966109,
     "ast_hash": "87109719abcd52f8b13c91da744853db",
     "semantic_hash": "87109719abcd52f8b13c91da744853db"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-runtime/src/test/scala/org/l4j/template/llm4s/runtime/RuntimeListenerSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-runtime/src/test/scala/org/l4j/template/llm4s/runtime/RuntimeListenerSpec.scala": {
     "mtime": 1779043346.5213456,
     "ast_hash": "27a61d1898e6e6980bd7bb5b89979e95",
     "semantic_hash": "27a61d1898e6e6980bd7bb5b89979e95"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-runtime/src/test/scala/org/l4j/template/llm4s/runtime/ToolKitSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-runtime/src/test/scala/org/l4j/template/llm4s/runtime/ToolKitSpec.scala": {
     "mtime": 1779037261.5902092,
     "ast_hash": "163485aab2b4356aa1306a5a9261b3e8",
     "semantic_hash": "163485aab2b4356aa1306a5a9261b3e8"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-runtime/src/test/scala/org/l4j/template/llm4s/runtime/AiRuntimeSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-runtime/src/test/scala/org/l4j/template/llm4s/runtime/AiRuntimeSpec.scala": {
     "mtime": 1779041782.9285882,
     "ast_hash": "e26c1df27d37cc7a29602bae3be72dfb",
     "semantic_hash": "e26c1df27d37cc7a29602bae3be72dfb"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-runtime/src/test/scala/org/l4j/template/llm4s/runtime/ToolErrorPolicySpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-runtime/src/test/scala/org/l4j/template/llm4s/runtime/ToolErrorPolicySpec.scala": {
     "mtime": 1779038896.4264004,
     "ast_hash": "2aaae097009c68860414fa7c4646ac72",
     "semantic_hash": "2aaae097009c68860414fa7c4646ac72"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-runtime/src/main/scala/org/l4j/template/llm4s/runtime/ToolLoop.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-runtime/src/main/scala/org/l4j/template/llm4s/runtime/ToolLoop.scala": {
     "mtime": 1779043215.9423816,
     "ast_hash": "f7ba51dedc09adb15192919f515d4929",
     "semantic_hash": "f7ba51dedc09adb15192919f515d4929"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-runtime/src/main/scala/org/l4j/template/llm4s/runtime/AiRuntime.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-runtime/src/main/scala/org/l4j/template/llm4s/runtime/AiRuntime.scala": {
     "mtime": 1779044587.1937191,
     "ast_hash": "984cfcafbae098ab6bf8d54a406c32fc",
     "semantic_hash": "984cfcafbae098ab6bf8d54a406c32fc"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-runtime/src/main/scala/org/l4j/template/llm4s/runtime/ToolKit.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-runtime/src/main/scala/org/l4j/template/llm4s/runtime/ToolKit.scala": {
     "mtime": 1779037155.650561,
     "ast_hash": "82df3ea0d65778d4cf09d4ca641e5fc8",
     "semantic_hash": "82df3ea0d65778d4cf09d4ca641e5fc8"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-runtime/src/main/scala/org/l4j/template/llm4s/runtime/AiRuntimeError.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-runtime/src/main/scala/org/l4j/template/llm4s/runtime/AiRuntimeError.scala": {
     "mtime": 1779036950.2629771,
     "ast_hash": "42b97878de2e630696e558cc914b3e85",
     "semantic_hash": "42b97878de2e630696e558cc914b3e85"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-runtime/src/main/scala/org/l4j/template/llm4s/runtime/RuntimeListener.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-runtime/src/main/scala/org/l4j/template/llm4s/runtime/RuntimeListener.scala": {
     "mtime": 1779043543.826982,
     "ast_hash": "4c2890be88825b3af120a43d151d5ea4",
     "semantic_hash": "4c2890be88825b3af120a43d151d5ea4"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-runtime/src/main/scala/org/l4j/template/llm4s/runtime/InvocationContext.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-runtime/src/main/scala/org/l4j/template/llm4s/runtime/InvocationContext.scala": {
     "mtime": 1779041567.7342026,
     "ast_hash": "c098461a2b28cd6bf889a5b923163b15",
     "semantic_hash": "c098461a2b28cd6bf889a5b923163b15"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-structured/src/test/scala/org/l4j/template/llm4s/structured/AiAgentSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-structured/src/test/scala/org/l4j/template/llm4s/structured/AiAgentSpec.scala": {
     "mtime": 1779055786.0216417,
     "ast_hash": "bdbce075b5765e15daafa312bd53192f",
     "semantic_hash": "bdbce075b5765e15daafa312bd53192f"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-structured/src/test/scala/org/l4j/template/llm4s/structured/JsonExtractorSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-structured/src/test/scala/org/l4j/template/llm4s/structured/JsonExtractorSpec.scala": {
     "mtime": 1779046602.1872404,
     "ast_hash": "76ba5730f343493de6428d34ea72a520",
     "semantic_hash": "76ba5730f343493de6428d34ea72a520"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-structured/src/test/scala/org/l4j/template/llm4s/structured/StructuredOutputRuntimeSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-structured/src/test/scala/org/l4j/template/llm4s/structured/StructuredOutputRuntimeSpec.scala": {
     "mtime": 1778565754.6957567,
     "ast_hash": "51e13cfd7988632a218c745ffb77b5fa",
     "semantic_hash": "51e13cfd7988632a218c745ffb77b5fa"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-structured/src/main/scala/org/l4j/template/llm4s/structured/StructuredCodec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-structured/src/main/scala/org/l4j/template/llm4s/structured/StructuredCodec.scala": {
     "mtime": 1779046583.9751277,
     "ast_hash": "4a8f9150944646d3f452a9cfd2b71e78",
     "semantic_hash": "4a8f9150944646d3f452a9cfd2b71e78"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-structured/src/main/scala/org/l4j/template/llm4s/structured/ChatOptions.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-structured/src/main/scala/org/l4j/template/llm4s/structured/ChatOptions.scala": {
     "mtime": 1779041457.4718935,
     "ast_hash": "ada54179eed4aa413d261e2ee3a407ff",
     "semantic_hash": "ada54179eed4aa413d261e2ee3a407ff"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-structured/src/main/scala/org/l4j/template/llm4s/structured/AiAgent.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-structured/src/main/scala/org/l4j/template/llm4s/structured/AiAgent.scala": {
     "mtime": 1779055765.630937,
     "ast_hash": "dcb4059fe65f6f3829882051b0ff6b9d",
     "semantic_hash": "dcb4059fe65f6f3829882051b0ff6b9d"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-structured/src/main/scala/org/l4j/template/llm4s/structured/JsonExtractor.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-structured/src/main/scala/org/l4j/template/llm4s/structured/JsonExtractor.scala": {
     "mtime": 1779046569.8733113,
     "ast_hash": "fae0cdb59ceb61c8eaa5a16e7b1a2b51",
     "semantic_hash": "fae0cdb59ceb61c8eaa5a16e7b1a2b51"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-structured/src/main/scala/org/l4j/template/llm4s/structured/StructuredOutputRuntime.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-structured/src/main/scala/org/l4j/template/llm4s/structured/StructuredOutputRuntime.scala": {
     "mtime": 1779055743.216443,
     "ast_hash": "2fe965da40009ab0f7d2835fe224d135",
     "semantic_hash": "2fe965da40009ab0f7d2835fe224d135"
   },
-  "/Users/alpha/AI_ML/llm4s-template/.bsp/sbt.json": {
+  "/Users/alpha/AI_ML/llm4s-chain/.bsp/sbt.json": {
     "mtime": 1779130710.4960997,
     "ast_hash": "92564e5a5fe786abb3746232390089d2",
     "semantic_hash": "92564e5a5fe786abb3746232390089d2"
   },
-  "/Users/alpha/AI_ML/llm4s-template/.claude/settings.local.json": {
+  "/Users/alpha/AI_ML/llm4s-chain/.claude/settings.local.json": {
     "mtime": 1779127366.827859,
     "ast_hash": "bdafdd642fa3a43747032e5a4eff5a11",
     "semantic_hash": "bdafdd642fa3a43747032e5a4eff5a11"
   },
-  "/Users/alpha/AI_ML/llm4s-template/project/Dependencies.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/project/Dependencies.scala": {
     "mtime": 1779047821.7060006,
     "ast_hash": "249d4aef4aa81f6dc64141c59bc1abee",
     "semantic_hash": "249d4aef4aa81f6dc64141c59bc1abee"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/test/scala/org/l4j/template/llm4s/dsl/ChatModelSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-dsl/src/test/scala/org/l4j/template/llm4s/dsl/ChatModelSpec.scala": {
     "mtime": 1779080290.3897476,
     "ast_hash": "7892833706dabea45f9e04849345b387",
     "semantic_hash": "7892833706dabea45f9e04849345b387"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/test/scala/org/l4j/template/llm4s/dsl/WorkflowRunnableSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-dsl/src/test/scala/org/l4j/template/llm4s/dsl/WorkflowRunnableSpec.scala": {
     "mtime": 1779083801.6557055,
     "ast_hash": "8c5d45fdf6ae31de259ba37f6c9c6bed",
     "semantic_hash": "8c5d45fdf6ae31de259ba37f6c9c6bed"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/test/scala/org/l4j/template/llm4s/dsl/RunnableSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-dsl/src/test/scala/org/l4j/template/llm4s/dsl/RunnableSpec.scala": {
     "mtime": 1779115633.105425,
     "ast_hash": "ee0e170902d0fbc07b336b184528cf13",
     "semantic_hash": "ee0e170902d0fbc07b336b184528cf13"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/test/scala/org/l4j/template/llm4s/dsl/RunnableSpecSupport.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-dsl/src/test/scala/org/l4j/template/llm4s/dsl/RunnableSpecSupport.scala": {
     "mtime": 1779082647.7323608,
     "ast_hash": "1e75cb675b8f9d08fd12d22c5ec9cd0e",
     "semantic_hash": "1e75cb675b8f9d08fd12d22c5ec9cd0e"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/test/scala/org/l4j/template/llm4s/dsl/RagDslSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-dsl/src/test/scala/org/l4j/template/llm4s/dsl/RagDslSpec.scala": {
     "mtime": 1779128302.4778905,
     "ast_hash": "5270e6841f8be671ed6556ea2a29f4ef",
     "semantic_hash": "5270e6841f8be671ed6556ea2a29f4ef"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/StructuredParser.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/StructuredParser.scala": {
     "mtime": 1779115549.1438348,
     "ast_hash": "e32e35a14743ea4cd54cedfec2fb8744",
     "semantic_hash": "e32e35a14743ea4cd54cedfec2fb8744"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/RunnableGraph.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/RunnableGraph.scala": {
     "mtime": 1779115627.2968924,
     "ast_hash": "7cb75985b3046e55d6a92b2382548491",
     "semantic_hash": "7cb75985b3046e55d6a92b2382548491"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/ChatModel.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/ChatModel.scala": {
     "mtime": 1779115548.9052322,
     "ast_hash": "fb28dd2f70a333d33afcb0420d1ab8b7",
     "semantic_hash": "fb28dd2f70a333d33afcb0420d1ab8b7"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/AiAgentRunnable.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/AiAgentRunnable.scala": {
     "mtime": 1779115549.0196943,
     "ast_hash": "5253cb1bab9c1a2c2cd31bb394235fc7",
     "semantic_hash": "5253cb1bab9c1a2c2cd31bb394235fc7"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/TextOutput.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/TextOutput.scala": {
     "mtime": 1779115549.2896116,
     "ast_hash": "da8123386049ef14e6fdee1e3a2c7751",
     "semantic_hash": "da8123386049ef14e6fdee1e3a2c7751"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/PromptTemplate.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/PromptTemplate.scala": {
     "mtime": 1779128253.4333375,
     "ast_hash": "6e418f1abe704bedf0f961261ce2142d",
     "semantic_hash": "6e418f1abe704bedf0f961261ce2142d"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/RunContext.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/RunContext.scala": {
     "mtime": 1779128253.0967953,
     "ast_hash": "e85d5dfa9a5f9dfb7431fbfc49b7e19e",
     "semantic_hash": "e85d5dfa9a5f9dfb7431fbfc49b7e19e"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/RetrievalAugmentorRunnable.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/RetrievalAugmentorRunnable.scala": {
     "mtime": 1779115549.4848018,
     "ast_hash": "4fecf172752867d5306f03ad5729c36e",
     "semantic_hash": "4fecf172752867d5306f03ad5729c36e"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/WorkflowRunnable.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/WorkflowRunnable.scala": {
     "mtime": 1779128253.5141387,
     "ast_hash": "3740bcefd3913ac75ada9d5631fe8890",
     "semantic_hash": "3740bcefd3913ac75ada9d5631fe8890"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/Runnable.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/Runnable.scala": {
     "mtime": 1779129579.8277137,
     "ast_hash": "666eab22226d051ff69216991cba3f12",
     "semantic_hash": "666eab22226d051ff69216991cba3f12"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/ContentRetrieverRunnable.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/ContentRetrieverRunnable.scala": {
     "mtime": 1779115549.3988693,
     "ast_hash": "4dea88d5bc1862092a7cc7983a732124",
     "semantic_hash": "4dea88d5bc1862092a7cc7983a732124"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-tracing-natchez/src/test/scala/org/l4j/template/llm4s/tracing/natchez/NatchezAdapterSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-tracing-natchez/src/test/scala/org/l4j/template/llm4s/tracing/natchez/NatchezAdapterSpec.scala": {
     "mtime": 1779044680.6794982,
     "ast_hash": "1bfcc688c1eee73d053230281ae04a07",
     "semantic_hash": "1bfcc688c1eee73d053230281ae04a07"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-tracing-natchez/src/main/scala/org/l4j/template/llm4s/tracing/natchez/NatchezHttpListener.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-tracing-natchez/src/main/scala/org/l4j/template/llm4s/tracing/natchez/NatchezHttpListener.scala": {
     "mtime": 1779044659.6639538,
     "ast_hash": "c7a78eca3af5bb2db877e2d7711f14a7",
     "semantic_hash": "c7a78eca3af5bb2db877e2d7711f14a7"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-tracing-natchez/src/main/scala/org/l4j/template/llm4s/tracing/natchez/NatchezGuardrailListener.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-tracing-natchez/src/main/scala/org/l4j/template/llm4s/tracing/natchez/NatchezGuardrailListener.scala": {
     "mtime": 1779043910.5324097,
     "ast_hash": "df141743eae137e0620bcc543d65d89b",
     "semantic_hash": "df141743eae137e0620bcc543d65d89b"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-tracing-natchez/src/main/scala/org/l4j/template/llm4s/tracing/natchez/NatchezRuntimeListener.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-tracing-natchez/src/main/scala/org/l4j/template/llm4s/tracing/natchez/NatchezRuntimeListener.scala": {
     "mtime": 1779043901.3928404,
     "ast_hash": "286838094ea11665c68b1fe60a494a8b",
     "semantic_hash": "286838094ea11665c68b1fe60a494a8b"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-tracing-natchez/src/main/scala/org/l4j/template/llm4s/tracing/natchez/NatchezWorkflowListener.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-tracing-natchez/src/main/scala/org/l4j/template/llm4s/tracing/natchez/NatchezWorkflowListener.scala": {
     "mtime": 1779043918.6929762,
     "ast_hash": "d3d4863847353b913294fd3bcaee7d89",
     "semantic_hash": "d3d4863847353b913294fd3bcaee7d89"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-openai-compat/src/test/scala/org/l4j/template/llm4s/openai/JsonSchemaWireRoundTripSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-openai-compat/src/test/scala/org/l4j/template/llm4s/openai/JsonSchemaWireRoundTripSpec.scala": {
     "mtime": 1779039291.4300282,
     "ast_hash": "14ea4a9ef30072046422ff493f4eece0",
     "semantic_hash": "14ea4a9ef30072046422ff493f4eece0"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-openai-compat/src/test/scala/org/l4j/template/llm4s/openai/OpenAiCompatStreamingBackendSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-openai-compat/src/test/scala/org/l4j/template/llm4s/openai/OpenAiCompatStreamingBackendSpec.scala": {
     "mtime": 1779060455.986015,
     "ast_hash": "8dbed0c212f6d282ed4725865cabc08a",
     "semantic_hash": "8dbed0c212f6d282ed4725865cabc08a"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-openai-compat/src/test/scala/org/l4j/template/llm4s/openai/OpenAiStreamDecoderCorpusSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-openai-compat/src/test/scala/org/l4j/template/llm4s/openai/OpenAiStreamDecoderCorpusSpec.scala": {
     "mtime": 1779039279.3562474,
     "ast_hash": "e5eecbba690493d21efb3f232c92997f",
     "semantic_hash": "e5eecbba690493d21efb3f232c92997f"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-openai-compat/src/test/scala/org/l4j/template/llm4s/openai/OpenAiCompatBackendResourceSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-openai-compat/src/test/scala/org/l4j/template/llm4s/openai/OpenAiCompatBackendResourceSpec.scala": {
     "mtime": 1779061728.6333358,
     "ast_hash": "4ac0af20557abae11368f743b58621e2",
     "semantic_hash": "4ac0af20557abae11368f743b58621e2"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-openai-compat/src/test/scala/org/l4j/template/llm4s/openai/OpenAiCompatBackendSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-openai-compat/src/test/scala/org/l4j/template/llm4s/openai/OpenAiCompatBackendSpec.scala": {
     "mtime": 1779060442.3449304,
     "ast_hash": "428145b0ad3a40de8d38d89c6701a2c4",
     "semantic_hash": "428145b0ad3a40de8d38d89c6701a2c4"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-openai-compat/src/test/scala/org/l4j/template/llm4s/openai/OpenAiBackendLawsSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-openai-compat/src/test/scala/org/l4j/template/llm4s/openai/OpenAiBackendLawsSpec.scala": {
     "mtime": 1779039268.4121962,
     "ast_hash": "0ed90f0202a65e6e02e3c71b34b3075c",
     "semantic_hash": "0ed90f0202a65e6e02e3c71b34b3075c"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-openai-compat/src/test/scala/org/l4j/template/llm4s/openai/TracedSttpBackendSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-openai-compat/src/test/scala/org/l4j/template/llm4s/openai/TracedSttpBackendSpec.scala": {
     "mtime": 1779056376.2950816,
     "ast_hash": "9b88f79a08c3671dd21d905be16736ce",
     "semantic_hash": "9b88f79a08c3671dd21d905be16736ce"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/HttpListener.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/HttpListener.scala": {
     "mtime": 1779044530.4110346,
     "ast_hash": "69bc39ce88b239ff84f8613b8a7851f9",
     "semantic_hash": "69bc39ce88b239ff84f8613b8a7851f9"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/SttpOpenAiTransport.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/SttpOpenAiTransport.scala": {
     "mtime": 1779056222.6846607,
     "ast_hash": "6d8e60c5d13256f705b2121dd1189efd",
     "semantic_hash": "6d8e60c5d13256f705b2121dd1189efd"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/OpenAiStreamingTransport.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/OpenAiStreamingTransport.scala": {
     "mtime": 1779044516.0999737,
     "ast_hash": "13d834c2df171fcf1b7a8df4f421eac5",
     "semantic_hash": "13d834c2df171fcf1b7a8df4f421eac5"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/OpenAiCompatConfig.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/OpenAiCompatConfig.scala": {
     "mtime": 1779046132.797372,
     "ast_hash": "6d6042b62076edf0316fdf07e4656d01",
     "semantic_hash": "6d6042b62076edf0316fdf07e4656d01"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/OpenAiCompatBackend.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/OpenAiCompatBackend.scala": {
     "mtime": 1779060570.4779015,
     "ast_hash": "c9ecb6523d123b9a4829745702e1ca75",
     "semantic_hash": "c9ecb6523d123b9a4829745702e1ca75"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/OpenAiWire.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/OpenAiWire.scala": {
     "mtime": 1779047455.4753718,
     "ast_hash": "54bb86eca2fce4a9a37ddc330524d87f",
     "semantic_hash": "54bb86eca2fce4a9a37ddc330524d87f"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/OpenAiCompatStreamingBackend.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/OpenAiCompatStreamingBackend.scala": {
     "mtime": 1779061673.466937,
     "ast_hash": "0852bc726e872cf46f98c4a1d8751042",
     "semantic_hash": "0852bc726e872cf46f98c4a1d8751042"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/TracedSttpBackend.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/TracedSttpBackend.scala": {
     "mtime": 1779044610.7622774,
     "ast_hash": "6459e2ec2103405b2f719548f5f30f72",
     "semantic_hash": "6459e2ec2103405b2f719548f5f30f72"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/OpenAiTransport.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/OpenAiTransport.scala": {
     "mtime": 1779044504.7233775,
     "ast_hash": "72ffa7916dd4831cd1371fd2511caea3",
     "semantic_hash": "72ffa7916dd4831cd1371fd2511caea3"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/AhcOpenAiStreamingTransport.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/AhcOpenAiStreamingTransport.scala": {
     "mtime": 1779061946.93126,
     "ast_hash": "f0227631ce757a00482be8d0a059602d",
     "semantic_hash": "f0227631ce757a00482be8d0a059602d"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/OpenAiStreamDecoder.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/OpenAiStreamDecoder.scala": {
     "mtime": 1779039331.9275217,
     "ast_hash": "0d53d11d508975b4b76f20e84ea168ee",
     "semantic_hash": "0d53d11d508975b4b76f20e84ea168ee"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-streaming/src/test/scala/org/l4j/template/llm4s/streaming/StreamingAiRuntimeSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-streaming/src/test/scala/org/l4j/template/llm4s/streaming/StreamingAiRuntimeSpec.scala": {
     "mtime": 1779043747.2807183,
     "ast_hash": "dc4a92d5c7b2d90d2ee7c6ad5970b0c0",
     "semantic_hash": "dc4a92d5c7b2d90d2ee7c6ad5970b0c0"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-streaming/src/main/scala/org/l4j/template/llm4s/streaming/StreamSubscriber.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-streaming/src/main/scala/org/l4j/template/llm4s/streaming/StreamSubscriber.scala": {
     "mtime": 1778566289.0991852,
     "ast_hash": "e08c098869114c425170a6f42c6ccca7",
     "semantic_hash": "e08c098869114c425170a6f42c6ccca7"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-streaming/src/main/scala/org/l4j/template/llm4s/streaming/StreamingChatBackend.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-streaming/src/main/scala/org/l4j/template/llm4s/streaming/StreamingChatBackend.scala": {
     "mtime": 1778566288.76397,
     "ast_hash": "04f1db97bad7e5abaa1a3d7e6a0b5436",
     "semantic_hash": "04f1db97bad7e5abaa1a3d7e6a0b5436"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-streaming/src/main/scala/org/l4j/template/llm4s/streaming/TokenStream.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-streaming/src/main/scala/org/l4j/template/llm4s/streaming/TokenStream.scala": {
     "mtime": 1778566752.1024735,
     "ast_hash": "1f623903561cf437425b4a0a4bc775dc",
     "semantic_hash": "1f623903561cf437425b4a0a4bc775dc"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-streaming/src/main/scala/org/l4j/template/llm4s/streaming/StreamEvent.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-streaming/src/main/scala/org/l4j/template/llm4s/streaming/StreamEvent.scala": {
     "mtime": 1778566288.8374774,
     "ast_hash": "4187a8b0a7faedff2e533c6c1b1d3146",
     "semantic_hash": "4187a8b0a7faedff2e533c6c1b1d3146"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-streaming/src/main/scala/org/l4j/template/llm4s/streaming/StreamingAiRuntime.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-streaming/src/main/scala/org/l4j/template/llm4s/streaming/StreamingAiRuntime.scala": {
     "mtime": 1779043632.076368,
     "ast_hash": "4d8f0c4ceab99cde669afa83599e1ee9",
     "semantic_hash": "4d8f0c4ceab99cde669afa83599e1ee9"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-core/src/test/scala/org/l4j/template/llm4s/core/DocsLayoutSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-core/src/test/scala/org/l4j/template/llm4s/core/DocsLayoutSpec.scala": {
     "mtime": 1779060500.2438674,
     "ast_hash": "42ea891bf60b415d940710d7cd50e9a7",
     "semantic_hash": "42ea891bf60b415d940710d7cd50e9a7"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-core/src/test/scala/org/l4j/template/llm4s/core/ChatTranscriptSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-core/src/test/scala/org/l4j/template/llm4s/core/ChatTranscriptSpec.scala": {
     "mtime": 1779039997.2521253,
     "ast_hash": "02ee2239425a0f557c535321717c358c",
     "semantic_hash": "02ee2239425a0f557c535321717c358c"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-core/src/test/scala/org/l4j/template/llm4s/core/CoreTypesSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-core/src/test/scala/org/l4j/template/llm4s/core/CoreTypesSpec.scala": {
     "mtime": 1778617392.5482419,
     "ast_hash": "d31be78094cd0462c5c29b6aba7f403e",
     "semantic_hash": "d31be78094cd0462c5c29b6aba7f403e"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-core/src/main/scala/org/l4j/template/llm4s/core/ModelMetadata.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-core/src/main/scala/org/l4j/template/llm4s/core/ModelMetadata.scala": {
     "mtime": 1778617373.2418141,
     "ast_hash": "c7c988eb74b102ce0ff2f957067ba122",
     "semantic_hash": "c7c988eb74b102ce0ff2f957067ba122"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-core/src/main/scala/org/l4j/template/llm4s/core/ChatBackend.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-core/src/main/scala/org/l4j/template/llm4s/core/ChatBackend.scala": {
     "mtime": 1779044491.7914681,
     "ast_hash": "6f6dea15ff4b57efb0ce406bf16925c2",
     "semantic_hash": "6f6dea15ff4b57efb0ce406bf16925c2"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-core/src/main/scala/org/l4j/template/llm4s/core/ChatTranscript.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-core/src/main/scala/org/l4j/template/llm4s/core/ChatTranscript.scala": {
     "mtime": 1779039657.7656574,
     "ast_hash": "e9fb6babdce2871abed61af3fb317deb",
     "semantic_hash": "e9fb6babdce2871abed61af3fb317deb"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-core/src/main/scala/org/l4j/template/llm4s/core/ResponseFormat.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-core/src/main/scala/org/l4j/template/llm4s/core/ResponseFormat.scala": {
     "mtime": 1778563912.0014966,
     "ast_hash": "6c998f535a78c9d45aaae93a178611db",
     "semantic_hash": "6c998f535a78c9d45aaae93a178611db"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-core/src/main/scala/org/l4j/template/llm4s/core/ChatProtocol.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-core/src/main/scala/org/l4j/template/llm4s/core/ChatProtocol.scala": {
     "mtime": 1778624292.750165,
     "ast_hash": "6229331d6c2316789a34c1802ffbe649",
     "semantic_hash": "6229331d6c2316789a34c1802ffbe649"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-core/src/main/scala/org/l4j/template/llm4s/core/JsonSchema.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-core/src/main/scala/org/l4j/template/llm4s/core/JsonSchema.scala": {
     "mtime": 1778622165.8383431,
     "ast_hash": "a3b3f9d3d59006db414381f97f469edb",
     "semantic_hash": "a3b3f9d3d59006db414381f97f469edb"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-core/src/main/scala/org/l4j/template/llm4s/core/ChatBackendLaws.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-core/src/main/scala/org/l4j/template/llm4s/core/ChatBackendLaws.scala": {
     "mtime": 1779039233.9234812,
     "ast_hash": "ae4b726db12e88030c0a85b20d801c81",
     "semantic_hash": "ae4b726db12e88030c0a85b20d801c81"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-core/src/main/scala/org/l4j/template/llm4s/core/AiContent.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-core/src/main/scala/org/l4j/template/llm4s/core/AiContent.scala": {
     "mtime": 1778617357.6791933,
     "ast_hash": "14e331fedefcc68fa93e8f14bf7f72c9",
     "semantic_hash": "14e331fedefcc68fa93e8f14bf7f72c9"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-core/src/main/scala/org/l4j/template/llm4s/core/Tools.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-core/src/main/scala/org/l4j/template/llm4s/core/Tools.scala": {
     "mtime": 1778617357.843969,
     "ast_hash": "69f73631c427bf0d7e114ca4460880ab",
     "semantic_hash": "69f73631c427bf0d7e114ca4460880ab"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-core/src/main/scala/org/l4j/template/llm4s/core/TraceContext.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-core/src/main/scala/org/l4j/template/llm4s/core/TraceContext.scala": {
     "mtime": 1779043136.777199,
     "ast_hash": "526ed1b18bd0c067cc154bba0aef56e0",
     "semantic_hash": "526ed1b18bd0c067cc154bba0aef56e0"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-core/src/main/scala/org/l4j/template/llm4s/core/InvocationContext.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-core/src/main/scala/org/l4j/template/llm4s/core/InvocationContext.scala": {
     "mtime": 1779043147.3662837,
     "ast_hash": "ba13ec43df088b04fb4594fc3cd663fa",
     "semantic_hash": "ba13ec43df088b04fb4594fc3cd663fa"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-memory/src/test/scala/org/l4j/template/llm4s/memory/MemoryAwareRuntimeSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-memory/src/test/scala/org/l4j/template/llm4s/memory/MemoryAwareRuntimeSpec.scala": {
     "mtime": 1779041791.4337418,
     "ast_hash": "45b756b633dffd54022a9558ca62ad96",
     "semantic_hash": "45b756b633dffd54022a9558ca62ad96"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-memory/src/test/scala/org/l4j/template/llm4s/memory/ChatMemorySpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-memory/src/test/scala/org/l4j/template/llm4s/memory/ChatMemorySpec.scala": {
     "mtime": 1778567021.3283255,
     "ast_hash": "2e1ecfb2557a50bac0cc2f7a697fe2bf",
     "semantic_hash": "2e1ecfb2557a50bac0cc2f7a697fe2bf"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-memory/src/main/scala/org/l4j/template/llm4s/memory/MessageWindowMemory.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-memory/src/main/scala/org/l4j/template/llm4s/memory/MessageWindowMemory.scala": {
     "mtime": 1778567167.0255294,
     "ast_hash": "c898367daf614871b43a68535789c8cc",
     "semantic_hash": "c898367daf614871b43a68535789c8cc"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-memory/src/main/scala/org/l4j/template/llm4s/memory/ChatMemory.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-memory/src/main/scala/org/l4j/template/llm4s/memory/ChatMemory.scala": {
     "mtime": 1778567166.9862506,
     "ast_hash": "142f409d9a71c6db5db30a943ec9514f",
     "semantic_hash": "142f409d9a71c6db5db30a943ec9514f"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-memory/src/main/scala/org/l4j/template/llm4s/memory/MemoryId.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-memory/src/main/scala/org/l4j/template/llm4s/memory/MemoryId.scala": {
     "mtime": 1778567021.1535685,
     "ast_hash": "7a4a3e3c598533c5b7c67ae9099e6296",
     "semantic_hash": "7a4a3e3c598533c5b7c67ae9099e6296"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-memory/src/main/scala/org/l4j/template/llm4s/memory/InMemoryChatMemory.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-memory/src/main/scala/org/l4j/template/llm4s/memory/InMemoryChatMemory.scala": {
     "mtime": 1778622179.545406,
     "ast_hash": "a87757d4f5abed3f27afbe40add75354",
     "semantic_hash": "a87757d4f5abed3f27afbe40add75354"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-memory/src/main/scala/org/l4j/template/llm4s/memory/MemoryAwareRuntime.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-memory/src/main/scala/org/l4j/template/llm4s/memory/MemoryAwareRuntime.scala": {
     "mtime": 1779043232.716926,
     "ast_hash": "d8e8403fddafcb2a3e4d268f1ec79b2a",
     "semantic_hash": "d8e8403fddafcb2a3e4d268f1ec79b2a"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-guardrails/src/test/scala/org/l4j/template/llm4s/guardrails/GuardrailsSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-guardrails/src/test/scala/org/l4j/template/llm4s/guardrails/GuardrailsSpec.scala": {
     "mtime": 1779061217.5266597,
     "ast_hash": "0fa177e1cd1ef759d213817391267210",
     "semantic_hash": "0fa177e1cd1ef759d213817391267210"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-guardrails/src/test/scala/org/l4j/template/llm4s/guardrails/GuardrailListenerSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-guardrails/src/test/scala/org/l4j/template/llm4s/guardrails/GuardrailListenerSpec.scala": {
     "mtime": 1779043372.3704128,
     "ast_hash": "676b73039aa32ff16ec8aa7f4afa5d2e",
     "semantic_hash": "676b73039aa32ff16ec8aa7f4afa5d2e"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/GuardrailChain.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/GuardrailChain.scala": {
     "mtime": 1779060040.730009,
     "ast_hash": "83b7f55b69801514b216ad05622560c6",
     "semantic_hash": "83b7f55b69801514b216ad05622560c6"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/ModerationModel.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/ModerationModel.scala": {
     "mtime": 1778617224.015401,
     "ast_hash": "db8a502bdd0325f7015ed15c3884f571",
     "semantic_hash": "db8a502bdd0325f7015ed15c3884f571"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/RetryPolicy.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/RetryPolicy.scala": {
     "mtime": 1778617224.2307246,
     "ast_hash": "bd384d6a0f57dfb4701cf90e72da2560",
     "semantic_hash": "bd384d6a0f57dfb4701cf90e72da2560"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/GuardedChatBackend.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/GuardedChatBackend.scala": {
     "mtime": 1779037842.349028,
     "ast_hash": "613242db0c2ae2dce57a7bbb0a40e9c1",
     "semantic_hash": "613242db0c2ae2dce57a7bbb0a40e9c1"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/Guardrails.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/Guardrails.scala": {
     "mtime": 1779041577.0005364,
     "ast_hash": "b1938bc2c140e00284926dd1000f8814",
     "semantic_hash": "b1938bc2c140e00284926dd1000f8814"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/GuardrailListener.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/GuardrailListener.scala": {
     "mtime": 1779043241.9534857,
     "ast_hash": "680199097410fa966cd17d4c0305412b",
     "semantic_hash": "680199097410fa966cd17d4c0305412b"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/GuardedToolKit.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/GuardedToolKit.scala": {
     "mtime": 1779039402.6290078,
     "ast_hash": "f11b17ccaf4cd1133054da1887844d41",
     "semantic_hash": "f11b17ccaf4cd1133054da1887844d41"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/GuardrailResult.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/GuardrailResult.scala": {
     "mtime": 1778617223.8045363,
     "ast_hash": "338320aa6d25f823b7e2a98476e603a1",
     "semantic_hash": "338320aa6d25f823b7e2a98476e603a1"
   },
-  "/Users/alpha/AI_ML/llm4s-template/src/test/scala/org/l4j/template/demo/AppConfigSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/src/test/scala/org/l4j/template/demo/AppConfigSpec.scala": {
     "mtime": 1779049312.4859767,
     "ast_hash": "b8ba2e996a913295ad1e87e703fe92d2",
     "semantic_hash": "b8ba2e996a913295ad1e87e703fe92d2"
   },
-  "/Users/alpha/AI_ML/llm4s-template/src/test/scala/org/l4j/template/demo/TracingWiringSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/src/test/scala/org/l4j/template/demo/TracingWiringSpec.scala": {
     "mtime": 1779049394.508868,
     "ast_hash": "959e2c7790402f5986aa34f1f807bb2d",
     "semantic_hash": "959e2c7790402f5986aa34f1f807bb2d"
   },
-  "/Users/alpha/AI_ML/llm4s-template/src/main/scala/org/l4j/template/demo/BackendSupport.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/src/main/scala/org/l4j/template/demo/BackendSupport.scala": {
     "mtime": 1779130082.8324096,
     "ast_hash": "97463e566e0d9eda2858c4b1f123c872",
     "semantic_hash": "97463e566e0d9eda2858c4b1f123c872"
   },
-  "/Users/alpha/AI_ML/llm4s-template/src/main/scala/org/l4j/template/demo/TracingWiring.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/src/main/scala/org/l4j/template/demo/TracingWiring.scala": {
     "mtime": 1779130829.4351904,
     "ast_hash": "0ebbd44ed42d507a72f57fe5c46738bb",
     "semantic_hash": "0ebbd44ed42d507a72f57fe5c46738bb"
   },
-  "/Users/alpha/AI_ML/llm4s-template/src/main/scala/org/l4j/template/demo/AgentDemoMain.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/src/main/scala/org/l4j/template/demo/AgentDemoMain.scala": {
     "mtime": 1779055334.4943974,
     "ast_hash": "355269a8a7859f98e74435962a534768",
     "semantic_hash": "355269a8a7859f98e74435962a534768"
   },
-  "/Users/alpha/AI_ML/llm4s-template/src/main/scala/org/l4j/template/demo/TraceDemoMain.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/src/main/scala/org/l4j/template/demo/TraceDemoMain.scala": {
     "mtime": 1779055391.3628547,
     "ast_hash": "ea1500b99002f7e6a5b4c910feff1c4d",
     "semantic_hash": "ea1500b99002f7e6a5b4c910feff1c4d"
   },
-  "/Users/alpha/AI_ML/llm4s-template/src/main/scala/org/l4j/template/demo/AppConfig.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/src/main/scala/org/l4j/template/demo/AppConfig.scala": {
     "mtime": 1779049185.7991824,
     "ast_hash": "af78e2e8c955fa28de9b18884681d06a",
     "semantic_hash": "af78e2e8c955fa28de9b18884681d06a"
   },
-  "/Users/alpha/AI_ML/llm4s-template/src/main/scala/org/l4j/template/demo/agentic/ParallelDemoApi.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/src/main/scala/org/l4j/template/demo/agentic/ParallelDemoApi.scala": {
     "mtime": 1778629225.0260067,
     "ast_hash": "feb6cd32a89da9850629e9e685859e07",
     "semantic_hash": "feb6cd32a89da9850629e9e685859e07"
   },
-  "/Users/alpha/AI_ML/llm4s-template/src/main/scala/org/l4j/template/demo/agentic/SequentialDemoApi.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/src/main/scala/org/l4j/template/demo/agentic/SequentialDemoApi.scala": {
     "mtime": 1778629186.511486,
     "ast_hash": "c4631407bedbef63c2ba1a9506335ba4",
     "semantic_hash": "c4631407bedbef63c2ba1a9506335ba4"
   },
-  "/Users/alpha/AI_ML/llm4s-template/src/main/scala/org/l4j/template/demo/agentic/SequentialDemoMain.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/src/main/scala/org/l4j/template/demo/agentic/SequentialDemoMain.scala": {
     "mtime": 1779055356.9282804,
     "ast_hash": "b9bdf975307b97b535e737ae5d5dcea6",
     "semantic_hash": "b9bdf975307b97b535e737ae5d5dcea6"
   },
-  "/Users/alpha/AI_ML/llm4s-template/src/main/scala/org/l4j/template/demo/agentic/ParallelDemoMain.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/src/main/scala/org/l4j/template/demo/agentic/ParallelDemoMain.scala": {
     "mtime": 1779055375.589786,
     "ast_hash": "b2ff3a6b89094e1890626a5159a42b6a",
     "semantic_hash": "b2ff3a6b89094e1890626a5159a42b6a"
   },
-  "/Users/alpha/AI_ML/llm4s-template/LCEL_DRAFT_PLAN.md": {
+  "/Users/alpha/AI_ML/llm4s-chain/LCEL_DRAFT_PLAN.md": {
     "mtime": 1779128253.75577,
     "ast_hash": "358178b78ccd0a028089c4da114bd5b6",
     "semantic_hash": "358178b78ccd0a028089c4da114bd5b6"
   },
-  "/Users/alpha/AI_ML/llm4s-template/CHANGELOG.md": {
+  "/Users/alpha/AI_ML/llm4s-chain/CHANGELOG.md": {
     "mtime": 1779048007.7569504,
     "ast_hash": "b71b01d20dffe573b7a08a3c17600ece",
     "semantic_hash": "b71b01d20dffe573b7a08a3c17600ece"
   },
-  "/Users/alpha/AI_ML/llm4s-template/.pre-commit-config.yaml": {
+  "/Users/alpha/AI_ML/llm4s-chain/.pre-commit-config.yaml": {
     "mtime": 1778464123.864943,
     "ast_hash": "052448b1c3b995ba9df3a90ba2e56c7e",
     "semantic_hash": "052448b1c3b995ba9df3a90ba2e56c7e"
   },
-  "/Users/alpha/AI_ML/llm4s-template/.pre-commit-hooks.yaml": {
+  "/Users/alpha/AI_ML/llm4s-chain/.pre-commit-hooks.yaml": {
     "mtime": 1778464123.8657496,
     "ast_hash": "3a6b3d8011648841050a7d9466a5ab71",
     "semantic_hash": "3a6b3d8011648841050a7d9466a5ab71"
   },
-  "/Users/alpha/AI_ML/llm4s-template/config.yaml": {
+  "/Users/alpha/AI_ML/llm4s-chain/config.yaml": {
     "mtime": 1779130845.7601724,
     "ast_hash": "f601bfb2326cf0c2633a8cc3562517e2",
     "semantic_hash": "f601bfb2326cf0c2633a8cc3562517e2"
   },
-  "/Users/alpha/AI_ML/llm4s-template/readme_2026-05-17.md": {
+  "/Users/alpha/AI_ML/llm4s-chain/readme_2026-05-17.md": {
     "mtime": 1779058539.0014696,
     "ast_hash": "46f1130e356cca1fc29d6cad54a7e82c",
     "semantic_hash": "46f1130e356cca1fc29d6cad54a7e82c"
   },
-  "/Users/alpha/AI_ML/llm4s-template/README.md": {
+  "/Users/alpha/AI_ML/llm4s-chain/README.md": {
     "mtime": 1779061734.8684158,
     "ast_hash": "bb421ca6935a1562cc1bfe30cb339345",
     "semantic_hash": "bb421ca6935a1562cc1bfe30cb339345"
   },
-  "/Users/alpha/AI_ML/llm4s-template/CODE_REVIEW.md": {
+  "/Users/alpha/AI_ML/llm4s-chain/CODE_REVIEW.md": {
     "mtime": 1779044831.1804774,
     "ast_hash": "9610ba1c15481563fc2bf7e8030ce988",
     "semantic_hash": "9610ba1c15481563fc2bf7e8030ce988"
   },
-  "/Users/alpha/AI_ML/llm4s-template/docs/USAGE.md": {
+  "/Users/alpha/AI_ML/llm4s-chain/docs/USAGE.md": {
     "mtime": 1779064302.4550557,
     "ast_hash": "428ee0b47a2f57cf3b049c5c029d117e",
     "semantic_hash": "428ee0b47a2f57cf3b049c5c029d117e"
   },
-  "/Users/alpha/AI_ML/llm4s-template/.github/workflows/ci.yml": {
+  "/Users/alpha/AI_ML/llm4s-chain/.github/workflows/ci.yml": {
     "mtime": 1779060506.137617,
     "ast_hash": "1e59408e1722cf2428ac06e98f534f14",
     "semantic_hash": "1e59408e1722cf2428ac06e98f534f14"
   },
-  "/Users/alpha/AI_ML/llm4s-template/arch.svg": {
+  "/Users/alpha/AI_ML/llm4s-chain/arch.svg": {
     "mtime": 1779075617.5777817,
     "ast_hash": "42cdd3077fe0a3ad20282d602526cb50",
     "semantic_hash": "42cdd3077fe0a3ad20282d602526cb50"
   },
-  "/Users/alpha/AI_ML/llm4s-template/.codex/hooks.json": {
+  "/Users/alpha/AI_ML/llm4s-chain/.codex/hooks.json": {
     "mtime": 1779127291.116508,
     "ast_hash": "ad5029b57dd8e01bb5da0598b8fa349f",
     "semantic_hash": "ad5029b57dd8e01bb5da0598b8fa349f"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/test/scala/org/l4j/template/llm4s/dsl/StreamingRunnableSpec.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-dsl/src/test/scala/org/l4j/template/llm4s/dsl/StreamingRunnableSpec.scala": {
     "mtime": 1779128311.3932035,
     "ast_hash": "a3a9f9f94d9a4f639a02c7f5a3e7d222",
     "semantic_hash": "a3a9f9f94d9a4f639a02c7f5a3e7d222"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/Assigned.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/Assigned.scala": {
     "mtime": 1779128253.2670233,
     "ast_hash": "76797f0e5e7b701c0ffc762d554b1873",
     "semantic_hash": "76797f0e5e7b701c0ffc762d554b1873"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/Input.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/Input.scala": {
     "mtime": 1779128253.1827645,
     "ast_hash": "df1e41f22115acc4a6d67b49923c2221",
     "semantic_hash": "df1e41f22115acc4a6d67b49923c2221"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/StreamingChatModel.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/StreamingChatModel.scala": {
     "mtime": 1779128414.701892,
     "ast_hash": "2139e058553eafadd122d50bad4652af",
     "semantic_hash": "2139e058553eafadd122d50bad4652af"
   },
-  "/Users/alpha/AI_ML/llm4s-template/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/StreamingRunnable.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/StreamingRunnable.scala": {
     "mtime": 1779128414.616776,
     "ast_hash": "623e366eb7b49629e289031a9678323e",
     "semantic_hash": "623e366eb7b49629e289031a9678323e"
   },
-  "/Users/alpha/AI_ML/llm4s-template/AGENTS.md": {
+  "/Users/alpha/AI_ML/llm4s-chain/AGENTS.md": {
     "mtime": 1779127291.11602,
     "ast_hash": "62c05a2bf20bf036a0b2633478663e64",
     "semantic_hash": "62c05a2bf20bf036a0b2633478663e64"
   },
-  "/Users/alpha/AI_ML/llm4s-template/src/main/scala/org/l4j/template/demo/LCEL_DEMO.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/src/main/scala/org/l4j/template/demo/LCEL_DEMO.scala": {
     "mtime": 1779129579.9133894,
     "ast_hash": "00df924afe35782a6dfaf681005e445d",
     "semantic_hash": "00df924afe35782a6dfaf681005e445d"
   },
-  "/Users/alpha/AI_ML/llm4s-template/src/main/scala/org/l4j/template/demo/LCEL_OPERATOR_DEMO.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/src/main/scala/org/l4j/template/demo/LCEL_OPERATOR_DEMO.scala": {
     "mtime": 1779129631.2967906,
     "ast_hash": "598969fdf1ba27204c632eac1d06b803",
     "semantic_hash": "598969fdf1ba27204c632eac1d06b803"
   },
-  "/Users/alpha/AI_ML/llm4s-template/src/main/scala/org/l4j/template/demo/GeminiFlashTraceLcelDemoMain.scala": {
+  "/Users/alpha/AI_ML/llm4s-chain/src/main/scala/org/l4j/template/demo/GeminiFlashTraceLcelDemoMain.scala": {
     "mtime": 1779130689.275672,
     "ast_hash": "7e2fcf99d5f1a683250d10c8728c418e",
     "semantic_hash": "7e2fcf99d5f1a683250d10c8728c418e"

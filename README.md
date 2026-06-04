@@ -1,4 +1,4 @@
-l4j-template
+llm4s-chain
 =================
 
 Scala 3, cats-effect / sttp building blocks for LLM applications:

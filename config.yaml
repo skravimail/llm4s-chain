@@ -1,4 +1,4 @@
-# l4j-template runtime configuration.
+# llm4s-chain runtime configuration.
 #
 # Keys live in .env (so they stay gitignored). Everything else lives here
 # and can be committed.

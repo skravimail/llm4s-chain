@@ -89,7 +89,7 @@
 
 ## God Nodes (most connected - your core abstractions)
 1. `Runnable` - 20 edges
-2. `llm4s-template — Code Review` - 19 edges
+2. `llm4s-chain — Code Review` - 19 edges
 3. `Completed PRs` - 17 edges
 4. `Native Scala 3 Usage Guide` - 17 edges
 5. `GuardrailChain` - 17 edges

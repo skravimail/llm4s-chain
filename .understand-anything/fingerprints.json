@@ -1,0 +1,1857 @@
+{
+  "version": "1.0.0",
+  "gitCommitHash": "a3413e4a5af5090575f34b9e5b6d9f5b52529938",
+  "generatedAt": "2026-05-24T16:49:50.489Z",
+  "files": {
+    ".codex/hooks.json": {
+      "filePath": ".codex/hooks.json",
+      "contentHash": "2543ae84cfe406892aea18714863a3704adf37cfaed851a1c6e9242a13ffd367",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 15,
+      "hasStructuralAnalysis": true
+    },
+    ".env.llm4s-chain": {
+      "filePath": ".env.llm4s-chain",
+      "contentHash": "8aa78738db74ab63f07d515c274987a2c915c00fb0e6081a8e197e39e49ad4a9",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 9,
+      "hasStructuralAnalysis": false
+    },
+    ".envrc": {
+      "filePath": ".envrc",
+      "contentHash": "50d33f8921404c1ddb7ff03aa35c317fbbb64646416d60bf8208a9dd31dcd4af",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 2,
+      "hasStructuralAnalysis": false
+    },
+    ".github/workflows/ci.yml": {
+      "filePath": ".github/workflows/ci.yml",
+      "contentHash": "f41473ad6cff28ad0fa8b57da57637a7ed51d7b63bec97f56bad0bffabad49b6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 77,
+      "hasStructuralAnalysis": true
+    },
+    ".pre-commit-config.yaml": {
+      "filePath": ".pre-commit-config.yaml",
+      "contentHash": "68b2bb2f8b83743069c33b176bafb63c39c706428d195baf9c074a5f9ed0801d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 11,
+      "hasStructuralAnalysis": true
+    },
+    ".pre-commit-hooks.yaml": {
+      "filePath": ".pre-commit-hooks.yaml",
+      "contentHash": "58b9729797ea8fcb08d85730b802e776726af43c33207258b9d70502f4c4de8e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 11,
+      "hasStructuralAnalysis": true
+    },
+    ".sbtopts": {
+      "filePath": ".sbtopts",
+      "contentHash": "40ed9f0e64c25569e88deb09f61ecdb729c18de5c7cfcb6cd9141756a6b75ddf",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 2,
+      "hasStructuralAnalysis": false
+    },
+    ".scalafmt.conf": {
+      "filePath": ".scalafmt.conf",
+      "contentHash": "3e0048793f58b8bfbed45e75e96880e230499adbb8ed7ece0a840eefb700d4c3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 25,
+      "hasStructuralAnalysis": false
+    },
+    ".understand-anything/.understandignore": {
+      "filePath": ".understand-anything/.understandignore",
+      "contentHash": "1d90406268f11d8956c6b7dd774a800d951536556ce44d33ad9d5ea1cdde9013",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 39,
+      "hasStructuralAnalysis": false
+    },
+    ".understand-anything/intermediate/scan-result.json": {
+      "filePath": ".understand-anything/intermediate/scan-result.json",
+      "contentHash": "4933bccb2e472f909fd9339446dfdc6404eace1094b1c1cd0311d8e7c00d1fc9",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1325,
+      "hasStructuralAnalysis": true
+    },
+    ".understand-anything/tmp/ua-import-map-input.json": {
+      "filePath": ".understand-anything/tmp/ua-import-map-input.json",
+      "contentHash": "4cadbe317fc4c3026a57eca7330764f64592316ac008617778c19ef847a1503c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1115,
+      "hasStructuralAnalysis": true
+    },
+    ".understand-anything/tmp/ua-import-map-output.json": {
+      "filePath": ".understand-anything/tmp/ua-import-map-output.json",
+      "contentHash": "fdcb33c44ba7c326c85a54ea3d0b893278df78a4df35298df256883de5bade4b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 195,
+      "hasStructuralAnalysis": true
+    },
+    ".understand-anything/tmp/ua-scan-files.json": {
+      "filePath": ".understand-anything/tmp/ua-scan-files.json",
+      "contentHash": "8194a6a61ca5ae4cb47e17f3a58294c27dae925445f74f4854baca110d1d4cf7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1139,
+      "hasStructuralAnalysis": true
+    },
+    "AGENTS.md": {
+      "filePath": "AGENTS.md",
+      "contentHash": "8ea40dc81f8ef8a7965d46da068c9e8f97bfb2cc9611a596ccddafbe0bdb91d1",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 13,
+      "hasStructuralAnalysis": true
+    },
+    "build.sbt": {
+      "filePath": "build.sbt",
+      "contentHash": "0ab0d2dd03dbf87d3c8d256190b862ad1ffd0b0be962e664915ec78ebe986291",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 184,
+      "hasStructuralAnalysis": false
+    },
+    "CHANGELOG.md": {
+      "filePath": "CHANGELOG.md",
+      "contentHash": "c208f09a3ec5ad9a345bf8eb1b1501f23cd8a4631d01962dd65c5159630079d7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1032,
+      "hasStructuralAnalysis": true
+    },
+    "CODE_REVIEW.md": {
+      "filePath": "CODE_REVIEW.md",
+      "contentHash": "a1af1c7bcb83dc202fb4a859834b8720094a4cf8f33658454c6abadbd37144cd",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 470,
+      "hasStructuralAnalysis": true
+    },
+    "config.yaml": {
+      "filePath": "config.yaml",
+      "contentHash": "c9c2942b738a597b79c10eb69a968795eaeafe99c4338846af61e6809c20654c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 65,
+      "hasStructuralAnalysis": true
+    },
+    "docs/USAGE.md": {
+      "filePath": "docs/USAGE.md",
+      "contentHash": "612f7c22affe238a87700416be1dd07e00dc8b51be4c64b8bf54b1b9a6a8a35d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 549,
+      "hasStructuralAnalysis": true
+    },
+    "LCEL_DRAFT_PLAN.md": {
+      "filePath": "LCEL_DRAFT_PLAN.md",
+      "contentHash": "9c5e06e0bc2f845f0c42200bbe8ca112f82752dc844cfc839011d299a834b0fc",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 330,
+      "hasStructuralAnalysis": true
+    },
+    "llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/Agent.scala": {
+      "filePath": "llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/Agent.scala",
+      "contentHash": "fd0d741715f859ccbb7c7c3f8ab85663eca5ca4ef884d7b2ac3f00a4ea8d2e5b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 47,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/AgentScope.scala": {
+      "filePath": "llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/AgentScope.scala",
+      "contentHash": "124baa63b89125635936786916d9fdc3a11ce795f12aabc423e7b5dc5595d958",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 38,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/ConditionalWorkflow.scala": {
+      "filePath": "llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/ConditionalWorkflow.scala",
+      "contentHash": "24beb1c5e3030c9bd3c74e9dd7a7d6c9f9a8114cda190448e50ec93ba33fe3cb",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 26,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/LoopWorkflow.scala": {
+      "filePath": "llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/LoopWorkflow.scala",
+      "contentHash": "9810138870be1f9e0e4eda2456c7db2d05ec52cefa19cda35e9bc2b2eba95171",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 30,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/ParallelWorkflow.scala": {
+      "filePath": "llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/ParallelWorkflow.scala",
+      "contentHash": "24c8340a97c0a92ba81afa8bf1e413c7a937366a99660baa551831f72549ed84",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 21,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/PlanStep.scala": {
+      "filePath": "llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/PlanStep.scala",
+      "contentHash": "a6a3592dbd00281f6312619ef049a0cff28bd7d044996871f36c109e7284b881",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 14,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/SequenceWorkflow.scala": {
+      "filePath": "llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/SequenceWorkflow.scala",
+      "contentHash": "b0f2c7f398a5b8e1c5e327f928add4ab3c4e82115c5b1b64f0748d3660ba7e2e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 21,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/SubAgentRegistry.scala": {
+      "filePath": "llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/SubAgentRegistry.scala",
+      "contentHash": "35b0aa1af018583dadc8d3fd8d30e1ec185c0b6e922d5a357e3f659895cf4d31",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 16,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/SupervisorAgent.scala": {
+      "filePath": "llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/SupervisorAgent.scala",
+      "contentHash": "29a4333aa4152ef7532190b674ac7ea3cff7c878efb3bdf69865d8d804b6729e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 47,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/Workflow.scala": {
+      "filePath": "llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/Workflow.scala",
+      "contentHash": "7f3c90eb6f9b220cee37ba916bc337f10a3b7f6717b18aec36325dce6ce08164",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 15,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/WorkflowError.scala": {
+      "filePath": "llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/WorkflowError.scala",
+      "contentHash": "76cb69ba69eebb9072ab9436908fd63a052561294ab0b61359a0533a590ef95a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 14,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/WorkflowListener.scala": {
+      "filePath": "llm4s-agentic/src/main/scala/org/l4j/template/llm4s/agentic/WorkflowListener.scala",
+      "contentHash": "62218b22e65bd244359966aaac6303dd770bc3b1ef801b8da7a1ac56f30861c0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 64,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-agentic/src/test/scala/org/l4j/template/llm4s/agentic/AgenticWorkflowSpec.scala": {
+      "filePath": "llm4s-agentic/src/test/scala/org/l4j/template/llm4s/agentic/AgenticWorkflowSpec.scala",
+      "contentHash": "8951fe3d323fc3465d5f9e4ad62fe3962e65458cc37dda42bca8df10c472856f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 166,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-agentic/src/test/scala/org/l4j/template/llm4s/agentic/WorkflowAgentRenameSpec.scala": {
+      "filePath": "llm4s-agentic/src/test/scala/org/l4j/template/llm4s/agentic/WorkflowAgentRenameSpec.scala",
+      "contentHash": "6601ca35724e85e6ef7b92beed5980ba4c59cdc064c4c7e35e0d8dbbdd798063",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 41,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-agentic/src/test/scala/org/l4j/template/llm4s/agentic/WorkflowListenerSpec.scala": {
+      "filePath": "llm4s-agentic/src/test/scala/org/l4j/template/llm4s/agentic/WorkflowListenerSpec.scala",
+      "contentHash": "63bbff62f7ee076b6d307cce15021087a8f675a9d63bf050d6ae93ba44da1ae6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 85,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-core/src/main/scala/org/l4j/template/llm4s/core/AiContent.scala": {
+      "filePath": "llm4s-core/src/main/scala/org/l4j/template/llm4s/core/AiContent.scala",
+      "contentHash": "dbe28146f3d80e0742668254201b71a787d40f49efb185a1bbd313a15ae14b45",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 27,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-core/src/main/scala/org/l4j/template/llm4s/core/ChatBackend.scala": {
+      "filePath": "llm4s-core/src/main/scala/org/l4j/template/llm4s/core/ChatBackend.scala",
+      "contentHash": "a965907e18fe32a3dfec85ed7e243839e01a804f5200ddbc8c049ea32e43c41c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 13,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-core/src/main/scala/org/l4j/template/llm4s/core/ChatBackendLaws.scala": {
+      "filePath": "llm4s-core/src/main/scala/org/l4j/template/llm4s/core/ChatBackendLaws.scala",
+      "contentHash": "33cc66312b7763415fa3d8dd19f71901d1b968be56ef408fff7b7624b9610ae0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 86,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-core/src/main/scala/org/l4j/template/llm4s/core/ChatProtocol.scala": {
+      "filePath": "llm4s-core/src/main/scala/org/l4j/template/llm4s/core/ChatProtocol.scala",
+      "contentHash": "f229b43cc9615bbc2314de710d5d57d94acdd2825a28862dc3c411e84d9f47e0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 84,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-core/src/main/scala/org/l4j/template/llm4s/core/ChatTranscript.scala": {
+      "filePath": "llm4s-core/src/main/scala/org/l4j/template/llm4s/core/ChatTranscript.scala",
+      "contentHash": "3ddbc25e0398f8f7151b6a9c0a48bf39eb4caf27b1a634fe0e21aa53de5e7e87",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 61,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-core/src/main/scala/org/l4j/template/llm4s/core/InvocationContext.scala": {
+      "filePath": "llm4s-core/src/main/scala/org/l4j/template/llm4s/core/InvocationContext.scala",
+      "contentHash": "a1304f5ec0a3a402ef189dd02adfcf2d66e3aadadb0d86bf78374feb3bd38018",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 21,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-core/src/main/scala/org/l4j/template/llm4s/core/JsonSchema.scala": {
+      "filePath": "llm4s-core/src/main/scala/org/l4j/template/llm4s/core/JsonSchema.scala",
+      "contentHash": "022352a13f738736b84b5383071d1877491f157ce150ba0f1a0b4993afc08727",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 55,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-core/src/main/scala/org/l4j/template/llm4s/core/ModelMetadata.scala": {
+      "filePath": "llm4s-core/src/main/scala/org/l4j/template/llm4s/core/ModelMetadata.scala",
+      "contentHash": "eda1f35fd61b2b8271cf543512b7c358fc567e0ba263b91c2fe004e3086b49d3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 49,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-core/src/main/scala/org/l4j/template/llm4s/core/ModelPricing.scala": {
+      "filePath": "llm4s-core/src/main/scala/org/l4j/template/llm4s/core/ModelPricing.scala",
+      "contentHash": "3bfdc18ca1f32eed22030924324a175d0368d916e6004689be0d1cb30dfa1eed",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 29,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-core/src/main/scala/org/l4j/template/llm4s/core/ResponseFormat.scala": {
+      "filePath": "llm4s-core/src/main/scala/org/l4j/template/llm4s/core/ResponseFormat.scala",
+      "contentHash": "3dd7e8f7c2c252e311cc3f4a54901b3d95f0ec7730dc5c39165c283473191da4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 13,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-core/src/main/scala/org/l4j/template/llm4s/core/Tools.scala": {
+      "filePath": "llm4s-core/src/main/scala/org/l4j/template/llm4s/core/Tools.scala",
+      "contentHash": "a0377d3fc5b215e0113f62b7dafef5821dd77559dc36263378fa796e8bf067d3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 38,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-core/src/main/scala/org/l4j/template/llm4s/core/TraceContext.scala": {
+      "filePath": "llm4s-core/src/main/scala/org/l4j/template/llm4s/core/TraceContext.scala",
+      "contentHash": "74e0002379e90181ba677ebeaab2e878be36cf70b36d1cf77d26d9d5c4e7bbea",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 55,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-core/src/test/scala/org/l4j/template/llm4s/core/ChatTranscriptSpec.scala": {
+      "filePath": "llm4s-core/src/test/scala/org/l4j/template/llm4s/core/ChatTranscriptSpec.scala",
+      "contentHash": "3873e46c7a0807ad9f0f69187d8b4b9fb0e36f2ee405d81de509bb517df92822",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 65,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-core/src/test/scala/org/l4j/template/llm4s/core/CoreTypesSpec.scala": {
+      "filePath": "llm4s-core/src/test/scala/org/l4j/template/llm4s/core/CoreTypesSpec.scala",
+      "contentHash": "51696395657c7f51115e423d3c0280d656f126e7a08acf952866e4b335076695",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 107,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-core/src/test/scala/org/l4j/template/llm4s/core/DocsLayoutSpec.scala": {
+      "filePath": "llm4s-core/src/test/scala/org/l4j/template/llm4s/core/DocsLayoutSpec.scala",
+      "contentHash": "f5cd23172147b926fe9de519197cce85e54f02de6d3271efa719233613fb9b68",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 68,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/AiAgentRunnable.scala": {
+      "filePath": "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/AiAgentRunnable.scala",
+      "contentHash": "b78add6801ea030de4677ae5eac3aaf92d489a59ff6c99bfc73d6e43c123d2ae",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 31,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/Assigned.scala": {
+      "filePath": "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/Assigned.scala",
+      "contentHash": "851f57152b32b36114f304b8fa3a2ba530b3943dfcc9989ebfd876c6c3daab82",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 15,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/ChatModel.scala": {
+      "filePath": "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/ChatModel.scala",
+      "contentHash": "7dacd6bab842eaf84a73f0abaec1048fe553483359686ef3f4831578d40e0a28",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 27,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/ContentRetrieverRunnable.scala": {
+      "filePath": "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/ContentRetrieverRunnable.scala",
+      "contentHash": "fa03bafd2f6cefa97c4094bba33c9031b56848bdbce36deea557684265a608a7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 14,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/Input.scala": {
+      "filePath": "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/Input.scala",
+      "contentHash": "6612a09919a832689444a6d7b9cc3b9fb2f523b00adf9814d769604e3f783c0b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 15,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/PromptTemplate.scala": {
+      "filePath": "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/PromptTemplate.scala",
+      "contentHash": "cd4c3f9ac232a57c08cc66a6ae1d3eaa8bb8222cfa6388eaeb00d07de25a7c97",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 60,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/RetrievalAugmentorRunnable.scala": {
+      "filePath": "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/RetrievalAugmentorRunnable.scala",
+      "contentHash": "ca667e2b7d88752f016416913d556e961f18303cc1020f053766d3e59809a0dd",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 15,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/RunContext.scala": {
+      "filePath": "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/RunContext.scala",
+      "contentHash": "72f64bb49178f62632230fac494ae76c38c16878bb04fd88bc9aaa9b4e60ba99",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 39,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/Runnable.scala": {
+      "filePath": "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/Runnable.scala",
+      "contentHash": "53136ed27797fc514e7295eba31cdfd89db6615041d85baf171f6ce5074588cf",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 142,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/RunnableGraph.scala": {
+      "filePath": "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/RunnableGraph.scala",
+      "contentHash": "d9109b20c2a851f07b13b90b8a09ce2955060c6be0deda494a0407918fb1a299",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 46,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/StreamingChatModel.scala": {
+      "filePath": "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/StreamingChatModel.scala",
+      "contentHash": "11d69d9cffc2e52d24d1278460635e70efdf422225fca90716012502ad41c5e9",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 66,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/StreamingRunnable.scala": {
+      "filePath": "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/StreamingRunnable.scala",
+      "contentHash": "d7ea7d3e79ee4f77e8625677a45fee72f0efaabcf2b4e2aa19f0c18a36a6dff7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 44,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/StructuredParser.scala": {
+      "filePath": "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/StructuredParser.scala",
+      "contentHash": "f59fc07c2f1fe8f0659591eab8ddc54cf1f755650d55a6ef9fdb5ae332aa00b2",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 13,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/TextOutput.scala": {
+      "filePath": "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/TextOutput.scala",
+      "contentHash": "81b4b223e340fb6b188baa5da5357251494fafda9e56333dee8f4ff1b0e965cd",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 11,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/WorkflowRunnable.scala": {
+      "filePath": "llm4s-dsl/src/main/scala/org/l4j/template/llm4s/dsl/WorkflowRunnable.scala",
+      "contentHash": "08053d72c296b03c86e9c44351acf90977e885a5094ff0c1c1236aa84d1c75f8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 36,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-dsl/src/test/scala/org/l4j/template/llm4s/dsl/ChatModelSpec.scala": {
+      "filePath": "llm4s-dsl/src/test/scala/org/l4j/template/llm4s/dsl/ChatModelSpec.scala",
+      "contentHash": "66f8eca0bd31949664986727a203a6da4fd226542cb1aa8666f55a38df6e1478",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 200,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-dsl/src/test/scala/org/l4j/template/llm4s/dsl/RagDslSpec.scala": {
+      "filePath": "llm4s-dsl/src/test/scala/org/l4j/template/llm4s/dsl/RagDslSpec.scala",
+      "contentHash": "a45c896f52c8ba4a681644b67071c1de1fa7830c00a8f01cb1fb3f349dc3657d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 113,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-dsl/src/test/scala/org/l4j/template/llm4s/dsl/RunnableSpec.scala": {
+      "filePath": "llm4s-dsl/src/test/scala/org/l4j/template/llm4s/dsl/RunnableSpec.scala",
+      "contentHash": "741c7977b3e4666a01ab0401f0f25b50d695391b4b6f23824b4295542d36ec83",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 84,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-dsl/src/test/scala/org/l4j/template/llm4s/dsl/RunnableSpecSupport.scala": {
+      "filePath": "llm4s-dsl/src/test/scala/org/l4j/template/llm4s/dsl/RunnableSpecSupport.scala",
+      "contentHash": "39897ad9c8070c3ba308a553efea25a6708c70c05fc5e19d67b2f23d86356a6b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 23,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-dsl/src/test/scala/org/l4j/template/llm4s/dsl/StreamingRunnableSpec.scala": {
+      "filePath": "llm4s-dsl/src/test/scala/org/l4j/template/llm4s/dsl/StreamingRunnableSpec.scala",
+      "contentHash": "7c6f6b9a10e50ba74821b1571a84b7c4209ec6aac00e65250d74af39c82c5010",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 112,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-dsl/src/test/scala/org/l4j/template/llm4s/dsl/WorkflowRunnableSpec.scala": {
+      "filePath": "llm4s-dsl/src/test/scala/org/l4j/template/llm4s/dsl/WorkflowRunnableSpec.scala",
+      "contentHash": "62cd1f105a87538f848bac4c9e31d484da0db05c62ad223ae4e259d502da7422",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 66,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/GuardedChatBackend.scala": {
+      "filePath": "llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/GuardedChatBackend.scala",
+      "contentHash": "4e6b3abe2e847c003b9a182e0c4266f4ddf01ccc9efbc7fd2cdf04e24c8a16c4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 24,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/GuardedToolKit.scala": {
+      "filePath": "llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/GuardedToolKit.scala",
+      "contentHash": "dafca0c64303098ecb941f1e82d06c7554f4548dad4b32ed660c391bd5c4cca1",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 44,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/GuardrailChain.scala": {
+      "filePath": "llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/GuardrailChain.scala",
+      "contentHash": "abccb2ffa4ddb4a9ecc3d93331b7ec85640d1b84a68041df311ad07d6628c634",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 142,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/GuardrailListener.scala": {
+      "filePath": "llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/GuardrailListener.scala",
+      "contentHash": "be9fbe9b7e9e01aea18cb12882c5f6e2ed0b4174c07038e4d08773fd95647f30",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 50,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/GuardrailResult.scala": {
+      "filePath": "llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/GuardrailResult.scala",
+      "contentHash": "fcf86eb49031f64e455b9463c05f1c024e23fbaa851c359b1bd4b5553cc7e840",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 19,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/Guardrails.scala": {
+      "filePath": "llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/Guardrails.scala",
+      "contentHash": "c24af960044d42d27dea756c6d14cb7b0a1e7a83a9e04f4461302554f8e5ac61",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 17,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/ModerationModel.scala": {
+      "filePath": "llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/ModerationModel.scala",
+      "contentHash": "89c9f2eb1f7710eea10ed13b4c94256667921713944ed5bf7460dbf97526eb67",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 48,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/RetryPolicy.scala": {
+      "filePath": "llm4s-guardrails/src/main/scala/org/l4j/template/llm4s/guardrails/RetryPolicy.scala",
+      "contentHash": "db634c9d13ed1ffae76504fff6bf0342a78387129f6dbf6845ecac48596e9c18",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 28,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-guardrails/src/test/scala/org/l4j/template/llm4s/guardrails/GuardrailListenerSpec.scala": {
+      "filePath": "llm4s-guardrails/src/test/scala/org/l4j/template/llm4s/guardrails/GuardrailListenerSpec.scala",
+      "contentHash": "986b2073e42389104e25ea825bb2b5c3942ee4f1f2c7b757f9d00b4cbcee810c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 99,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-guardrails/src/test/scala/org/l4j/template/llm4s/guardrails/GuardrailsSpec.scala": {
+      "filePath": "llm4s-guardrails/src/test/scala/org/l4j/template/llm4s/guardrails/GuardrailsSpec.scala",
+      "contentHash": "419316a654f7cd3b9c36cb9e40ecb4d69ba7ed4d3978ee505eebf160374c5c7c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 238,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-mcp/src/main/scala/org/l4j/template/llm4s/mcp/HttpMcpTransport.scala": {
+      "filePath": "llm4s-mcp/src/main/scala/org/l4j/template/llm4s/mcp/HttpMcpTransport.scala",
+      "contentHash": "642fe539d7b8e3652573612dbf5e48a65e8e2fd43f4a8a2dcb9e9494d3d8141e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 47,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-mcp/src/main/scala/org/l4j/template/llm4s/mcp/McpClient.scala": {
+      "filePath": "llm4s-mcp/src/main/scala/org/l4j/template/llm4s/mcp/McpClient.scala",
+      "contentHash": "141dd8d5458e2abc9fc697403c7d3ec194f49df0916dddc54fb1e27b3e1b290e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 107,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-mcp/src/main/scala/org/l4j/template/llm4s/mcp/McpProtocol.scala": {
+      "filePath": "llm4s-mcp/src/main/scala/org/l4j/template/llm4s/mcp/McpProtocol.scala",
+      "contentHash": "dc55237c06f3254c97026df50fbaae1bf20dc750ba6b846e5f02a7480fd7f2a3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 85,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-mcp/src/main/scala/org/l4j/template/llm4s/mcp/McpSchemaConverter.scala": {
+      "filePath": "llm4s-mcp/src/main/scala/org/l4j/template/llm4s/mcp/McpSchemaConverter.scala",
+      "contentHash": "ae35183cb630b516c411f4f03e3d45ed6c324a518c3e609a5182be739ab5e9b3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 46,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-mcp/src/main/scala/org/l4j/template/llm4s/mcp/McpToolProvider.scala": {
+      "filePath": "llm4s-mcp/src/main/scala/org/l4j/template/llm4s/mcp/McpToolProvider.scala",
+      "contentHash": "b77e7c1f529be07ec90ac14611e1cc4e6c807db4bb4f16f24872f8eff340ff4f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 37,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-mcp/src/main/scala/org/l4j/template/llm4s/mcp/McpTransport.scala": {
+      "filePath": "llm4s-mcp/src/main/scala/org/l4j/template/llm4s/mcp/McpTransport.scala",
+      "contentHash": "03f45723c69101c4ae46e84cdee6cff8d1944f578e60f299316a77402bae9f4a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 6,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-mcp/src/main/scala/org/l4j/template/llm4s/mcp/StdioMcpTransport.scala": {
+      "filePath": "llm4s-mcp/src/main/scala/org/l4j/template/llm4s/mcp/StdioMcpTransport.scala",
+      "contentHash": "aba48e29648e7a6b2464aa6a14974b8b65476596d1ce0b1da0784a02eae71b7e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 40,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-mcp/src/test/scala/org/l4j/template/llm4s/mcp/McpClientSpec.scala": {
+      "filePath": "llm4s-mcp/src/test/scala/org/l4j/template/llm4s/mcp/McpClientSpec.scala",
+      "contentHash": "6169ddc33fbcfdcf44cccba104224f63ebb2da5adf2e31dfe75dea897ac56e72",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 229,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-memory/src/main/scala/org/l4j/template/llm4s/memory/ChatMemory.scala": {
+      "filePath": "llm4s-memory/src/main/scala/org/l4j/template/llm4s/memory/ChatMemory.scala",
+      "contentHash": "5d5b64c40c7a46e451d133079099e6346de46858ca94037324973440d1829a35",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 13,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-memory/src/main/scala/org/l4j/template/llm4s/memory/InMemoryChatMemory.scala": {
+      "filePath": "llm4s-memory/src/main/scala/org/l4j/template/llm4s/memory/InMemoryChatMemory.scala",
+      "contentHash": "f201833429d221a052c4887d3204fd72c20eddd32beed6470ee30c7efd681c23",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 25,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-memory/src/main/scala/org/l4j/template/llm4s/memory/MemoryAwareRuntime.scala": {
+      "filePath": "llm4s-memory/src/main/scala/org/l4j/template/llm4s/memory/MemoryAwareRuntime.scala",
+      "contentHash": "582852cd76f6c31abc397cca26a3dd0d3a0262fa36ac154aa282e87ad7e1fa37",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 91,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-memory/src/main/scala/org/l4j/template/llm4s/memory/MemoryId.scala": {
+      "filePath": "llm4s-memory/src/main/scala/org/l4j/template/llm4s/memory/MemoryId.scala",
+      "contentHash": "3b15dce55cca56af98633122fdcc529b648c5a36869d15d6aae1bf6458541d9b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 4,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-memory/src/main/scala/org/l4j/template/llm4s/memory/MessageWindowMemory.scala": {
+      "filePath": "llm4s-memory/src/main/scala/org/l4j/template/llm4s/memory/MessageWindowMemory.scala",
+      "contentHash": "dc1b74b0362126aa07fe243c4a00cffa1c12b20b220c00716e4193f3d706f063",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 24,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-memory/src/test/scala/org/l4j/template/llm4s/memory/ChatMemorySpec.scala": {
+      "filePath": "llm4s-memory/src/test/scala/org/l4j/template/llm4s/memory/ChatMemorySpec.scala",
+      "contentHash": "c9829c587f54c93ed97210a978b7a562eef00f32b7a1f846e6a3a57304bf79f0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 54,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-memory/src/test/scala/org/l4j/template/llm4s/memory/MemoryAwareRuntimeSpec.scala": {
+      "filePath": "llm4s-memory/src/test/scala/org/l4j/template/llm4s/memory/MemoryAwareRuntimeSpec.scala",
+      "contentHash": "372e5ff2cc42552b8de09d2cd8c7678abbbb0a6088c91e4235ef160e4c7a9f38",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 77,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/AhcOpenAiStreamingTransport.scala": {
+      "filePath": "llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/AhcOpenAiStreamingTransport.scala",
+      "contentHash": "01e3938e1928451e28757eaa1a0137cac6dff7128edc56aecf525ca8f9da360f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 181,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/HttpListener.scala": {
+      "filePath": "llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/HttpListener.scala",
+      "contentHash": "f9e632e96ee0d43ec4c9a72c67c105837159c8579764b5bed833cee4fae41904",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 50,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/OpenAiCompatBackend.scala": {
+      "filePath": "llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/OpenAiCompatBackend.scala",
+      "contentHash": "75bc80a1b0e54d1fd7640eb333e047c2641be4c1c2ee2ba57b72d5b143b9eb4d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 82,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/OpenAiCompatConfig.scala": {
+      "filePath": "llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/OpenAiCompatConfig.scala",
+      "contentHash": "f4912851ed132cf4dcbd4f1ab46d548e1e30e85ecf28fb92dd25585945bd0fd0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 39,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/OpenAiCompatStreamingBackend.scala": {
+      "filePath": "llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/OpenAiCompatStreamingBackend.scala",
+      "contentHash": "cfd3afebc8db560f955356898a42187c76b8a41d3a6a5da432b2075b0736fb0c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 57,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/OpenAiStreamDecoder.scala": {
+      "filePath": "llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/OpenAiStreamDecoder.scala",
+      "contentHash": "c045d3230623b5ad11252fd21f8f2a202f71f44e16b5587a7fbfa20dc5404ee7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 74,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/OpenAiStreamingTransport.scala": {
+      "filePath": "llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/OpenAiStreamingTransport.scala",
+      "contentHash": "9e68682a14661b8b079744e2dd6ff1239607b4575cc37b3af2923a7430e3ad80",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 20,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/OpenAiTransport.scala": {
+      "filePath": "llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/OpenAiTransport.scala",
+      "contentHash": "88d052cb3cf6d020bc32d34c510d8fe8c61d206347bef00e5a1ac1d32c3be76c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 22,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/OpenAiWire.scala": {
+      "filePath": "llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/OpenAiWire.scala",
+      "contentHash": "4458e91dde74af75e9418131c631f289eb0049990a09cfccf32de989dcc798d7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 265,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/SttpOpenAiTransport.scala": {
+      "filePath": "llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/SttpOpenAiTransport.scala",
+      "contentHash": "e830383f2de20820e402896f4f083e7a51921e290ad2361747080526630adb1b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 124,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/TracedSttpBackend.scala": {
+      "filePath": "llm4s-openai-compat/src/main/scala/org/l4j/template/llm4s/openai/TracedSttpBackend.scala",
+      "contentHash": "aa3277f57330978ae5d3097f8a442e95142b2dce8ecab715156de05ff5cd93fa",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 61,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-openai-compat/src/test/scala/org/l4j/template/llm4s/openai/JsonSchemaWireRoundTripSpec.scala": {
+      "filePath": "llm4s-openai-compat/src/test/scala/org/l4j/template/llm4s/openai/JsonSchemaWireRoundTripSpec.scala",
+      "contentHash": "d55c2fa3e89e24ce9deecf8cd9ca55024f6fe185e4e11b07f206a82d47ee0d6e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 100,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-openai-compat/src/test/scala/org/l4j/template/llm4s/openai/OpenAiBackendLawsSpec.scala": {
+      "filePath": "llm4s-openai-compat/src/test/scala/org/l4j/template/llm4s/openai/OpenAiBackendLawsSpec.scala",
+      "contentHash": "866337d9c4f5a7c93a2ce6afa16473b2757c56504f052585bc0d31e8b2f62c71",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 78,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-openai-compat/src/test/scala/org/l4j/template/llm4s/openai/OpenAiCompatBackendResourceSpec.scala": {
+      "filePath": "llm4s-openai-compat/src/test/scala/org/l4j/template/llm4s/openai/OpenAiCompatBackendResourceSpec.scala",
+      "contentHash": "d2b1943e5a75547df59c891d360491110d08c9914a0a1168c87a7509718763d8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 181,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-openai-compat/src/test/scala/org/l4j/template/llm4s/openai/OpenAiCompatBackendSpec.scala": {
+      "filePath": "llm4s-openai-compat/src/test/scala/org/l4j/template/llm4s/openai/OpenAiCompatBackendSpec.scala",
+      "contentHash": "6078d39a51ecc522eb85eb469346c93880038e6b151807597bca60f7090e8966",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 293,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-openai-compat/src/test/scala/org/l4j/template/llm4s/openai/OpenAiCompatStreamingBackendSpec.scala": {
+      "filePath": "llm4s-openai-compat/src/test/scala/org/l4j/template/llm4s/openai/OpenAiCompatStreamingBackendSpec.scala",
+      "contentHash": "f831180fe58c45da05b1e20e0300c5088c2354ad78598f89d8cc3055d5b854e6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 92,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-openai-compat/src/test/scala/org/l4j/template/llm4s/openai/OpenAiStreamDecoderCorpusSpec.scala": {
+      "filePath": "llm4s-openai-compat/src/test/scala/org/l4j/template/llm4s/openai/OpenAiStreamDecoderCorpusSpec.scala",
+      "contentHash": "396fc8403527e16add7b18b75aa647e2108ddeb6f7ef6c9c51ba4ccabb2cbc57",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 79,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-openai-compat/src/test/scala/org/l4j/template/llm4s/openai/TracedSttpBackendSpec.scala": {
+      "filePath": "llm4s-openai-compat/src/test/scala/org/l4j/template/llm4s/openai/TracedSttpBackendSpec.scala",
+      "contentHash": "ce1cefa4a84b5ada947092d354dbb5c5e5232ab917ba34c0136b8ec03cfdfcf6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 185,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/AdvancedContentRetriever.scala": {
+      "filePath": "llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/AdvancedContentRetriever.scala",
+      "contentHash": "b03922efa6cd94af9b3eea5173233476d5d0e95293d1b38f282c2e0fd58b0fc2",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 56,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/ContentAggregator.scala": {
+      "filePath": "llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/ContentAggregator.scala",
+      "contentHash": "cd9ca971d2f91e3cbfda53eeee6636c8e838b0c36b3b2ee285aa492811d7d1fe",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 26,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/ContentRetriever.scala": {
+      "filePath": "llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/ContentRetriever.scala",
+      "contentHash": "7a9d8431e660cec7aec50d84eca505bf205b12daa6821e30530df7006f0bc935",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 29,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/EmbeddingModel.scala": {
+      "filePath": "llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/EmbeddingModel.scala",
+      "contentHash": "ae58e074d81c1a9bb6da711f7880917e958e9c981a0dd6aadec663f42ac77dd0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 12,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/EmbeddingStore.scala": {
+      "filePath": "llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/EmbeddingStore.scala",
+      "contentHash": "25126ddd4e1cf6bf8efe7d0f726e610894fd5f604486f2e92c7b55ffdff353cd",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 16,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/EmbeddingVector.scala": {
+      "filePath": "llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/EmbeddingVector.scala",
+      "contentHash": "d138f3f337c87dc6f76f22e0ad28e8cbddb3252ccce63afb3b80f1e666867a02",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 30,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/InMemoryEmbeddingStore.scala": {
+      "filePath": "llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/InMemoryEmbeddingStore.scala",
+      "contentHash": "984a28e4eb56c8e53ec2c52585a4cb5404450e2b5141448666ee6357fa5a3e7e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 42,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/PgVectorEmbeddingStore.scala": {
+      "filePath": "llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/PgVectorEmbeddingStore.scala",
+      "contentHash": "347b32ed24d1208fb075238d0b9d275656d28f6feea6bc91f3539a391abd6806",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 223,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/QueryRouter.scala": {
+      "filePath": "llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/QueryRouter.scala",
+      "contentHash": "ccef5552e495ca2b71aa5b1df3a9aa17e3097a7a4cbea800a4f7866cc1ff9986",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 19,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/QueryTransformer.scala": {
+      "filePath": "llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/QueryTransformer.scala",
+      "contentHash": "420fc710171d6e82dce591777a174eb1e8eb7a7fc371ba3e03e87a609c9f65b0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 19,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/ReRanker.scala": {
+      "filePath": "llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/ReRanker.scala",
+      "contentHash": "2e2b2f3980b453520e2418d4cbad4b915bf7cc2938195d226b3753b82ba2f333",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 19,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/RetrievalAugmentor.scala": {
+      "filePath": "llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/RetrievalAugmentor.scala",
+      "contentHash": "18b2f381f95cd0fd69f7e5f33f50556b5b912f23f33d847c78fa2fbe3eab5ace",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 56,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/RetrievalQuery.scala": {
+      "filePath": "llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/RetrievalQuery.scala",
+      "contentHash": "e425e450e94959b2c344cb89edefb63a904c0917d72623cd8503940fe565b07f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 35,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/RetrievedSource.scala": {
+      "filePath": "llm4s-rag/src/main/scala/org/l4j/template/llm4s/rag/RetrievedSource.scala",
+      "contentHash": "a99d48aac3a03fe0f7dbd64319ae88432aaebef6f6f63ac97af3cfe98e4ac8b2",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 18,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-rag/src/test/scala/org/l4j/template/llm4s/rag/RagSpec.scala": {
+      "filePath": "llm4s-rag/src/test/scala/org/l4j/template/llm4s/rag/RagSpec.scala",
+      "contentHash": "88d7a1d122bde0bc6181e21a3c4d5da9035a751bf55643a62675f8f05bd9e90f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 227,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-runtime/src/main/scala/org/l4j/template/llm4s/runtime/AiRuntime.scala": {
+      "filePath": "llm4s-runtime/src/main/scala/org/l4j/template/llm4s/runtime/AiRuntime.scala",
+      "contentHash": "6fd25f59f889acb28578f136e61b8e3b6b1be62c3c75d5607186ad698a20378a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 183,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-runtime/src/main/scala/org/l4j/template/llm4s/runtime/AiRuntimeError.scala": {
+      "filePath": "llm4s-runtime/src/main/scala/org/l4j/template/llm4s/runtime/AiRuntimeError.scala",
+      "contentHash": "be627847cdd04a3da34a37131a32083c3542d3733d16a525db57afd9afa11321",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 39,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-runtime/src/main/scala/org/l4j/template/llm4s/runtime/InvocationContext.scala": {
+      "filePath": "llm4s-runtime/src/main/scala/org/l4j/template/llm4s/runtime/InvocationContext.scala",
+      "contentHash": "769e477dfc222658f4d3dfe7cf43077fc7290a6cc201e5bdbf474406e2f7b0f0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 33,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-runtime/src/main/scala/org/l4j/template/llm4s/runtime/RuntimeListener.scala": {
+      "filePath": "llm4s-runtime/src/main/scala/org/l4j/template/llm4s/runtime/RuntimeListener.scala",
+      "contentHash": "99880de13b1d4cc22dec11c08675cfb5f23f610ac176783a3e8f5baf3fb7149a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 176,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-runtime/src/main/scala/org/l4j/template/llm4s/runtime/ToolKit.scala": {
+      "filePath": "llm4s-runtime/src/main/scala/org/l4j/template/llm4s/runtime/ToolKit.scala",
+      "contentHash": "ab69a8c2aae8bbe04fb3dd8ab271a72b95bf0a9ff0312f152b5b51a16c41e55a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 84,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-runtime/src/main/scala/org/l4j/template/llm4s/runtime/ToolLoop.scala": {
+      "filePath": "llm4s-runtime/src/main/scala/org/l4j/template/llm4s/runtime/ToolLoop.scala",
+      "contentHash": "eb0c5b91fc4f1f27b5ebd41ae31965795e6fcc5fec3244efcd3df2f7e860dd6b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 138,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-runtime/src/test/scala/org/l4j/template/llm4s/runtime/AiRuntimeSpec.scala": {
+      "filePath": "llm4s-runtime/src/test/scala/org/l4j/template/llm4s/runtime/AiRuntimeSpec.scala",
+      "contentHash": "adbcb0d0a82b3ea999e715309e885df59bcbeefc05e0f5c6d488a4497240b24f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 254,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-runtime/src/test/scala/org/l4j/template/llm4s/runtime/RuntimeListenerSpec.scala": {
+      "filePath": "llm4s-runtime/src/test/scala/org/l4j/template/llm4s/runtime/RuntimeListenerSpec.scala",
+      "contentHash": "84673db6c78a72d65aad3880d99b83b7f4864831d8a77dd064e7c46163d98612",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 358,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-runtime/src/test/scala/org/l4j/template/llm4s/runtime/ToolErrorPolicySpec.scala": {
+      "filePath": "llm4s-runtime/src/test/scala/org/l4j/template/llm4s/runtime/ToolErrorPolicySpec.scala",
+      "contentHash": "935f66a73f6cca3e462c06c6ce412c63d2d5f94755baa2de784ebf6b383d7e07",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 148,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-runtime/src/test/scala/org/l4j/template/llm4s/runtime/ToolKitSpec.scala": {
+      "filePath": "llm4s-runtime/src/test/scala/org/l4j/template/llm4s/runtime/ToolKitSpec.scala",
+      "contentHash": "829fd6bb158d304f161c1eb7fcc89fc327ab4ada11924cd2cdfe6053742aa243",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 88,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-streaming/src/main/scala/org/l4j/template/llm4s/streaming/StreamEvent.scala": {
+      "filePath": "llm4s-streaming/src/main/scala/org/l4j/template/llm4s/streaming/StreamEvent.scala",
+      "contentHash": "81062c70b9fc5a8817220bd7a791972a2c55debb21eedf9a92fd3d5345b76b82",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 18,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-streaming/src/main/scala/org/l4j/template/llm4s/streaming/StreamingAiRuntime.scala": {
+      "filePath": "llm4s-streaming/src/main/scala/org/l4j/template/llm4s/streaming/StreamingAiRuntime.scala",
+      "contentHash": "4278ba413c31c9134c18ae422abb8a594a3d475784795c5583e18420227f42cd",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 84,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-streaming/src/main/scala/org/l4j/template/llm4s/streaming/StreamingChatBackend.scala": {
+      "filePath": "llm4s-streaming/src/main/scala/org/l4j/template/llm4s/streaming/StreamingChatBackend.scala",
+      "contentHash": "23b9a88a369017f318a1f68eb1a6272418453b986d5d198193d3512d9011476b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 8,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-streaming/src/main/scala/org/l4j/template/llm4s/streaming/StreamSubscriber.scala": {
+      "filePath": "llm4s-streaming/src/main/scala/org/l4j/template/llm4s/streaming/StreamSubscriber.scala",
+      "contentHash": "12d4d7a3b4a50ea984fe0c808e14087ac78ee802c803369ed4c027adadd2a642",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 5,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-streaming/src/main/scala/org/l4j/template/llm4s/streaming/TokenStream.scala": {
+      "filePath": "llm4s-streaming/src/main/scala/org/l4j/template/llm4s/streaming/TokenStream.scala",
+      "contentHash": "d6ce4ae36c610990a98f140c7af6e5130dc71e7c490f97ef82779915a27c2b57",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 14,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-streaming/src/test/scala/org/l4j/template/llm4s/streaming/StreamingAiRuntimeSpec.scala": {
+      "filePath": "llm4s-streaming/src/test/scala/org/l4j/template/llm4s/streaming/StreamingAiRuntimeSpec.scala",
+      "contentHash": "f943598d2ddeb79322a0d5e42e154a093606bfd2bea6e67dff4e2fb1ae739a46",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 120,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-structured/src/main/scala/org/l4j/template/llm4s/structured/AiAgent.scala": {
+      "filePath": "llm4s-structured/src/main/scala/org/l4j/template/llm4s/structured/AiAgent.scala",
+      "contentHash": "e83cf6708f402fec47e4114611123dac51222476b16f6968dbe39d2f33ce8afd",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 115,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-structured/src/main/scala/org/l4j/template/llm4s/structured/ChatOptions.scala": {
+      "filePath": "llm4s-structured/src/main/scala/org/l4j/template/llm4s/structured/ChatOptions.scala",
+      "contentHash": "683216006863e6f5e07831afef105a32ce51c779aa3418acbd96a70172ecb8ba",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 25,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-structured/src/main/scala/org/l4j/template/llm4s/structured/JsonExtractor.scala": {
+      "filePath": "llm4s-structured/src/main/scala/org/l4j/template/llm4s/structured/JsonExtractor.scala",
+      "contentHash": "1738516cf3be92a894b91e89a8922ee9f4c3953d6be49045da6ddf3bc9e69afa",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 110,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-structured/src/main/scala/org/l4j/template/llm4s/structured/StructuredCodec.scala": {
+      "filePath": "llm4s-structured/src/main/scala/org/l4j/template/llm4s/structured/StructuredCodec.scala",
+      "contentHash": "0ff9b9fcd13c0140c64ca5572a42798f596ad0ca126c4ab3cfe2069f97a59293",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 44,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-structured/src/main/scala/org/l4j/template/llm4s/structured/StructuredOutputRuntime.scala": {
+      "filePath": "llm4s-structured/src/main/scala/org/l4j/template/llm4s/structured/StructuredOutputRuntime.scala",
+      "contentHash": "8247e0e0b18a01486249b8fa00b9219c7e91bcc286931dfc53d0f58b07aeb0d5",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 100,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-structured/src/test/scala/org/l4j/template/llm4s/structured/AiAgentSpec.scala": {
+      "filePath": "llm4s-structured/src/test/scala/org/l4j/template/llm4s/structured/AiAgentSpec.scala",
+      "contentHash": "8ecae7e9014a782564a8ef3bdb625f142d1a82ddfd19e8f6524f8e74ef1205cf",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 264,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-structured/src/test/scala/org/l4j/template/llm4s/structured/JsonExtractorSpec.scala": {
+      "filePath": "llm4s-structured/src/test/scala/org/l4j/template/llm4s/structured/JsonExtractorSpec.scala",
+      "contentHash": "4f52088178cbddc4793411082fa017e6b74d814e40c7c90923adeac39be45647",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 117,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-structured/src/test/scala/org/l4j/template/llm4s/structured/StructuredOutputRuntimeSpec.scala": {
+      "filePath": "llm4s-structured/src/test/scala/org/l4j/template/llm4s/structured/StructuredOutputRuntimeSpec.scala",
+      "contentHash": "b4142d75431858ba8d5f2a40609488fc0b1ea5452d19f10d93bfb3de070f217f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 70,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-tools/src/main/scala/org/l4j/template/llm4s/tools/SchemaEncoder.scala": {
+      "filePath": "llm4s-tools/src/main/scala/org/l4j/template/llm4s/tools/SchemaEncoder.scala",
+      "contentHash": "6ff75ffdc158077eeb90f3a0ef78b4e6718cf3888ee3473a1b9da91aace1470c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 73,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-tools/src/main/scala/org/l4j/template/llm4s/tools/ToolDef.scala": {
+      "filePath": "llm4s-tools/src/main/scala/org/l4j/template/llm4s/tools/ToolDef.scala",
+      "contentHash": "b5bf499f264cc4c27f1d16ed8e4af43e2c9d84ecedec743b642078378f209d8c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 53,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-tools/src/main/scala/org/l4j/template/llm4s/tools/ToolDefinition.scala": {
+      "filePath": "llm4s-tools/src/main/scala/org/l4j/template/llm4s/tools/ToolDefinition.scala",
+      "contentHash": "f4918feb994e9b8357c6df0638f50bb2061ab60b76d2aa6b9b26801e47e4b77f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 79,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-tools/src/main/scala/org/l4j/template/llm4s/tools/ValueDecoder.scala": {
+      "filePath": "llm4s-tools/src/main/scala/org/l4j/template/llm4s/tools/ValueDecoder.scala",
+      "contentHash": "251582a956ee3011d40f01d6401794d373c3b3496a923b4ddf0926c0dc97130f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 138,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-tools/src/test/scala/org/l4j/template/llm4s/tools/ToolDefinitionSpec.scala": {
+      "filePath": "llm4s-tools/src/test/scala/org/l4j/template/llm4s/tools/ToolDefinitionSpec.scala",
+      "contentHash": "fd9a7764b588b5dccd8b0367d56bef6d82a4297a1de340eaf9cda6e912f26230",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 132,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-tracing-natchez/src/main/scala/org/l4j/template/llm4s/tracing/natchez/NatchezGuardrailListener.scala": {
+      "filePath": "llm4s-tracing-natchez/src/main/scala/org/l4j/template/llm4s/tracing/natchez/NatchezGuardrailListener.scala",
+      "contentHash": "84335bfd6bf1756fcf999f43d06e00d4d8af23b0de702aa8d19f8e6a1fdd9b49",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 51,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-tracing-natchez/src/main/scala/org/l4j/template/llm4s/tracing/natchez/NatchezHttpListener.scala": {
+      "filePath": "llm4s-tracing-natchez/src/main/scala/org/l4j/template/llm4s/tracing/natchez/NatchezHttpListener.scala",
+      "contentHash": "a1b3424d10ded66a135312527104a74d4841a0d8a511f9aac27fb7d7a76cfd6a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 65,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-tracing-natchez/src/main/scala/org/l4j/template/llm4s/tracing/natchez/NatchezRuntimeListener.scala": {
+      "filePath": "llm4s-tracing-natchez/src/main/scala/org/l4j/template/llm4s/tracing/natchez/NatchezRuntimeListener.scala",
+      "contentHash": "54c935ebbb5e9f73dc93736afd82ba807562a7d2c9a78895689e6e72a56243ae",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 208,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-tracing-natchez/src/main/scala/org/l4j/template/llm4s/tracing/natchez/NatchezWorkflowListener.scala": {
+      "filePath": "llm4s-tracing-natchez/src/main/scala/org/l4j/template/llm4s/tracing/natchez/NatchezWorkflowListener.scala",
+      "contentHash": "a29e7039c564bae5b2c8a799bb3b2002ff2e5a1a7ff1b02f0250debcf61ba770",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 41,
+      "hasStructuralAnalysis": false
+    },
+    "llm4s-tracing-natchez/src/test/scala/org/l4j/template/llm4s/tracing/natchez/NatchezAdapterSpec.scala": {
+      "filePath": "llm4s-tracing-natchez/src/test/scala/org/l4j/template/llm4s/tracing/natchez/NatchezAdapterSpec.scala",
+      "contentHash": "9f53504533bcf72328b93c436384025728b1739049d2ed6d454be33d14455f97",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 186,
+      "hasStructuralAnalysis": false
+    },
+    "project/build.properties": {
+      "filePath": "project/build.properties",
+      "contentHash": "a59fccae87ea7dba4034abbbf5333eaaa3dbb2fdcfbf37e98e3752f28c4a3892",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 2,
+      "hasStructuralAnalysis": false
+    },
+    "project/Dependencies.scala": {
+      "filePath": "project/Dependencies.scala",
+      "contentHash": "1236ca2d3b75de27db076991685d6f5ea11b7ac80cab5b6583cb821862c9dd5a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 50,
+      "hasStructuralAnalysis": false
+    },
+    "project/plugins.sbt": {
+      "filePath": "project/plugins.sbt",
+      "contentHash": "a2bfb844161fbba235e9b6f9b1da1b2582dd5e2cd994d7929339435c9a267e58",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 5,
+      "hasStructuralAnalysis": false
+    },
+    "readme_2026-05-17.md": {
+      "filePath": "readme_2026-05-17.md",
+      "contentHash": "c3624ad19dd9c6bc35de14ccfb3758fe73ead0d4658652ba83bf7f39338b2d8c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 195,
+      "hasStructuralAnalysis": true
+    },
+    "README_2026-05-18.md": {
+      "filePath": "README_2026-05-18.md",
+      "contentHash": "76f0a11d9037e3889a2ffcca78cc0936c3e762b576213279a174a32a9b630e65",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 428,
+      "hasStructuralAnalysis": true
+    },
+    "README_ANTI_G_2026-05-21.md": {
+      "filePath": "README_ANTI_G_2026-05-21.md",
+      "contentHash": "aaf82760df8f816d6ef6342f3de1fcb1d24a8ba2d5dc803a3666271bed7554ce",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 19,
+      "hasStructuralAnalysis": true
+    },
+    "README.md": {
+      "filePath": "README.md",
+      "contentHash": "0783ee3a8bf2c5173f204b5496031cd5f361adf09212a21ac1e459b439903f7d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 91,
+      "hasStructuralAnalysis": true
+    },
+    "src/main/resources/logback.xml": {
+      "filePath": "src/main/resources/logback.xml",
+      "contentHash": "17d2d5d0fcff40b379866326a10e50dcc4a3c742588a0da00f87fa50bfcca45b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 12,
+      "hasStructuralAnalysis": false
+    },
+    "src/main/scala/org/l4j/template/demo/AgentDemoMain.scala": {
+      "filePath": "src/main/scala/org/l4j/template/demo/AgentDemoMain.scala",
+      "contentHash": "40424942ba91a195b2ee48342bdc03b8aba827224170574438c540801d9877e4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 101,
+      "hasStructuralAnalysis": false
+    },
+    "src/main/scala/org/l4j/template/demo/agentic/ParallelDemoApi.scala": {
+      "filePath": "src/main/scala/org/l4j/template/demo/agentic/ParallelDemoApi.scala",
+      "contentHash": "e8e2b210b19856510d32fbde77c53b8c6d4c1e7fce577bc5c392c889711ee78a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 39,
+      "hasStructuralAnalysis": false
+    },
+    "src/main/scala/org/l4j/template/demo/agentic/ParallelDemoMain.scala": {
+      "filePath": "src/main/scala/org/l4j/template/demo/agentic/ParallelDemoMain.scala",
+      "contentHash": "1dc23aaa639ff3cb8714ad8f4ad239ecd411d3c0c2d0263084db2532f7b0220c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 58,
+      "hasStructuralAnalysis": false
+    },
+    "src/main/scala/org/l4j/template/demo/agentic/SequentialDemoApi.scala": {
+      "filePath": "src/main/scala/org/l4j/template/demo/agentic/SequentialDemoApi.scala",
+      "contentHash": "657a64b7625284733561e7578b1ed65a3decbf86000bd07b0127bff99912f56f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 41,
+      "hasStructuralAnalysis": false
+    },
+    "src/main/scala/org/l4j/template/demo/agentic/SequentialDemoMain.scala": {
+      "filePath": "src/main/scala/org/l4j/template/demo/agentic/SequentialDemoMain.scala",
+      "contentHash": "e46b644c11d20a0b74cb036c5bcc0741d771dd7c64de9fa13d4c5f451c20c964",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 51,
+      "hasStructuralAnalysis": false
+    },
+    "src/main/scala/org/l4j/template/demo/AppConfig.scala": {
+      "filePath": "src/main/scala/org/l4j/template/demo/AppConfig.scala",
+      "contentHash": "ddd809c253c43b376721bbba20f935c2df7edd314983e989aaec469306747213",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 275,
+      "hasStructuralAnalysis": false
+    },
+    "src/main/scala/org/l4j/template/demo/BackendSupport.scala": {
+      "filePath": "src/main/scala/org/l4j/template/demo/BackendSupport.scala",
+      "contentHash": "d6605850836fe218d108e7a004049b16ab4f0eba098387cdf53b07ea6a22a16b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 74,
+      "hasStructuralAnalysis": false
+    },
+    "src/main/scala/org/l4j/template/demo/GeminiFlashTraceLcelDemoMain.scala": {
+      "filePath": "src/main/scala/org/l4j/template/demo/GeminiFlashTraceLcelDemoMain.scala",
+      "contentHash": "0234a70912ae7077a923f22a519885e81af0da5d4e89c664e0248064237e7cb1",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 96,
+      "hasStructuralAnalysis": false
+    },
+    "src/main/scala/org/l4j/template/demo/LCEL_DEMO.scala": {
+      "filePath": "src/main/scala/org/l4j/template/demo/LCEL_DEMO.scala",
+      "contentHash": "48ff5faa215e22cb0b8a539e52aa144130b7688459df5c9aff2ac8f279b2e572",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 119,
+      "hasStructuralAnalysis": false
+    },
+    "src/main/scala/org/l4j/template/demo/LCEL_OPERATOR_DEMO.scala": {
+      "filePath": "src/main/scala/org/l4j/template/demo/LCEL_OPERATOR_DEMO.scala",
+      "contentHash": "812643f5d3d1f7f5a7f3cd1e72e9b09250da6bd4cb448f16ad583d354074ab08",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 105,
+      "hasStructuralAnalysis": false
+    },
+    "src/main/scala/org/l4j/template/demo/TraceDemoMain.scala": {
+      "filePath": "src/main/scala/org/l4j/template/demo/TraceDemoMain.scala",
+      "contentHash": "e3a79b82c671b76ddaaa3f261cf30db4f20ad90a280fb2c4e6b8d74ca368398d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 84,
+      "hasStructuralAnalysis": false
+    },
+    "src/main/scala/org/l4j/template/demo/TracingWiring.scala": {
+      "filePath": "src/main/scala/org/l4j/template/demo/TracingWiring.scala",
+      "contentHash": "86f2da3ecc6d43af7fd51c55f9d9276fa78b1174b47fe875377b0c43650fa5f2",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 283,
+      "hasStructuralAnalysis": false
+    },
+    "src/test/scala/org/l4j/template/demo/AppConfigSpec.scala": {
+      "filePath": "src/test/scala/org/l4j/template/demo/AppConfigSpec.scala",
+      "contentHash": "bf8d2b34e63bfb81928148d56c92726be8e0805ada8fccfbe300a5948a03a0ed",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 267,
+      "hasStructuralAnalysis": false
+    },
+    "src/test/scala/org/l4j/template/demo/TracingWiringSpec.scala": {
+      "filePath": "src/test/scala/org/l4j/template/demo/TracingWiringSpec.scala",
+      "contentHash": "ac73722370b1b052bf3b34dda0db70889e34675ba218da8b77739dea43b94104",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 271,
+      "hasStructuralAnalysis": false
+    }
+  }
+}

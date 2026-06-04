@@ -8185,12 +8185,12 @@
       "id": "code_review_md"
     },
     {
-      "label": "llm4s-template \u2014 Code Review",
+      "label": "llm4s-chain \u2014 Code Review",
       "file_type": "document",
       "source_file": "CODE_REVIEW.md",
       "source_location": "L1",
       "community": 13,
-      "norm_label": "llm4s-template \u2014 code review",
+      "norm_label": "llm4s-chain \u2014 code review",
       "id": "llm4s_template_code_review_llm4s_template_code_review"
     },
     {

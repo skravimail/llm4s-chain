@@ -538,11 +538,11 @@ Capabilities currently include:
 Run focused module tests while developing one feature:
 
 ```bash
-env SBT_OPTS=-Dsbt.boot.directory=/Users/alpha/AI_ML/llm4s-template/.sbt-boot\ -Dsbt.ivy.home=/Users/alpha/AI_ML/llm4s-template/.ivy2 COURSIER_CACHE=/Users/alpha/AI_ML/llm4s-template/.coursier sbt 'llm4sCore/test'
+env SBT_OPTS=-Dsbt.boot.directory=/Users/alpha/AI_ML/llm4s-chain/.sbt-boot\ -Dsbt.ivy.home=/Users/alpha/AI_ML/llm4s-chain/.ivy2 COURSIER_CACHE=/Users/alpha/AI_ML/llm4s-chain/.coursier sbt 'llm4sCore/test'
 ```
 
 Run the full explicit module sweep before committing cross-module changes:
 
 ```bash
-env SBT_OPTS=-Dsbt.boot.directory=/Users/alpha/AI_ML/llm4s-template/.sbt-boot\ -Dsbt.ivy.home=/Users/alpha/AI_ML/llm4s-template/.ivy2 COURSIER_CACHE=/Users/alpha/AI_ML/llm4s-template/.coursier sbt 'llm4sCore/test' 'llm4sMemory/test' 'llm4sRag/test' 'llm4sAgentic/test' 'llm4sMcp/test' 'llm4sGuardrails/test' 'llm4sRuntime/test' 'llm4sStreaming/test' 'llm4sOpenAiCompat/test' 'llm4sTools/test' 'llm4sStructured/test'
+env SBT_OPTS=-Dsbt.boot.directory=/Users/alpha/AI_ML/llm4s-chain/.sbt-boot\ -Dsbt.ivy.home=/Users/alpha/AI_ML/llm4s-chain/.ivy2 COURSIER_CACHE=/Users/alpha/AI_ML/llm4s-chain/.coursier sbt 'llm4sCore/test' 'llm4sMemory/test' 'llm4sRag/test' 'llm4sAgentic/test' 'llm4sMcp/test' 'llm4sGuardrails/test' 'llm4sRuntime/test' 'llm4sStreaming/test' 'llm4sOpenAiCompat/test' 'llm4sTools/test' 'llm4sStructured/test'
 ```
