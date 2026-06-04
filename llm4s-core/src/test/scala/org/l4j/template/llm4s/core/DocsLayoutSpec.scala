@@ -36,8 +36,16 @@ class DocsLayoutSpec extends FunSuite:
     assertExists("docs/USAGE.md")
   }
 
-  test("README points at the canonical docs (no stale Usage_Readme / Readme_PR_plan links)") {
+  test("README uses the llm4s-chain project name and points at canonical docs") {
     val text = Files.readString(repoRoot.resolve("README.md"))
+    assert(
+      text.startsWith("llm4s-chain"),
+      "README.md title should be llm4s-chain (not the legacy llm4s-chain name)",
+    )
+    assert(
+      !text.contains("llm4s-chain"),
+      "README.md still contains the legacy llm4s-chain project name",
+    )
     assertReadmeMentions("docs/USAGE.md")
     assertReadmeMentions("CHANGELOG.md")
     assert(
